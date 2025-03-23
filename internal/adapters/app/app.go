@@ -1,6 +1,7 @@
 package app
 
 import (
+	"LutiLeech/internal/adapters/app/service_provider"
 	"LutiLeech/internal/adapters/config"
 	"fmt"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -8,8 +9,9 @@ import (
 )
 
 type App struct {
-	Server *ghttp.Server
-	Config *config.Config
+	Server          *ghttp.Server
+	Config          *config.Config
+	ServiceProvider *service_provider.ServiceProvider
 }
 
 // initDeps initializes application dependencies
@@ -28,7 +30,7 @@ func (a *App) initDeps() error {
 	return nil
 }
 
-// New создает новый экземпляр приложения и настраивает сервер.
+// New creates a new copy of the application and sets the server.
 func New() (*App, error) {
 	a := &App{}
 
@@ -36,8 +38,6 @@ func New() (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf("new app: %w", err)
 	}
-	a.Server = ghttp.GetServer()
-
 	// Настраиваем TLS, если он включен
 	if a.Config.HttpServer.EnabledTLS() {
 		// server.EnableHTTPS("path/to/cert.pem", "path/to/key.pem")
@@ -48,7 +48,7 @@ func New() (*App, error) {
 	return a, nil
 }
 
-// Start запускает сервер.
+// Start start server.
 func (a *App) Start() {
 
 	log.Printf("Starting server...\n")

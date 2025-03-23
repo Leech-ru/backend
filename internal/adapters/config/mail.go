@@ -22,10 +22,10 @@ type mailConfig struct {
 // NewMailConfig initializes a new Mail configuration from environment variables.
 func NewMailConfig() (MailConfig, error) {
 	return &mailConfig{
-		host:     viper.GetString("services.mail.host"),
-		port:     viper.GetInt("services.mail.port"),
-		mail:     viper.GetString("services.mail.mail"),
-		password: viper.GetString("services.mail.password"),
+		host:     viper.GetString("service.mail.host"),
+		port:     viper.GetInt("service.mail.port"),
+		mail:     viper.GetString("service.mail.mail"),
+		password: viper.GetString("service.mail.password"),
 	}, nil
 }
 

@@ -1,7 +1,9 @@
 package app
 
 import (
+	"LutiLeech/internal/adapters/app/service_provider"
 	"LutiLeech/internal/adapters/config"
+	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/spf13/viper"
 	"log"
 )
@@ -24,10 +26,11 @@ func (a *App) initConfig() error {
 }
 
 func (a *App) initServiceProvider() error {
-	//a.serviceProvider = newServiceProvider()
+	a.ServiceProvider = service_provider.NewServiceProvider()
 	return nil
 }
 
 func (a *App) initHTTPServer() error {
+	a.Server = ghttp.GetServer()
 	return nil
 }

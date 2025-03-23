@@ -1,6 +1,5 @@
 package dto
 
-// Ping — структура для ответа на запрос ping
-type Ping struct {
-	Message string `json:"message"`
+type PingResponse struct {
+	Message string `json:"message" dc:"Message returned in the ping response" x-sort:"1"`
 }
