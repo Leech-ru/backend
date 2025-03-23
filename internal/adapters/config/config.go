@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 )
 
 // Config представляет собой общую структуру конфигурации,
@@ -16,8 +15,6 @@ type Config struct {
 
 // New создает и возвращает новый объект Config, загружая все микроконфиги.
 func New() (*Config, error) {
-	initConfig()
-
 	dbConfig, err := NewPGConfig()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load database config: %w", err)
@@ -44,16 +41,4 @@ func New() (*Config, error) {
 		HttpServer: serverConfig,
 		Mail:       mailCfg,
 	}, nil
-}
-
-func initConfig() error {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-
-	if err := viper.ReadInConfig(); err != nil {
-		return err
-	}
-
-	return nil
 }
