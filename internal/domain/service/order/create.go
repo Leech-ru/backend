@@ -15,40 +15,42 @@ func (s *Service) Create(_ context.Context, req *dto.CreateOrderRequest) (*dto.C
 	var err error
 	var mu sync.Mutex
 
-	wg.Add(2)
+	commonBody, buildErr := s.mailBuilder.
+		SetRecipient("МишМиш").
+		SetSubject("Купи пиявка дешева").
+		SetMessage("На сайте leech.ru лучшие пиявки купи паже").
+		Build()
 
-	go func() {
-		defer wg.Done()
+	if buildErr != nil {
+		return nil, buildErr
+	}
 
-		recipients := []string{CorporateEmail}
-		topic := "!АЛЕРТ! НОВЫЙ ЗАКАЗ"
-		body := "СРОЧНО СРОЧНО ЗАКАЗАЛИ ПИЯВОК\nААААААААААААА\nСРОЧНО НАДО ИХ ОТПРАВИТЬ\nВПЕРЕД РАБОТАТЬ СОЛНЦЕ ЕЩЕ ВЫСОКО"
+	commonSubject := "У вас новый заказ 😇"
+	recipients := []string{CorporateEmail, req.Customer}
 
-		if sendErr := s.mailService.SendEmail(recipients, topic, body); sendErr != nil {
-			mu.Lock()
-			err = sendErr
-			mu.Unlock()
-		}
-	}()
+	wg.Add(len(recipients))
 
-	go func() {
-		defer wg.Done()
+	for _, email := range recipients {
+		go func(email string) {
+			defer wg.Done()
 
-		recipients := []string{req.Customer}
-		topic := "У вас новый заказ😇"
-		body := "Спасибо, что выбрали нас\nМы уже начали собирать ваш заказ\nВ скором времени мы свяжемся с вами для обсуждения подробностей😊"
-
-		if sendErr := s.mailService.SendEmail(recipients, topic, body); sendErr != nil {
-			mu.Lock()
-			err = sendErr
-			mu.Unlock()
-		}
-	}()
+			if sendErr := s.mailService.SendEmail(
+				[]string{email},
+				commonSubject,
+				commonBody,
+			); sendErr != nil {
+				mu.Lock()
+				err = sendErr
+				mu.Unlock()
+			}
+		}(email)
+	}
 
 	wg.Wait()
 	if err != nil {
 		return nil, err
 	}
+
 	return &dto.CreateOrderResponse{
 		Status: "ok",
 	}, nil

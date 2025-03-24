@@ -1,4 +1,4 @@
-package mail
+package gmail
 
 import (
 	"fmt"
@@ -29,7 +29,7 @@ func (s mailService) SendEmail(to []string, topic, body string) error {
 	m.SetHeader("From", s.username)
 	m.SetHeader("To", to...)
 	m.SetHeader("Subject", topic)
-	m.SetBody("text/plain", body)
+	m.SetBody("text/html", body)
 
 	d := gomail.NewDialer(s.host, s.port, s.username, s.password)
 
