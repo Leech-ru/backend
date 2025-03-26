@@ -14,15 +14,23 @@ type EmailBuilder struct {
 }
 
 type EmailData struct {
-	RecipientName string
-	Subject       string
-	Message       string
+	FIO         string
+	PhoneNumber string
+	Email       string
+	Address     string
+	Comment     string
+	LeechSize1  int
+	LeechSize2  int
+	LeechSize3  int
+	PackageType int
+	TotalPrice  float64
 }
 
 // NewEmailBuilder создает новый экземпляр EmailBuilder
 func NewEmailBuilder() *EmailBuilder {
 	return &EmailBuilder{
 		templatePath: templatePath,
+		data:         EmailData{},
 	}
 }
 

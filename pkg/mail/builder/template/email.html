@@ -2,10 +2,54 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{.Subject}}</title>
+    <title>Новый заказ пиявок</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .order-details { margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px; }
+        .customer-info { margin-bottom: 20px; }
+        .total { font-weight: bold; font-size: 1.2em; color: #27ae60; }
+        .comment { font-style: italic; color: #7f8c8d; }
+    </style>
 </head>
 <body>
-    <h1>Привет, {{.RecipientName}}!</h1>
-    <p>{{.Message}}</p>
+    <div class="container">
+        <div class="header">
+            <h1>Новый заказ пиявок</h1>
+        </div>
+
+        <div class="customer-info">
+            <h2>Информация о клиенте</h2>
+            <p><strong>ФИО:</strong> {{.FIO}}</p>
+            <p><strong>Телефон:</strong> {{.PhoneNumber}}</p>
+            <p><strong>Email:</strong> {{.Email}}</p>
+            <p><strong>Адрес доставки:</strong> {{.Address}}</p>
+            {{if .Comment}}
+            <p class="comment"><strong>Комментарий клиента:</strong> {{.Comment}}</p>
+            {{end}}
+        </div>
+
+        <div class="order-details">
+            <h2>Детали заказа</h2>
+            <p><strong>Пиявки размера 1:</strong> {{.LeechSize1}} шт.</p>
+            <p><strong>Пиявки размера 2:</strong> {{.LeechSize2}} шт.</p>
+            <p><strong>Пиявки размера 3:</strong> {{.LeechSize3}} шт.</p>
+            <p><strong>Тип упаковки:</strong>
+                {{if eq .PackageType 1}}Вода
+                {{else if eq .PackageType 2}}Гель
+                {{else if eq .PackageType 3}}Торф
+                {{end}}
+            </p>
+        </div>
+
+        <div class="total">
+            <h2>Итого к оплате: {{printf "%.2f" .TotalPrice}} руб.</h2>
+        </div>
+
+        <footer>
+            <p>Это письмо сгенерировано автоматически, пожалуйста, не отвечайте на него.</p>
+        </footer>
+    </div>
 </body>
 </html>

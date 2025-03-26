@@ -3,55 +3,46 @@ package order
 import (
 	"LutiLeech/internal/domain/dto"
 	"context"
-	"sync"
 )
 
 const (
-	CorporateEmail = "corporate0mail@gmail.com"
+	corporateEmail = "corporate0mail@gmail.com"
+	emailSubject   = "Новый заказ пиявок"
 )
 
-func (s *Service) Create(_ context.Context, req *dto.CreateOrderRequest) (*dto.CreateOrderResponse, error) {
-	var wg sync.WaitGroup
-	var err error
-	var mu sync.Mutex
-
-	commonBody, buildErr := s.mailBuilder.
-		SetRecipient("МишМиш").
-		SetSubject("Купи пиявка дешева").
-		SetMessage("На сайте leech.ru лучшие пиявки купи паже").
+func (s *Service) Create(ctx context.Context, req *dto.CreateOrderRequest) (*dto.CreateOrderResponse, error) {
+	totalPrice, err := s.priceService.CalculateTotal(
+		req.OrderDetails.LeechSize1,
+		req.OrderDetails.LeechSize2,
+		req.OrderDetails.LeechSize3,
+		req.OrderDetails.PackageType,
+	)
+	if err != nil {
+		return nil, err
+	}
+	emailBody, err := s.mailBuilder.
+		SetFIO(req.CustomerInfo.FIO).
+		SetPhoneNumber(req.CustomerInfo.PhoneNumber).
+		SetEmail(req.CustomerInfo.Email).
+		SetAddress(req.CustomerInfo.Address).
+		SetComment(req.CustomerInfo.Comment).
+		SetLeechSize1(req.OrderDetails.LeechSize1).
+		SetLeechSize2(req.OrderDetails.LeechSize2).
+		SetLeechSize3(req.OrderDetails.LeechSize3).
+		SetPackageType(req.OrderDetails.PackageType).
+		SetTotalPrice(totalPrice).
 		Build()
-
-	if buildErr != nil {
-		return nil, buildErr
-	}
-
-	commonSubject := "У вас новый заказ 😇"
-	recipients := []string{CorporateEmail, req.Customer}
-
-	wg.Add(len(recipients))
-
-	for _, email := range recipients {
-		go func(email string) {
-			defer wg.Done()
-
-			if sendErr := s.mailService.SendEmail(
-				[]string{email},
-				commonSubject,
-				commonBody,
-			); sendErr != nil {
-				mu.Lock()
-				err = sendErr
-				mu.Unlock()
-			}
-		}(email)
-	}
-
-	wg.Wait()
 	if err != nil {
 		return nil, err
 	}
 
+	if err := sendOrderEmails(s.mailService, req.CustomerInfo.Email, emailBody); err != nil {
+		return nil, err
+	}
+
 	return &dto.CreateOrderResponse{
-		Status: "ok",
+		CustomerInfo: req.CustomerInfo,
+		OrderDetails: req.OrderDetails,
+		TotalPrice:   totalPrice,
 	}, nil
 }

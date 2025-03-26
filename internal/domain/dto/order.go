@@ -1,12 +1,27 @@
 package dto
 
-import "github.com/gogf/gf/v2/frame/g"
-
 type CreateOrderRequest struct {
-	g.Meta   `path:"/order" tags:"Order" method:"post" x-group:"Order/Create" summary:"Create a new order."`
-	Customer string `json:"customer" dc:"Name of the customer" x-sort:"1"`
+	CustomerInfo CustomerInfo `json:"customer_info" v:"required#Customer information is required"`
+	OrderDetails OrderDetails `json:"order_details" v:"required#Order details are required"`
+}
+
+type CustomerInfo struct {
+	FIO         string  `json:"fio" v:"required|length:2,100#Full name is required|Full name should be 2-100 characters long"`
+	PhoneNumber string  `json:"phone_number" v:"required#Phone number is required"`
+	Email       string  `json:"email" v:"required|email#Email is required|Invalid email format"`
+	Address     string  `json:"address" v:"required|length:5,200#Address is required|Address should be 5-200 characters long"`
+	Comment     *string `json:"comment" v:"omitempty|length:0,500#Comment should be less than 500 characters"`
+}
+
+type OrderDetails struct {
+	LeechSize1  int `json:"leech_size_1" v:"required|min:0#Leech size 1 is required|Leech size 1 must be positive"`
+	LeechSize2  int `json:"leech_size_2" v:"required|min:0#Leech size 2 is required|Leech size 2 must be positive"`
+	LeechSize3  int `json:"leech_size_3" v:"required|min:0#Leech size 3 is required|Leech size 3 must be positive"`
+	PackageType int `json:"package_type" v:"required|in:1,2,3,4#Package type is required|Invalid package type"`
 }
 
 type CreateOrderResponse struct {
-	Status string `json:"status" dc:"Status of the order creation" x-sort:"1"`
+	CustomerInfo CustomerInfo `json:"customer_info"`
+	OrderDetails OrderDetails `json:"order_details"`
+	TotalPrice   float64      `json:"total_price" v:"min:0#Total price must be positive"`
 }

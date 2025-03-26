@@ -1,19 +1,64 @@
 package builder
 
-// SetRecipient устанавливает имя получателя
-func (b *EmailBuilder) SetRecipient(name string) *EmailBuilder {
-	b.data.RecipientName = name
+// SetFIO устанавливает ФИО клиента
+func (b *EmailBuilder) SetFIO(fio string) *EmailBuilder {
+	b.data.FIO = fio
 	return b
 }
 
-// SetSubject устанавливает тему письма
-func (b *EmailBuilder) SetSubject(subject string) *EmailBuilder {
-	b.data.Subject = subject
+// SetPhoneNumber устанавливает номер телефона
+func (b *EmailBuilder) SetPhoneNumber(phone string) *EmailBuilder {
+	b.data.PhoneNumber = phone
 	return b
 }
 
-// SetMessage устанавливает основное сообщение
-func (b *EmailBuilder) SetMessage(msg string) *EmailBuilder {
-	b.data.Message = msg
+// SetEmail устанавливает email
+func (b *EmailBuilder) SetEmail(email string) *EmailBuilder {
+	b.data.Email = email
+	return b
+}
+
+// SetAddress устанавливает адрес доставки
+func (b *EmailBuilder) SetAddress(address string) *EmailBuilder {
+	b.data.Address = address
+	return b
+}
+
+// SetComment устанавливает комментарий клиента
+func (b *EmailBuilder) SetComment(comment *string) *EmailBuilder {
+	if comment == nil {
+		return b
+	}
+	b.data.Comment = *comment
+	return b
+}
+
+// SetLeechSize1 устанавливает количество пиявок размера 1
+func (b *EmailBuilder) SetLeechSize1(count int) *EmailBuilder {
+	b.data.LeechSize1 = count
+	return b
+}
+
+// SetLeechSize2 устанавливает количество пиявок размера 2
+func (b *EmailBuilder) SetLeechSize2(count int) *EmailBuilder {
+	b.data.LeechSize2 = count
+	return b
+}
+
+// SetLeechSize3 устанавливает количество пиявок размера 3
+func (b *EmailBuilder) SetLeechSize3(count int) *EmailBuilder {
+	b.data.LeechSize3 = count
+	return b
+}
+
+// SetPackageType устанавливает тип упаковки
+func (b *EmailBuilder) SetPackageType(packageType int) *EmailBuilder {
+	b.data.PackageType = packageType
+	return b
+}
+
+// SetTotalPrice устанавливает итоговую сумму
+func (b *EmailBuilder) SetTotalPrice(price float64) *EmailBuilder {
+	b.data.TotalPrice = price
 	return b
 }
