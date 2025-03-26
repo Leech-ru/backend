@@ -1,16 +1,11 @@
 package dto
 
-type CreateOrderRequest struct {
-	CustomerInfo CustomerInfo `json:"customer_info" v:"required#Customer information is required"`
-	OrderDetails OrderDetails `json:"order_details" v:"required#Order details are required"`
-}
-
 type CustomerInfo struct {
 	FIO         string  `json:"fio" v:"required|length:2,100#Full name is required|Full name should be 2-100 characters long"`
 	PhoneNumber string  `json:"phone_number" v:"required#Phone number is required"`
 	Email       string  `json:"email" v:"required|email#Email is required|Invalid email format"`
 	Address     string  `json:"address" v:"required|length:5,200#Address is required|Address should be 5-200 characters long"`
-	Comment     *string `json:"comment" v:"omitempty|length:0,500#Comment should be less than 500 characters"`
+	Comment     *string `json:"comment,omitempty" v:"length:0,500#Comment should be less than 500 characters"`
 }
 
 type OrderDetails struct {
@@ -20,8 +15,13 @@ type OrderDetails struct {
 	PackageType int `json:"package_type" v:"required|in:1,2,3,4#Package type is required|Invalid package type"`
 }
 
+type CreateOrderRequest struct {
+	CustomerInfo CustomerInfo `json:"customer_info" v:"required#Customer information is required"`
+	OrderDetails OrderDetails `v:"required|min-leech-sum:55#Order details are required|Sum of all leeches must be at least 50"`
+}
+
 type CreateOrderResponse struct {
 	CustomerInfo CustomerInfo `json:"customer_info"`
 	OrderDetails OrderDetails `json:"order_details"`
-	TotalPrice   float64      `json:"total_price" v:"min:0#Total price must be positive"`
+	TotalPrice   float64      `json:"total_price"`
 }

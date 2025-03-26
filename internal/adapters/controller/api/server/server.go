@@ -4,9 +4,11 @@ import (
 	"LutiLeech/internal/adapters/app"
 	"LutiLeech/internal/adapters/controller/api/v1/order"
 	"LutiLeech/internal/adapters/controller/api/v1/ping"
+	"LutiLeech/internal/adapters/controller/api/validation"
 )
 
 func Setup(app *app.App) {
+	validation.RegisterCustomValidators()
 	addRouters(app)
 }
 

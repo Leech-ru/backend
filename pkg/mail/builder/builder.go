@@ -6,7 +6,7 @@ import (
 	"html/template"
 )
 
-const templatePath = "pkg/mail/builder/template/email.html"
+const templatePath = "pkg/mail/builder/template/html-email-forms-main/index.html"
 
 type EmailBuilder struct {
 	templatePath string
@@ -22,6 +22,7 @@ type EmailData struct {
 	LeechSize1  int
 	LeechSize2  int
 	LeechSize3  int
+	TotalCount  int
 	PackageType int
 	TotalPrice  float64
 }

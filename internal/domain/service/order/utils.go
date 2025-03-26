@@ -2,7 +2,9 @@ package order
 
 import "sync"
 
+// TODO включить функцию на проде
 func sendOrderEmails(mailService mailService, customerEmail string, body string) error {
+	return nil
 	var wg sync.WaitGroup
 	var err error
 	var mu sync.Mutex

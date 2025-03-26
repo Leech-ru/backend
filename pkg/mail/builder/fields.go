@@ -10,9 +10,8 @@ func (b *EmailBuilder) SetFIO(fio string) *EmailBuilder {
 func (b *EmailBuilder) SetPhoneNumber(phone string) *EmailBuilder {
 	b.data.PhoneNumber = phone
 	return b
-}
 
-// SetEmail устанавливает email
+} // SetEmail устанавливает почту
 func (b *EmailBuilder) SetEmail(email string) *EmailBuilder {
 	b.data.Email = email
 	return b
@@ -48,6 +47,11 @@ func (b *EmailBuilder) SetLeechSize2(count int) *EmailBuilder {
 // SetLeechSize3 устанавливает количество пиявок размера 3
 func (b *EmailBuilder) SetLeechSize3(count int) *EmailBuilder {
 	b.data.LeechSize3 = count
+	return b
+
+} // SetTotalCount устанавливает общее количество пиявок
+func (b *EmailBuilder) SetTotalCount(totalCount int) *EmailBuilder {
+	b.data.TotalCount = totalCount
 	return b
 }
 

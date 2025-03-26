@@ -29,6 +29,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateOrderRequest) (*dto
 		SetLeechSize1(req.OrderDetails.LeechSize1).
 		SetLeechSize2(req.OrderDetails.LeechSize2).
 		SetLeechSize3(req.OrderDetails.LeechSize3).
+		SetTotalCount(req.OrderDetails.LeechSize1 + req.OrderDetails.LeechSize2 + req.OrderDetails.LeechSize3).
 		SetPackageType(req.OrderDetails.PackageType).
 		SetTotalPrice(totalPrice).
 		Build()
