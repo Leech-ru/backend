@@ -1,4 +1,102 @@
+definitions:
+  dto.CreateOrderRequest:
+    properties:
+      customer_info:
+        $ref: '#/definitions/dto.CustomerInfo'
+      orderDetails:
+        $ref: '#/definitions/dto.OrderDetails'
+    type: object
+  dto.CreateOrderResponse:
+    properties:
+      customer_info:
+        $ref: '#/definitions/dto.CustomerInfo'
+      order_details:
+        $ref: '#/definitions/dto.OrderDetails'
+      total_price:
+        type: number
+    type: object
+  dto.CustomerInfo:
+    properties:
+      address:
+        type: string
+      comment:
+        type: string
+      email:
+        type: string
+      fio:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  dto.HTTPStatus:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  dto.OrderDetails:
+    properties:
+      leech_size_1:
+        type: integer
+      leech_size_2:
+        type: integer
+      leech_size_3:
+        type: integer
+      package_type:
+        type: integer
+    type: object
+  dto.PingResponse:
+    properties:
+      message:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /order:
+    post:
+      consumes:
+      - application/json
+      description: Processes an order request and returns order details if successful
+      parameters:
+      - description: Order request payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CreateOrderResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Create a new order
+      tags:
+      - Order
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: Returns an "ok" message if the server is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PingResponse'
+      summary: Server health check
+      tags:
+      - Ping
 swagger: "2.0"
