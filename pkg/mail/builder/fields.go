@@ -33,20 +33,29 @@ func (b *EmailBuilder) SetComment(comment *string) *EmailBuilder {
 }
 
 // SetLeechSize1 устанавливает количество пиявок размера 1
-func (b *EmailBuilder) SetLeechSize1(count int) *EmailBuilder {
-	b.data.LeechSize1 = count
+func (b *EmailBuilder) SetLeechSize1(count *int) *EmailBuilder {
+	if count == nil {
+		return b
+	}
+	b.data.LeechSize1 = *count
 	return b
 }
 
 // SetLeechSize2 устанавливает количество пиявок размера 2
-func (b *EmailBuilder) SetLeechSize2(count int) *EmailBuilder {
-	b.data.LeechSize2 = count
+func (b *EmailBuilder) SetLeechSize2(count *int) *EmailBuilder {
+	if count == nil {
+		return b
+	}
+	b.data.LeechSize2 = *count
 	return b
 }
 
 // SetLeechSize3 устанавливает количество пиявок размера 3
-func (b *EmailBuilder) SetLeechSize3(count int) *EmailBuilder {
-	b.data.LeechSize3 = count
+func (b *EmailBuilder) SetLeechSize3(count *int) *EmailBuilder {
+	if count == nil {
+		return b
+	}
+	b.data.LeechSize3 = *count
 	return b
 
 } // SetTotalCount устанавливает общее количество пиявок

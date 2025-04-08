@@ -4,12 +4,12 @@ import (
 	"LutiLeech/internal/adapters/app/service_provider"
 	"LutiLeech/internal/adapters/config"
 	"fmt"
-	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/labstack/echo/v4"
 	"log"
 )
 
 type App struct {
-	Server          *ghttp.Server
+	Server          *echo.Echo
 	Config          *config.Config
 	ServiceProvider *service_provider.ServiceProvider
 }
@@ -38,19 +38,27 @@ func New() (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf("new app: %w", err)
 	}
-	// Настраиваем TLS, если он включен
+
+	// Configure TLS if enabled
 	if a.Config.HttpServer.EnabledTLS() {
-		// server.EnableHTTPS("path/to/cert.pem", "path/to/key.pem")
+		// To enable TLS in Echo, you would use StartTLS() instead of Start()
+		// But we'll handle that in the Start() method
 		log.Println("TLS is enabled, but certificate paths are not specified.")
 	}
-	a.Server.SetAddr(a.Config.HttpServer.Address())
 
 	return a, nil
 }
 
-// Start start server.
+// Start starts the server.
 func (a *App) Start() {
+	addr := a.Config.HttpServer.Address()
+	log.Printf("Starting server on %s...\n", addr)
 
-	log.Printf("Starting server...\n")
-	a.Server.Run()
+	if a.Config.HttpServer.EnabledTLS() {
+		// Example for TLS:
+		// log.Fatal(a.Server.StartTLS(addr, "cert.pem", "key.pem"))
+		log.Fatal(a.Server.Start(addr))
+	} else {
+		log.Fatal(a.Server.Start(addr))
+	}
 }

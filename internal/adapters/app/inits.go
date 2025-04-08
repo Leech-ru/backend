@@ -3,7 +3,7 @@ package app
 import (
 	"LutiLeech/internal/adapters/app/service_provider"
 	"LutiLeech/internal/adapters/config"
-	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"log"
 )
@@ -26,11 +26,13 @@ func (a *App) initConfig() error {
 }
 
 func (a *App) initServiceProvider() error {
-	a.ServiceProvider = service_provider.NewServiceProvider()
+	a.ServiceProvider = service_provider.New()
 	return nil
 }
 
+// initHTTPServer initializes the Echo server
 func (a *App) initHTTPServer() error {
-	a.Server = ghttp.GetServer()
+	e := echo.New()
+	a.Server = e
 	return nil
 }

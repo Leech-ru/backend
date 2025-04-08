@@ -1,23 +1,23 @@
 package dto
 
 type CustomerInfo struct {
-	FIO         string  `json:"fio" v:"required|length:2,100#Full name is required|Full name should be 2-100 characters long"`
-	PhoneNumber string  `json:"phone_number" v:"required#Phone number is required"`
-	Email       string  `json:"email" v:"required|email#Email is required|Invalid email format"`
-	Address     string  `json:"address" v:"required|length:5,200#Address is required|Address should be 5-200 characters long"`
-	Comment     *string `json:"comment,omitempty" v:"length:0,500#Comment should be less than 500 characters"`
+	FIO         string  `json:"fio" validate:"required,min=2,max=100"`
+	PhoneNumber string  `json:"phone_number" validate:"required"`
+	Email       string  `json:"email" validate:"required,email"`
+	Address     string  `json:"address" validate:"required,min=5,max=200"`
+	Comment     *string `json:"comment,omitempty" validate:"omitempty,max=500"`
 }
 
 type OrderDetails struct {
-	LeechSize1  int `json:"leech_size_1" v:"required|min:0|max:500#Leech size 1 is required|Leech size 1 must be positive|Leech size 1 must be at most 500"`
-	LeechSize2  int `json:"leech_size_2" v:"required|min:0|max:500#Leech size 2 is required|Leech size 2 must be positive|Leech size 2 must be at most 500"`
-	LeechSize3  int `json:"leech_size_3" v:"required|min:0|max:500#Leech size 3 is required|Leech size 3 must be positive|Leech size 3 must be at most 500"`
-	PackageType int `json:"package_type" v:"required|in:1,2,3,4#Package type is required|Invalid package type(1 / 2 / 3)"`
+	LeechSize1  *int `json:"leech_size_1" validate:"omitempty,min=0,max=500"`
+	LeechSize2  *int `json:"leech_size_2" validate:"omitempty,min=0,max=500"`
+	LeechSize3  *int `json:"leech_size_3" validate:"omitempty,min=0,max=500"`
+	PackageType int  `json:"package_type" validate:"required,oneof=1 2 3"`
 }
 
 type CreateOrderRequest struct {
-	CustomerInfo CustomerInfo `json:"customer_info" v:"required#Customer information is required"`
-	OrderDetails OrderDetails `v:"required|min-leech-sum:50|max-leech-sum:1000#Order details are required|Sum of all leeches must be at least 55|Sum of all leeches must be at most 1000"`
+	CustomerInfo CustomerInfo `json:"customer_info" validate:"required"`
+	OrderDetails OrderDetails `json:"order_details" validate:"required,minleechsum=50,maxleechsum=1000"`
 }
 
 type CreateOrderResponse struct {

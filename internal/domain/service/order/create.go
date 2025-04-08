@@ -11,15 +11,31 @@ const (
 )
 
 func (s *Service) Create(ctx context.Context, req *dto.CreateOrderRequest) (*dto.CreateOrderResponse, error) {
+	leechSize1 := 0
+	if req.OrderDetails.LeechSize1 != nil {
+		leechSize1 = *req.OrderDetails.LeechSize1
+	}
+
+	leechSize2 := 0
+	if req.OrderDetails.LeechSize2 != nil {
+		leechSize2 = *req.OrderDetails.LeechSize2
+	}
+
+	leechSize3 := 0
+	if req.OrderDetails.LeechSize3 != nil {
+		leechSize3 = *req.OrderDetails.LeechSize3
+	}
+
 	totalPrice, err := s.priceService.CalculateTotal(
-		req.OrderDetails.LeechSize1,
-		req.OrderDetails.LeechSize2,
-		req.OrderDetails.LeechSize3,
+		leechSize1,
+		leechSize2,
+		leechSize3,
 		req.OrderDetails.PackageType,
 	)
 	if err != nil {
 		return nil, err
 	}
+	// TODO Если что-то там nil, автоматизировать
 	emailBody, err := s.mailBuilder.
 		SetFIO(req.CustomerInfo.FIO).
 		SetPhoneNumber(req.CustomerInfo.PhoneNumber).
@@ -27,9 +43,9 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateOrderRequest) (*dto
 		SetAddress(req.CustomerInfo.Address).
 		SetComment(req.CustomerInfo.Comment).
 		SetLeechSize1(req.OrderDetails.LeechSize1).
-		SetLeechSize2(req.OrderDetails.LeechSize2).
-		SetLeechSize3(req.OrderDetails.LeechSize3).
-		SetTotalCount(req.OrderDetails.LeechSize1 + req.OrderDetails.LeechSize2 + req.OrderDetails.LeechSize3).
+		SetLeechSize2(req.OrderDetails.LeechSize1).
+		SetLeechSize3(req.OrderDetails.LeechSize1).
+		SetTotalCount(leechSize1 + leechSize2 + leechSize3).
 		SetPackageType(req.OrderDetails.PackageType).
 		SetTotalPrice(totalPrice).
 		Build()

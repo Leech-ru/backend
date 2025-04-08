@@ -1,7 +1,7 @@
 package ping
 
 import (
-	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/labstack/echo/v4"
 )
 
 type handler struct{}
@@ -10,6 +10,6 @@ func NewHandler() *handler {
 	return &handler{}
 }
 
-func (h *handler) Setup(group *ghttp.RouterGroup) {
-	group.GET("/ping", h.Ping)
+func (h *handler) Setup(router *echo.Group) {
+	router.GET("/ping", h.Ping)
 }

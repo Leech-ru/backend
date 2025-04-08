@@ -1,9 +1,10 @@
 package order
 
 import (
+	"LutiLeech/internal/adapters/controller/api/validator"
 	"LutiLeech/internal/domain/dto"
 	"context"
-	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/labstack/echo/v4"
 )
 
 type orderService interface {
@@ -12,16 +13,20 @@ type orderService interface {
 
 type handler struct {
 	orderService orderService
+	validator    *validator.Validator
 }
 
 func NewHandler(
 	orderService orderService,
+	validator *validator.Validator,
+
 ) *handler {
 	return &handler{
 		orderService: orderService,
+		validator:    validator,
 	}
 }
 
-func (h *handler) Setup(group *ghttp.RouterGroup) {
-	group.POST("/order", h.CreateOrder)
+func (h *handler) Setup(router *echo.Group) {
+	router.POST("/order", h.CreateOrder)
 }
