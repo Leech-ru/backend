@@ -1,11 +1,17 @@
 package service_provider
 
 import (
+	"LutiLeech/internal/adapters/config"
 	"LutiLeech/internal/adapters/controller/api/validator"
 	"LutiLeech/pkg/logger"
 )
 
 type ServiceProvider struct {
+	loggerConfig config.LoggerConfig
+	pgConfig     config.PGConfig
+	httpConfig   config.HTTPConfig
+	mailConfig   config.MailConfig
+
 	logger    *logger.Logger
 	validator *validator.Validator
 
