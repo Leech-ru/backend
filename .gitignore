@@ -1,4 +1,4 @@
-./keys/private.pem
+**/private.pem
 
 # Compiled Static libraries
 *.lai
