@@ -6,6 +6,7 @@ import (
 	"Leech-ru/pkg/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -377,6 +378,29 @@ func RoleLT(v int) predicate.User {
 // RoleLTE applies the LTE predicate on the "role" field.
 func RoleLTE(v int) predicate.User {
 	return predicate.User(sql.FieldLTE(FieldRole, v))
+}
+
+// HasToken applies the HasEdge predicate on the "token" edge.
+func HasToken() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TokenTable, TokenColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTokenWith applies the HasEdge predicate on the "token" edge with a given conditions (other predicates).
+func HasTokenWith(preds ...predicate.Token) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newTokenStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

@@ -20,8 +20,8 @@ type userService struct {
 	userRepo UserRepo
 }
 
-func NewUserService(client ent.Client) *userService {
+func NewUserService(client *ent.Client) *userService {
 	return &userService{
-		userRepo: user.NewUserRepo(&client),
+		userRepo: user.NewUserRepo(client),
 	}
 }

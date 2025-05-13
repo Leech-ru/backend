@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"Leech-ru/pkg/ent/token"
 	"Leech-ru/pkg/ent/user"
 	"context"
 	"errors"
@@ -70,6 +71,21 @@ func (uc *UserCreate) SetNillableID(u *uuid.UUID) *UserCreate {
 		uc.SetID(*u)
 	}
 	return uc
+}
+
+// AddTokenIDs adds the "token" edge to the Token entity by IDs.
+func (uc *UserCreate) AddTokenIDs(ids ...int) *UserCreate {
+	uc.mutation.AddTokenIDs(ids...)
+	return uc
+}
+
+// AddToken adds the "token" edges to the Token entity.
+func (uc *UserCreate) AddToken(t ...*Token) *UserCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uc.AddTokenIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -208,6 +224,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Role(); ok {
 		_spec.SetField(user.FieldRole, field.TypeInt, value)
 		_node.Role = value
+	}
+	if nodes := uc.mutation.TokenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TokenTable,
+			Columns: []string{user.TokenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

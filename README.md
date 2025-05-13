@@ -1,6 +1,6 @@
 Генерация таблиц
 ```shell
-go run entgo.io/ent/cmd/ent new --target internal/domain [TableName]
+go run entgo.io/ent/cmd/ent new --target internal/domain/schema [TableName]
 ```
 
 Генерация орм

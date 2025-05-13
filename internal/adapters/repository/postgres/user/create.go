@@ -7,14 +7,14 @@ import (
 )
 
 // Create creates a new user in the database
-func (s *userRepo) Create(ctx context.Context, userEntity ent.User) (*ent.User, error) {
+func (s *userRepo) Create(ctx context.Context, entity ent.User) (*ent.User, error) {
 	created, err := s.client.User.
 		Create().
-		SetEmail(userEntity.Email).
-		SetPassword(userEntity.Password).
-		SetName(userEntity.Name).
-		SetSurname(userEntity.Surname).
-		SetRole(userEntity.Role).
+		SetEmail(entity.Email).
+		SetPassword(entity.Password).
+		SetName(entity.Name).
+		SetSurname(entity.Surname).
+		SetRole(entity.Role).
 		Save(ctx)
 
 	switch {

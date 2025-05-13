@@ -4,6 +4,7 @@ package user
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -22,8 +23,17 @@ const (
 	FieldSurname = "surname"
 	// FieldRole holds the string denoting the role field in the database.
 	FieldRole = "role"
+	// EdgeToken holds the string denoting the token edge name in mutations.
+	EdgeToken = "token"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// TokenTable is the table that holds the token relation/edge.
+	TokenTable = "tokens"
+	// TokenInverseTable is the table name for the Token entity.
+	// It exists in this package in order to avoid circular dependency with the "token" package.
+	TokenInverseTable = "tokens"
+	// TokenColumn is the table column denoting the token relation/edge.
+	TokenColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -92,4 +102,25 @@ func BySurname(opts ...sql.OrderTermOption) OrderOption {
 // ByRole orders the results by the role field.
 func ByRole(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRole, opts...).ToFunc()
+}
+
+// ByTokenCount orders the results by token count.
+func ByTokenCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTokenStep(), opts...)
+	}
+}
+
+// ByToken orders the results by token terms.
+func ByToken(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTokenStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newTokenStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TokenInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TokenTable, TokenColumn),
+	)
 }

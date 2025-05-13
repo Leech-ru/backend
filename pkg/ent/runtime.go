@@ -4,6 +4,7 @@ package ent
 
 import (
 	"Leech-ru/internal/domain/schema"
+	"Leech-ru/pkg/ent/token"
 	"Leech-ru/pkg/ent/user"
 
 	"github.com/google/uuid"
@@ -13,6 +14,12 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	tokenFields := schema.Token{}.Fields()
+	_ = tokenFields
+	// tokenDescToken is the schema descriptor for token field.
+	tokenDescToken := tokenFields[1].Descriptor()
+	// token.TokenValidator is a validator for the "token" field. It is called by the builders before save.
+	token.TokenValidator = tokenDescToken.Validators[0].(func(string) error)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescEmail is the schema descriptor for email field.

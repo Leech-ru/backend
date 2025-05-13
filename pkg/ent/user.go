@@ -26,8 +26,29 @@ type User struct {
 	// Surname holds the value of the "surname" field.
 	Surname string `json:"surname,omitempty"`
 	// Role holds the value of the "role" field.
-	Role         int `json:"role,omitempty"`
+	Role int `json:"role,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges        UserEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Token holds the value of the token edge.
+	Token []*Token `json:"token,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// TokenOrErr returns the Token value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) TokenOrErr() ([]*Token, error) {
+	if e.loadedTypes[0] {
+		return e.Token, nil
+	}
+	return nil, &NotLoadedError{edge: "token"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -103,6 +124,11 @@ func (u *User) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
+}
+
+// QueryToken queries the "token" edge of the User entity.
+func (u *User) QueryToken() *TokenQuery {
+	return NewUserClient(u.config).QueryToken(u)
 }
 
 // Update returns a builder for updating this User.
