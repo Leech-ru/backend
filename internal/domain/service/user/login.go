@@ -8,8 +8,6 @@ import (
 	"errors"
 )
 
-//TODO token
-
 // Login returns the user by email.
 func (s *userService) Login(ctx context.Context, req dto.LoginRequest) (*dto.LoginResponse, error) {
 	u, err := s.userRepo.GetByEmail(ctx, req.Email)
@@ -24,8 +22,13 @@ func (s *userService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 		return nil, errorz.PasswordMismatch
 	}
 
+	token, err := s.tokenService.UpdateToken(ctx, u.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	return &dto.LoginResponse{
-		Token:   "",
+		Token:   token,
 		ID:      u.ID,
 		Email:   u.Email,
 		Name:    u.Name,

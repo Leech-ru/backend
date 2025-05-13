@@ -23,7 +23,13 @@ func (s *userService) Register(ctx context.Context, req dto.RegisterUserRequest)
 	case err != nil:
 		return nil, err
 	}
+
+	token, err := s.tokenService.NewToken(ctx, user.ID)
+	if err != nil {
+		return nil, err
+	}
 	return &dto.RegisterUserResponse{
+		Token:   token,
 		ID:      user.ID,
 		Email:   user.Email,
 		Name:    user.Name,

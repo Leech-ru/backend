@@ -7,7 +7,8 @@ import (
 )
 
 type tokenService interface {
-	SetToken(ctx context.Context, id uuid.UUID) (string, error)
+	NewToken(ctx context.Context, id uuid.UUID) (string, error)
+	UpdateToken(ctx context.Context, id uuid.UUID) (string, error)
 	GetIDByToken(ctx context.Context, token string) (uuid.UUID, error)
 	GetTokenByID(ctx context.Context, id uuid.UUID) (string, error)
 }

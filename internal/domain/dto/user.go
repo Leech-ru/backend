@@ -75,6 +75,10 @@ type ChangePasswordRequest struct {
 	NewPassword string    `json:"new_password"`
 }
 
+type ChangePasswordResponse struct {
+	Token string `json:"token"`
+}
+
 type DeleteUserRequest struct {
 	ID uuid.UUID `json:"id"`
 }

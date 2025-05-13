@@ -9,33 +9,40 @@ import (
 )
 
 // ChangePassword change the password by id.
-func (s *userService) ChangePassword(ctx context.Context, req *dto.ChangePasswordRequest) error {
+func (s *userService) ChangePassword(ctx context.Context, req *dto.ChangePasswordRequest) (*dto.ChangePasswordResponse, error) {
 	userToUpdate, err := s.userRepo.GetById(ctx, req.ID)
 	switch {
 	case errors.As(err, &errorz.UserNotFound):
-		return errorz.UserNotFound
+		return nil, errorz.UserNotFound
 	case err != nil:
-		return err
+		return nil, err
 	}
 
 	if req.OldPassword == req.NewPassword {
-		return errorz.PasswordsCoincidence
+		return nil, errorz.PasswordsCoincidence
 	}
 
 	if !password.VerifyPassword(userToUpdate.Password, req.OldPassword) {
-		return errorz.PasswordMismatch
+		return nil, errorz.PasswordMismatch
 	}
 	userToUpdate.Password, err = password.PasswordHash(req.NewPassword)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	_, err = s.userRepo.Update(ctx, *userToUpdate)
 	switch {
 	case errors.As(err, &errorz.UserNotFound):
-		return errorz.UserNotFound
+		return nil, errorz.UserNotFound
 	case err != nil:
-		return err
+		return nil, err
 	}
 
-	return nil
+	token, err := s.tokenService.SetToken(ctx, userToUpdate.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.ChangePasswordResponse{
+		Token: token,
+	}, nil
 }

@@ -8,30 +8,24 @@ import (
 	"github.com/google/uuid"
 )
 
-// SetToken set token by user id.
-func (s *tokenService) SetToken(ctx context.Context, id uuid.UUID) (string, error) {
+// UpdateToken set token by user id.
+func (s *tokenService) UpdateToken(ctx context.Context, id uuid.UUID) (string, error) {
 	tokenString, err := s.jwtService.GenerateToken(id)
 	if err != nil {
 		return "", err
 	}
-	existingToken, err := s.tokenRepo.GetById(ctx, id)
-	if err != nil && !errors.As(err, &errorz.TokenNotFound) {
-		return "", err
-	}
-
 	tokenEntity := ent.Token{
 		UserID: id,
 		Token:  tokenString,
 	}
 
-	if existingToken != nil {
-		tokenEntity.ID = existingToken.ID
-		existingToken, err = s.tokenRepo.Update(ctx, tokenEntity)
-	} else {
+	existingToken, err := s.tokenRepo.Update(ctx, tokenEntity)
+	if errors.As(err, &errorz.TokenNotFound) {
 		existingToken, err = s.tokenRepo.Create(ctx, tokenEntity)
-	}
-
-	if err != nil {
+		if err != nil {
+			return "", err
+		}
+	} else {
 		return "", err
 	}
 
