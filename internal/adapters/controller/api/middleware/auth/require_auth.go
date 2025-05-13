@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"Leech-ru/internal/domain/common/errorz"
+	"errors"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"
@@ -10,7 +13,7 @@ func (m *AuthMiddleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		authHeader := c.Request().Header.Get("Authorization")
 		if authHeader == "" {
-			return nil // TODO new error
+			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
 		}
 
 		parts := strings.SplitN(authHeader, " ", 2)
@@ -21,13 +24,23 @@ func (m *AuthMiddleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 
 		tokenEntity, err := m.authRepo.GetByToken(c.Request().Context(), token)
 		if err != nil {
-			return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
+			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
 		}
-		userId := tokenEntity.UserID
-		//if tokenEntity.UserID != token {
-		//
-		//}
-		c.Set("user_id", userId)
+		switch {
+		case errors.As(err, &errorz.TokenNotFound):
+			echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
+		case err != nil:
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("internal server error: %w", err))
+		}
+
+		userID, err := m.jwtService.ParseToken(token)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
+		}
+		if tokenEntity.UserID != userID {
+			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
+		}
+		c.Set("user_id", userID)
 		return next(c)
 	}
 }

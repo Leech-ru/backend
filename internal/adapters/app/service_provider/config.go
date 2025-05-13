@@ -53,3 +53,16 @@ func (s *ServiceProvider) MailConfig() config.MailConfig {
 
 	return s.mailConfig
 }
+
+func (s *ServiceProvider) JWTConfig() config.JWTConfig {
+	if s.jwtConfig == nil {
+		cfg, err := config.NewJWTConfig()
+		if err != nil {
+			panic(fmt.Errorf("failed to get JWT config: %w", err))
+		}
+
+		s.jwtConfig = cfg
+	}
+
+	return s.jwtConfig
+}

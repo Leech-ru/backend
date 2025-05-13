@@ -4,18 +4,25 @@ import (
 	user "Leech-ru/internal/adapters/repository/postgres/token"
 	"Leech-ru/pkg/ent"
 	"context"
+	"github.com/google/uuid"
 )
+
+type jwtService interface {
+	ParseToken(tokenString string) (uuid.UUID, error)
+}
 
 type authRepo interface {
 	GetByToken(ctx context.Context, inputToken string) (*ent.Token, error)
 }
 
 type AuthMiddleware struct {
-	authRepo authRepo
+	jwtService jwtService
+	authRepo   authRepo
 }
 
-func NewAuthMiddleware(cleint *ent.Client) *AuthMiddleware {
+func NewAuthMiddleware(cleint *ent.Client, jwtService jwtService) *AuthMiddleware {
 	return &AuthMiddleware{
-		authRepo: user.NewTokenRepo(cleint),
+		jwtService: jwtService,
+		authRepo:   user.NewTokenRepo(cleint),
 	}
 }

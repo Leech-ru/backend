@@ -12,6 +12,7 @@ type ServiceProvider struct {
 	loggerConfig config.LoggerConfig
 	pgConfig     config.PGConfig
 	httpConfig   config.HTTPConfig
+	jwtConfig    config.JWTConfig
 	mailConfig   config.MailConfig
 
 	db *ent.Client

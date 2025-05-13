@@ -1,7 +1,6 @@
 package service_provider
 
 import (
-	"Leech-ru/internal/adapters/config"
 	"Leech-ru/internal/domain/utils/jwt"
 	"github.com/google/uuid"
 )
@@ -11,9 +10,9 @@ type jwtService interface {
 	ParseToken(tokenString string) (uuid.UUID, error)
 }
 
-func (s *ServiceProvider) JWTService(jwtConfig config.JWTConfig) jwtService {
+func (s *ServiceProvider) JWTService() jwtService {
 	if s.jwtService == nil {
-		s.jwtService = jwt.NewJWTService(jwtConfig.PrivateKey(), jwtConfig.TokenExpires())
+		s.jwtService = jwt.NewJWTService(s.JWTConfig())
 	}
 	return s.jwtService
 }

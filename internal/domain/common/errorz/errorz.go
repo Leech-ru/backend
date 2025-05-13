@@ -3,5 +3,5 @@ package errorz
 import "errors"
 
 var (
-	ValidationFailed = errors.New("Validation failed")
+	Unauthorized = errors.New("forbidden: not authorized")
 )

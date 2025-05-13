@@ -10,10 +10,15 @@ type jwtService struct {
 	tokenExpires time.Duration
 }
 
+type jwtConfig interface {
+	PrivateKey() *rsa.PrivateKey
+	TokenExpires() time.Duration
+}
+
 // NewJWTService returns new jwt service.
-func NewJWTService(privateKey *rsa.PrivateKey, tokenExpires time.Duration) *jwtService {
+func NewJWTService(config jwtConfig) *jwtService {
 	return &jwtService{
-		privateKey:   privateKey,
-		tokenExpires: tokenExpires,
+		privateKey:   config.PrivateKey(),
+		tokenExpires: config.TokenExpires(),
 	}
 }

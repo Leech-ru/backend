@@ -50,7 +50,7 @@ func New() (*App, error) {
 // Start starts the server.
 func (a *App) Start() {
 	addr := a.ServiceProvider.HTTPConfig().Address()
-	log.Printf("Starting server on %s...\n", addr)
+	log.Printf("Starting server on http://%s\n", addr)
 
 	if a.ServiceProvider.HTTPConfig().EnabledTLS() {
 		// Example for TLS:

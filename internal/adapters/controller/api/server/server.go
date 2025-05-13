@@ -47,6 +47,8 @@ func Setup(app *app.App) {
 }
 
 func addRouters(app *app.App) {
+	//authMiddleware := auth.NewAuthMiddleware(app.ServiceProvider.DB(), app.ServiceProvider.JWTService())
+	
 	apiV1 := app.Server.Group("/api/v1")
 
 	pingHandler := ping.NewHandler()
