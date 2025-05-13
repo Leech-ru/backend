@@ -1,8 +1,8 @@
 package order
 
 import (
-	"LutiLeech/internal/adapters/controller/api/validator"
-	"LutiLeech/internal/domain/dto"
+	"Leech-ru/internal/adapters/controller/api/validator"
+	"Leech-ru/internal/domain/dto"
 	"context"
 	"github.com/labstack/echo/v4"
 )

@@ -1,7 +1,7 @@
 package service_provider
 
 import (
-	"LutiLeech/pkg/logger"
+	"Leech-ru/pkg/logger"
 	"fmt"
 )
 

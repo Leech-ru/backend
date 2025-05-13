@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"LutiLeech/internal/adapters/config"
+	"Leech-ru/internal/adapters/config"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/glog"
 )

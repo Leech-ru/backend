@@ -3,7 +3,7 @@ package dto
 type CustomerInfo struct {
 	FIO         string  `json:"fio" validate:"required,min=2,max=100"`
 	PhoneNumber string  `json:"phone_number" validate:"required"`
-	Email       string  `json:"email" validate:"required,email"`
+	Email       string  `json:"email" validate:"required,email,max=200"`
 	Address     string  `json:"address" validate:"required,min=5,max=200"`
 	Comment     *string `json:"comment,omitempty" validate:"omitempty,max=500"`
 }

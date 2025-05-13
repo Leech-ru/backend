@@ -1,9 +1,9 @@
 package server
 
 import (
-	"LutiLeech/internal/adapters/app"
-	"LutiLeech/internal/adapters/controller/api/v1/order"
-	"LutiLeech/internal/adapters/controller/api/v1/ping"
+	"Leech-ru/internal/adapters/app"
+	"Leech-ru/internal/adapters/controller/api/v1/order"
+	"Leech-ru/internal/adapters/controller/api/v1/ping"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"io"

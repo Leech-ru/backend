@@ -1,7 +1,7 @@
 package app
 
 import (
-	"LutiLeech/internal/adapters/app/service_provider"
+	"Leech-ru/internal/adapters/app/service_provider"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"log"

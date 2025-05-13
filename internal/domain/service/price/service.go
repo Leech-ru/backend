@@ -1,6 +1,6 @@
 package price
 
-import "LutiLeech/internal/domain/common/errorz"
+import "Leech-ru/internal/domain/common/errorz"
 
 // CalculateTotal calculates the total cost of the order
 func (s *priceService) CalculateTotal(size1, size2, size3, packageType int) (float64, error) {

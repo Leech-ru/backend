@@ -1,10 +1,10 @@
 package order
 
 import (
-	"LutiLeech/internal/adapters/config"
-	"LutiLeech/internal/domain/service/price"
-	"LutiLeech/pkg/mail/builder"
-	"LutiLeech/pkg/mail/gmail"
+	"Leech-ru/internal/adapters/config"
+	"Leech-ru/internal/domain/service/price"
+	"Leech-ru/pkg/mail/builder"
+	"Leech-ru/pkg/mail/gmail"
 )
 
 type mailService interface {

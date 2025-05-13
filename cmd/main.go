@@ -1,8 +1,8 @@
 package main
 
 import (
-	"LutiLeech/internal/adapters/app"
-	"LutiLeech/internal/adapters/controller/api/server"
+	"Leech-ru/internal/adapters/app"
+	"Leech-ru/internal/adapters/controller/api/server"
 	"log"
 )
 

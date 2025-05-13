@@ -8,7 +8,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"LutiLeech/pkg/logger/types"
+	"Leech-ru/pkg/logger/types"
 
 	"go.uber.org/zap/zapcore"
 )

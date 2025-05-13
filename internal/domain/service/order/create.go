@@ -1,7 +1,7 @@
 package order
 
 import (
-	"LutiLeech/internal/domain/dto"
+	"Leech-ru/internal/domain/dto"
 	"context"
 )
 

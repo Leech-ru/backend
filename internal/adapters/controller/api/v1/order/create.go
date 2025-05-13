@@ -1,8 +1,8 @@
 package order
 
 import (
-	"LutiLeech/internal/domain/common/errorz"
-	"LutiLeech/internal/domain/dto"
+	"Leech-ru/internal/domain/common/errorz"
+	"Leech-ru/internal/domain/dto"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )

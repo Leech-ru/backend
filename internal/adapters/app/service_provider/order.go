@@ -1,9 +1,9 @@
 package service_provider
 
 import (
-	"LutiLeech/internal/adapters/config"
-	"LutiLeech/internal/domain/dto"
-	"LutiLeech/internal/domain/service/order"
+	"Leech-ru/internal/adapters/config"
+	"Leech-ru/internal/domain/dto"
+	"Leech-ru/internal/domain/service/order"
 	"context"
 )
 

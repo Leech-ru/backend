@@ -1,7 +1,7 @@
 package validator
 
 import (
-	"LutiLeech/internal/domain/dto"
+	"Leech-ru/internal/domain/dto"
 	"github.com/go-playground/validator/v10"
 	"strconv"
 )

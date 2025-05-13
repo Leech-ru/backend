@@ -1,7 +1,7 @@
 package service_provider
 
 import (
-	"LutiLeech/internal/adapters/config"
+	"Leech-ru/internal/adapters/config"
 	"fmt"
 )
 

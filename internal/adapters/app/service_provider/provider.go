@@ -1,9 +1,9 @@
 package service_provider
 
 import (
-	"LutiLeech/internal/adapters/config"
-	"LutiLeech/internal/adapters/controller/api/validator"
-	"LutiLeech/pkg/logger"
+	"Leech-ru/internal/adapters/config"
+	"Leech-ru/internal/adapters/controller/api/validator"
+	"Leech-ru/pkg/logger"
 )
 
 type ServiceProvider struct {

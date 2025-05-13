@@ -1,7 +1,7 @@
 package ping
 
 import (
-	"LutiLeech/internal/domain/dto"
+	"Leech-ru/internal/domain/dto"
 	"github.com/labstack/echo/v4"
 )
 
