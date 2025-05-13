@@ -1,4 +1,4 @@
-package user
+package token
 
 import (
 	"Leech-ru/pkg/ent"

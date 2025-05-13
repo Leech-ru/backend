@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserRepo interface {
+type userRepo interface {
 	Create(ctx context.Context, userEntity ent.User) (*ent.User, error)
 	GetById(ctx context.Context, id uuid.UUID) (*ent.User, error)
 	GetByEmail(ctx context.Context, email string) (*ent.User, error)
@@ -16,12 +16,20 @@ type UserRepo interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 
-type userService struct {
-	userRepo UserRepo
+type tokenService interface {
+	SetToken(ctx context.Context, id uuid.UUID) (string, error)
+	GetIDByToken(ctx context.Context, token string) (uuid.UUID, error)
+	GetTokenByID(ctx context.Context, id uuid.UUID) (string, error)
 }
 
-func NewUserService(client *ent.Client) *userService {
+type userService struct {
+	userRepo     userRepo
+	tokenService tokenService
+}
+
+func NewUserService(client *ent.Client, tokenService tokenService) *userService {
 	return &userService{
-		userRepo: user.NewUserRepo(client),
+		userRepo:     user.NewUserRepo(client),
+		tokenService: tokenService,
 	}
 }

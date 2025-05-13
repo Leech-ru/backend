@@ -35,7 +35,6 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateOrderRequest) (*dto
 	if err != nil {
 		return nil, err
 	}
-	// TODO Если что-то там nil, автоматизировать
 	emailBody, err := s.mailBuilder.
 		SetFIO(req.CustomerInfo.FIO).
 		SetPhoneNumber(req.CustomerInfo.PhoneNumber).

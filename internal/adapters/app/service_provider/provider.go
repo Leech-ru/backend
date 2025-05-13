@@ -22,6 +22,7 @@ type ServiceProvider struct {
 	decoder   *form.Decoder
 
 	jwtService   jwtService
+	tokenService tokenService
 	orderService orderService
 	userService  userService
 }

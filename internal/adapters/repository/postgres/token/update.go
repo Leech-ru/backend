@@ -1,4 +1,4 @@
-package user
+package token
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
