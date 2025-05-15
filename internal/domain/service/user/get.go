@@ -8,7 +8,7 @@ import (
 )
 
 // Get returns the user by ID.
-func (s *userService) Get(ctx context.Context, req dto.GetUserRequest) (*dto.GetUserResponse, error) {
+func (s *userService) Get(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error) {
 	u, err := s.userRepo.GetById(ctx, req.ID)
 	switch {
 	case errors.As(err, &errorz.UserNotFound):

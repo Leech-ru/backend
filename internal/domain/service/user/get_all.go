@@ -6,7 +6,7 @@ import (
 )
 
 // Get returns list of users.
-func (s *userService) GetAll(ctx context.Context, req dto.GetAllUsersRequest) ([]*dto.GetUserResponse, error) {
+func (s *userService) GetAll(ctx context.Context, req *dto.GetAllUsersRequest) ([]*dto.GetUserResponse, error) {
 	limit := 10
 	if req.Limit != nil {
 		limit = *req.Limit

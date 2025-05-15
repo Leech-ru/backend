@@ -7,8 +7,10 @@ import (
 	"errors"
 )
 
+//TODO проверить при удалении юзера, что происходит в бд с токенами
+
 // Delete delete the user by ID.
-func (s *userService) Delete(ctx context.Context, req dto.DeleteUserRequest) error {
+func (s *userService) Delete(ctx context.Context, req *dto.DeleteUserRequest) error {
 	err := s.userRepo.Delete(ctx, req.ID)
 	switch {
 	case errors.As(err, &errorz.UserNotFound):

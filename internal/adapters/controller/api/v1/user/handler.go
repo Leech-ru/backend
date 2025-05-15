@@ -1,0 +1,46 @@
+package user
+
+import (
+	"Leech-ru/internal/adapters/controller/api/middleware/auth"
+	"Leech-ru/internal/adapters/controller/api/validator"
+	"Leech-ru/internal/domain/dto"
+	"context"
+	"github.com/labstack/echo/v4"
+)
+
+type userService interface {
+	Register(ctx context.Context, req *dto.RegisterUserRequest) (*dto.RegisterUserResponse, error)
+	Login(ctx context.Context, req *dto.LoginUserRequest) (*dto.LoginUserResponse, error)
+	ChangePassword(ctx context.Context, req *dto.ChangePasswordRequest) (*dto.ChangePasswordResponse, error)
+	Get(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error)
+	GetAll(ctx context.Context, req *dto.GetAllUsersRequest) ([]*dto.GetUserResponse, error)
+	Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
+}
+
+type handler struct {
+	userService    userService
+	authMiddleware auth.AuthMiddleware
+	validator      *validator.Validator
+}
+
+func NewHandler(
+	userService userService,
+	authMiddleware *auth.AuthMiddleware,
+	validator *validator.Validator,
+
+) *handler {
+	return &handler{
+		userService:    userService,
+		authMiddleware: *authMiddleware,
+		validator:      validator,
+	}
+}
+
+func (h *handler) Setup(router *echo.Group) {
+	router.POST("/user", h.Register)
+	router.POST("/user", h.Login)
+	router.POST("/user/password", h.ChangePassword, h.authMiddleware.RequireAuth)
+	router.GET("/user/all", h.GetAll, h.authMiddleware.RequireAuth) //TODO для админов
+	router.GET("/user", h.Get, h.authMiddleware.RequireAuth)
+	router.PATCH("/user", h.Update, h.authMiddleware.RequireAuth)
+}

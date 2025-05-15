@@ -2,6 +2,7 @@ package dto
 
 import "github.com/google/uuid"
 
+// TODO валидацию сделать
 type RegisterUserRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -36,22 +37,18 @@ type GetAllUsersRequest struct {
 	Offset *int `json:"offset,omitempty" form:"offset"`
 }
 
-type LoginRequest struct {
+type LoginUserRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type LoginResponse struct {
+type LoginUserResponse struct {
 	Token   string    `json:"token"`
 	ID      uuid.UUID `json:"id"`
 	Email   string    `json:"email"`
 	Name    string    `json:"name"`
 	Surname string    `json:"surname"`
 	Role    int       `json:"role"`
-}
-
-type LogoutRequest struct {
-	ID uuid.UUID `json:"id"`
 }
 
 type UpdateUserRequest struct {

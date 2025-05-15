@@ -8,8 +8,8 @@ import (
 	"errors"
 )
 
-// TODO реализовать токен
-func (s *userService) Register(ctx context.Context, req dto.RegisterUserRequest) (*dto.RegisterUserResponse, error) {
+// Register returns registered user with token.
+func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest) (*dto.RegisterUserResponse, error) {
 	user, err := s.userRepo.Create(ctx, ent.User{
 		Email:    req.Email,
 		Password: req.Password,

@@ -37,7 +37,7 @@ func (s *userService) ChangePassword(ctx context.Context, req *dto.ChangePasswor
 		return nil, err
 	}
 
-	token, err := s.tokenService.SetToken(ctx, userToUpdate.ID)
+	token, err := s.tokenService.UpdateToken(ctx, userToUpdate.ID)
 	if err != nil {
 		return nil, err
 	}

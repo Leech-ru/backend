@@ -9,7 +9,7 @@ import (
 )
 
 // Login returns the user by email.
-func (s *userService) Login(ctx context.Context, req dto.LoginRequest) (*dto.LoginResponse, error) {
+func (s *userService) Login(ctx context.Context, req *dto.LoginUserRequest) (*dto.LoginUserResponse, error) {
 	u, err := s.userRepo.GetByEmail(ctx, req.Email)
 	switch {
 	case errors.As(err, &errorz.UserNotFound):
@@ -27,7 +27,7 @@ func (s *userService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 		return nil, err
 	}
 
-	return &dto.LoginResponse{
+	return &dto.LoginUserResponse{
 		Token:   token,
 		ID:      u.ID,
 		Email:   u.Email,

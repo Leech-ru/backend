@@ -20,9 +20,9 @@ type AuthMiddleware struct {
 	authRepo   authRepo
 }
 
-func NewAuthMiddleware(cleint *ent.Client, jwtService jwtService) *AuthMiddleware {
+func NewAuthMiddleware(client *ent.Client, jwtService jwtService) *AuthMiddleware {
 	return &AuthMiddleware{
 		jwtService: jwtService,
-		authRepo:   user.NewTokenRepo(cleint),
+		authRepo:   user.NewTokenRepo(client),
 	}
 }
