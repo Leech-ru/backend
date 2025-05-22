@@ -14,12 +14,6 @@ func (h *handler) Get(c echo.Context) error {
 	userID, _ := c.Get("user_id").(uuid.UUID)
 	req.ID = userID
 
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
-	}
 	if err := h.validator.ValidateData(req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
 			Code:    http.StatusBadRequest,

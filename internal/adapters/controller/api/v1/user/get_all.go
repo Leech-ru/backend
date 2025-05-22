@@ -9,7 +9,7 @@ import (
 func (h *handler) GetAll(c echo.Context) error {
 	var req dto.GetAllUsersRequest
 
-	if err := c.Bind(&req); err != nil {
+	if err := h.formDecoder.Decode(&req, c.QueryParams()); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
@@ -21,7 +21,6 @@ func (h *handler) GetAll(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-
 	resp, err := h.userService.GetAll(c.Request().Context(), &req)
 	switch {
 	case err != nil:

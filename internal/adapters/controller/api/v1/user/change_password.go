@@ -3,6 +3,7 @@ package user
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
+	"Leech-ru/internal/domain/utils/cookie"
 	"errors"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -52,6 +53,9 @@ func (h *handler) ChangePassword(c echo.Context) error {
 
 	}
 
-	return c.JSON(http.StatusOK, resp)
+	createdCookie := cookie.NewRefreshTokenCookie(resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), true)
+	c.SetCookie(createdCookie)
+
+	return c.NoContent(http.StatusNoContent)
 
 }

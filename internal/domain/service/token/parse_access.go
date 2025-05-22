@@ -11,7 +11,7 @@ import (
 func (s *tokenService) ParseAccessToken(ctx context.Context, token string) (uuid.UUID, error) {
 	userID, jti, err := s.jwtService.ParseToken(token)
 	if err != nil {
-		return uuid.Nil, err
+		return uuid.Nil, errorz.InvalidToken
 	}
 
 	savedJti, err := s.accessTokenRepo.Get(ctx, userID)
@@ -25,5 +25,5 @@ func (s *tokenService) ParseAccessToken(ctx context.Context, token string) (uuid
 		return uuid.Nil, errorz.Unauthorized
 	}
 
-	return userID, err
+	return userID, nil
 }

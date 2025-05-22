@@ -3,6 +3,7 @@ package user
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
+	"Leech-ru/internal/domain/utils/cookie"
 	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -36,6 +37,9 @@ func (h *handler) Register(c echo.Context) error {
 		})
 
 	}
+
+	createdCookie := cookie.NewRefreshTokenCookie(resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), true)
+	c.SetCookie(createdCookie)
 
 	return c.JSON(http.StatusCreated, resp)
 

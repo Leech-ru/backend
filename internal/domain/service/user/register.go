@@ -36,7 +36,7 @@ func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest
 	}
 
 	return &dto.RegisterUserResponse{
-		Token: token,
+		RefreshToken: token,
 		User: dto.User{
 			ID:      u.ID,
 			Email:   u.Email,

@@ -2,31 +2,31 @@ package auth
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
+	"Leech-ru/internal/domain/utils/cookie"
+	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strings"
 )
 
 func (m *AuthMiddleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		authHeader := c.Request().Header.Get("Authorization")
-		if authHeader == "" {
+		token, err := cookie.ReadAccessTokenCookie(c.Request())
+		switch {
+		case errors.Is(err, errorz.NoCookie):
+			return echo.NewHTTPError(http.StatusUnauthorized, errorz.InvalidToken)
+		case err != nil:
+			return err
+		}
+
+		userID, err := m.tokenService.ParseAccessToken(c.Request().Context(), token)
+		switch {
+		case errors.Is(err, errorz.InvalidToken):
+			return echo.NewHTTPError(http.StatusUnauthorized, errorz.InvalidToken)
+		case errors.Is(err, errorz.Unauthorized):
 			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
+		case err != nil:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
-
-		parts := strings.SplitN(authHeader, " ", 2)
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			return echo.NewHTTPError(http.StatusUnauthorized, "Invalid Authorization header")
-		}
-		token := parts[1]
-
-		ctx := c.Request().Context()
-
-		userID, err := m.tokenService.ValidateToken(ctx, token)
-		if err != nil {
-			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
-		}
-
 		c.Set("user_id", userID)
 
 		return next(c)

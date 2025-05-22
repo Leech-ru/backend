@@ -16,7 +16,6 @@ func (s *tokenRepo) Upsert(ctx context.Context, entity ent.RefreshToken) (*ent.R
 	defer func() {
 		if p := recover(); p != nil {
 			_ = tx.Rollback()
-			panic(p)
 		}
 	}()
 

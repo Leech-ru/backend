@@ -5,6 +5,7 @@ package user
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 )
 
 const (
@@ -66,6 +67,8 @@ var (
 	SurnameValidator func(string) error
 	// DefaultRole holds the default value on creation for the "role" field.
 	DefaultRole int
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() uuid.UUID
 )
 
 // OrderOption defines the ordering options for the User queries.

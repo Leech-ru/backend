@@ -6,8 +6,6 @@ import (
 	"context"
 )
 
-//TODO чета не работает апдейт
-
 // Update updates token by existing user.
 func (s *tokenRepo) Update(ctx context.Context, entity ent.RefreshToken) (*ent.RefreshToken, error) {
 	updated, err := s.client.RefreshToken.

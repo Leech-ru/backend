@@ -17,11 +17,8 @@ type userRepo interface {
 }
 
 type tokenService interface {
-	GenerateAccessToken(ctx context.Context, userID uuid.UUID) (string, error)
 	GenerateRefreshToken(ctx context.Context, userID uuid.UUID) (string, error)
-	ParseAccessToken(ctx context.Context, token string) (uuid.UUID, error)
 	ParseRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
-	RevokeAccessToken(ctx context.Context, token string) (uuid.UUID, error)
 	RevokeRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
 }
 

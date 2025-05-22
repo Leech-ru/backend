@@ -12,7 +12,7 @@ import (
 func (s *tokenService) RevokeAccessToken(ctx context.Context, token string) (uuid.UUID, error) {
 	userID, jti, err := s.jwtService.ParseToken(token)
 	if err != nil {
-		return uuid.Nil, err
+		return uuid.Nil, errorz.InvalidToken
 	}
 
 	savedJti, err := s.accessTokenRepo.Get(ctx, userID)
@@ -31,5 +31,5 @@ func (s *tokenService) RevokeAccessToken(ctx context.Context, token string) (uui
 	if err != nil {
 		return uuid.Nil, err
 	}
-	return userID, err
+	return userID, nil
 }

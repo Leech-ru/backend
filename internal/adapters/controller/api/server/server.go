@@ -5,6 +5,7 @@ import (
 	"Leech-ru/internal/adapters/controller/api/middleware/auth"
 	"Leech-ru/internal/adapters/controller/api/v1/order"
 	"Leech-ru/internal/adapters/controller/api/v1/ping"
+	"Leech-ru/internal/adapters/controller/api/v1/token"
 	"Leech-ru/internal/adapters/controller/api/v1/user"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -49,16 +50,19 @@ func Setup(app *app.App) {
 }
 
 func addRouters(app *app.App) {
-	authMiddleware := auth.NewAuthMiddleware(app.ServiceProvider.JWTService(), app.ServiceProvider.TokenService())
+	authMiddleware := auth.NewAuthMiddleware(app.ServiceProvider.TokenService())
 
 	apiV1 := app.Server.Group("/api/v1")
 
 	pingHandler := ping.NewHandler()
 	pingHandler.Setup(apiV1)
 
+	refreshTokenHandler := token.NewHandler(app.ServiceProvider.TokenService(), app.ServiceProvider.JWTConfig(), app.ServiceProvider.Validator(), app.ServiceProvider.Decoder())
+	refreshTokenHandler.Setup(apiV1)
+
 	orderHandler := order.NewHandler(app.ServiceProvider.OrderService(app.ServiceProvider.MailConfig()), app.ServiceProvider.Validator())
 	orderHandler.Setup(apiV1)
 
-	userHandler := user.NewHandler(app.ServiceProvider.UserService(), authMiddleware, app.ServiceProvider.Validator())
+	userHandler := user.NewHandler(app.ServiceProvider.UserService(), app.ServiceProvider.JWTConfig(), authMiddleware, app.ServiceProvider.Validator(), app.ServiceProvider.Decoder())
 	userHandler.Setup(apiV1)
 }

@@ -65,6 +65,14 @@ func (uc *UserCreate) SetID(u uuid.UUID) *UserCreate {
 	return uc
 }
 
+// SetNillableID sets the "id" field if the given value is not nil.
+func (uc *UserCreate) SetNillableID(u *uuid.UUID) *UserCreate {
+	if u != nil {
+		uc.SetID(*u)
+	}
+	return uc
+}
+
 // SetRefreshTokensID sets the "refresh_tokens" edge to the RefreshToken entity by ID.
 func (uc *UserCreate) SetRefreshTokensID(id uuid.UUID) *UserCreate {
 	uc.mutation.SetRefreshTokensID(id)
@@ -122,6 +130,10 @@ func (uc *UserCreate) defaults() {
 	if _, ok := uc.mutation.Role(); !ok {
 		v := user.DefaultRole
 		uc.mutation.SetRole(v)
+	}
+	if _, ok := uc.mutation.ID(); !ok {
+		v := user.DefaultID()
+		uc.mutation.SetID(v)
 	}
 }
 

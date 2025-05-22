@@ -21,7 +21,7 @@ type RegisterUserRequest struct {
 }
 
 type RegisterUserResponse struct {
-	Token string `json:"token"`
+	RefreshToken string `json:"-"`
 	User
 }
 
@@ -44,10 +44,11 @@ type LoginUserRequest struct {
 }
 
 type LoginUserResponse struct {
-	Token string `json:"token"`
+	RefreshToken string `json:"-"`
 	User
 }
 
+// TODO нельзя менять роль
 type UpdateUserRequest struct {
 	ID      uuid.UUID `json:"id" validate:"required,uuid"`
 	Name    *string   `json:"name,omitempty" validate:"omitempty,min=2,max=100"`
@@ -64,7 +65,7 @@ type ChangePasswordRequest struct {
 }
 
 type ChangePasswordResponse struct {
-	Token string `json:"token"`
+	RefreshToken string `json:"-"`
 }
 
 type DeleteUserRequest struct {

@@ -21,8 +21,8 @@ type ServiceProvider struct {
 	redis *redis.Client
 
 	logger    *logger.Logger
-	validator *validator.Validator
-	decoder   *form.Decoder
+	validator   *validator.Validator
+	formDecoder *form.Decoder
 
 	jwtService   jwtService
 	tokenService tokenService

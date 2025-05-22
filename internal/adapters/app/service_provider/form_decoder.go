@@ -5,9 +5,9 @@ import (
 )
 
 func (s *ServiceProvider) Decoder() *form.Decoder {
-	if s.decoder == nil {
-		s.decoder = form.NewDecoder()
+	if s.formDecoder == nil {
+		s.formDecoder = form.NewDecoder()
 	}
 
-	return s.decoder
+	return s.formDecoder
 }

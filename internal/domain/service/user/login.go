@@ -21,8 +21,13 @@ func (s *userService) Login(ctx context.Context, req *dto.LoginUserRequest) (*dt
 		return nil, errorz.PasswordMismatch
 	}
 
+	token, err := s.tokenService.GenerateRefreshToken(ctx, u.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	return &dto.LoginUserResponse{
-		Token: "",
+		RefreshToken: token,
 		User: dto.User{
 			ID:      u.ID,
 			Email:   u.Email,

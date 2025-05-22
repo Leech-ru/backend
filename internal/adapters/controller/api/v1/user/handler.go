@@ -5,7 +5,9 @@ import (
 	"Leech-ru/internal/adapters/controller/api/validator"
 	"Leech-ru/internal/domain/dto"
 	"context"
+	"github.com/go-playground/form"
 	"github.com/labstack/echo/v4"
+	"time"
 )
 
 type userService interface {
@@ -17,22 +19,32 @@ type userService interface {
 	Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
 }
 
+type jwtConfig interface {
+	RefreshTokenExpires() time.Duration
+}
+
 type handler struct {
 	userService    userService
+	jwtConfig      jwtConfig
 	authMiddleware auth.AuthMiddleware
 	validator      *validator.Validator
+	formDecoder    *form.Decoder
 }
 
 func NewHandler(
 	userService userService,
+	jwtConfig jwtConfig,
 	authMiddleware *auth.AuthMiddleware,
 	validator *validator.Validator,
+	formDecoder *form.Decoder,
 
 ) *handler {
 	return &handler{
 		userService:    userService,
+		jwtConfig:      jwtConfig,
 		authMiddleware: *authMiddleware,
 		validator:      validator,
+		formDecoder:    formDecoder,
 	}
 }
 

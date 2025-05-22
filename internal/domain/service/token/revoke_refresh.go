@@ -3,6 +3,7 @@ package token
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"context"
+	"errors"
 	"github.com/google/uuid"
 )
 
@@ -10,20 +11,27 @@ import (
 func (s *tokenService) RevokeRefreshToken(ctx context.Context, token string) (uuid.UUID, error) {
 	userID, jti, err := s.jwtService.ParseToken(token)
 	if err != nil {
-		return uuid.Nil, err
+		return uuid.Nil, errorz.InvalidToken
 	}
 
 	tokenEntity, err := s.refreshTokenRepo.GetByUserID(ctx, userID)
-	if err != nil {
+	switch {
+	case errors.Is(err, errorz.TokenNotFound):
+		return uuid.Nil, errorz.Unauthorized
+	case err != nil:
 		return uuid.Nil, err
 	}
 	if tokenEntity.Jti != jti {
 		return uuid.Nil, errorz.Unauthorized
 	}
+
 	tokenEntity.Jti = "-"
 	_, err = s.refreshTokenRepo.Update(ctx, *tokenEntity)
-	if err != nil {
+	switch {
+	case errors.Is(err, errorz.TokenNotFound):
+		return uuid.Nil, errorz.Unauthorized
+	case err != nil:
 		return uuid.Nil, err
 	}
-	return userID, err
+	return userID, nil
 }
