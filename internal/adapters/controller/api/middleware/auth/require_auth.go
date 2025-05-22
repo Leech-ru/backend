@@ -2,8 +2,6 @@ package auth
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
-	"errors"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"
@@ -22,25 +20,15 @@ func (m *AuthMiddleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		token := parts[1]
 
-		tokenEntity, err := m.authRepo.GetByToken(c.Request().Context(), token)
+		ctx := c.Request().Context()
+
+		userID, err := m.tokenService.ValidateToken(ctx, token)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
-		}
-		switch {
-		case errors.As(err, &errorz.TokenNotFound):
-			echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
-		case err != nil:
-			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("internal server error: %w", err))
 		}
 
-		userID, err := m.jwtService.ParseToken(token)
-		if err != nil {
-			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
-		}
-		if tokenEntity.UserID != userID {
-			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
-		}
 		c.Set("user_id", userID)
+
 		return next(c)
 	}
 }

@@ -3,6 +3,7 @@ package user
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
+	"Leech-ru/internal/domain/utils/password"
 	"Leech-ru/pkg/ent"
 	"context"
 	"errors"
@@ -10,9 +11,14 @@ import (
 
 // Register returns registered user with token.
 func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest) (*dto.RegisterUserResponse, error) {
-	user, err := s.userRepo.Create(ctx, ent.User{
+	passwordHash, err := password.PasswordHash(req.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	u, err := s.userRepo.Create(ctx, ent.User{
 		Email:    req.Email,
-		Password: req.Password,
+		Password: passwordHash,
 		Name:     req.Name,
 		Surname:  req.Surname,
 		Role:     req.Role,
@@ -24,16 +30,19 @@ func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest
 		return nil, err
 	}
 
-	token, err := s.tokenService.NewToken(ctx, user.ID)
+	token, err := s.tokenService.GenerateRefreshToken(ctx, u.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	return &dto.RegisterUserResponse{
-		Token:   token,
-		ID:      user.ID,
-		Email:   user.Email,
-		Name:    user.Name,
-		Surname: user.Surname,
-		Role:    user.Role,
+		Token: token,
+		User: dto.User{
+			ID:      u.ID,
+			Email:   u.Email,
+			Name:    u.Name,
+			Surname: u.Surname,
+			Role:    u.Role,
+		},
 	}, nil
 }

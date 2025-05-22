@@ -1,28 +1,26 @@
 package auth
 
 import (
-	user "Leech-ru/internal/adapters/repository/postgres/token"
-	"Leech-ru/pkg/ent"
 	"context"
 	"github.com/google/uuid"
 )
 
 type jwtService interface {
-	ParseToken(tokenString string) (uuid.UUID, error)
+	ParseToken(tokenString string) (userID uuid.UUID, jti string, err error)
 }
 
-type authRepo interface {
-	GetByToken(ctx context.Context, inputToken string) (*ent.Token, error)
+type tokenService interface {
+	ValidateToken(ctx context.Context, tokenStr string) (uuid.UUID, error)
 }
 
 type AuthMiddleware struct {
-	jwtService jwtService
-	authRepo   authRepo
+	jwtService   jwtService
+	tokenService tokenService
 }
 
-func NewAuthMiddleware(client *ent.Client, jwtService jwtService) *AuthMiddleware {
+func NewAuthMiddleware(jwtService jwtService, tokenService tokenService) *AuthMiddleware {
 	return &AuthMiddleware{
-		jwtService: jwtService,
-		authRepo:   user.NewTokenRepo(client),
+		jwtService:   jwtService,
+		tokenService: tokenService,
 	}
 }

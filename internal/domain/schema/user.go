@@ -16,8 +16,8 @@ type User struct {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).
-			Unique().
-			Default(uuid.New),
+			Immutable().
+			Unique(),
 
 		field.String("email").
 			Unique().
@@ -43,6 +43,7 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("token", Token.Type),
+		edge.To("refresh_tokens", RefreshToken.Type).
+			Unique(),
 	}
 }

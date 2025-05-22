@@ -42,6 +42,6 @@ func (h *handler) Update(c echo.Context) error {
 
 	}
 
-	return c.JSON(http.StatusCreated, resp)
+	return c.JSON(http.StatusOK, resp)
 
 }

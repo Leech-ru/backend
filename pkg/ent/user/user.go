@@ -5,7 +5,6 @@ package user
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/google/uuid"
 )
 
 const (
@@ -23,17 +22,17 @@ const (
 	FieldSurname = "surname"
 	// FieldRole holds the string denoting the role field in the database.
 	FieldRole = "role"
-	// EdgeToken holds the string denoting the token edge name in mutations.
-	EdgeToken = "token"
+	// EdgeRefreshTokens holds the string denoting the refresh_tokens edge name in mutations.
+	EdgeRefreshTokens = "refresh_tokens"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// TokenTable is the table that holds the token relation/edge.
-	TokenTable = "tokens"
-	// TokenInverseTable is the table name for the Token entity.
-	// It exists in this package in order to avoid circular dependency with the "token" package.
-	TokenInverseTable = "tokens"
-	// TokenColumn is the table column denoting the token relation/edge.
-	TokenColumn = "user_id"
+	// RefreshTokensTable is the table that holds the refresh_tokens relation/edge.
+	RefreshTokensTable = "refresh_tokens"
+	// RefreshTokensInverseTable is the table name for the RefreshToken entity.
+	// It exists in this package in order to avoid circular dependency with the "refreshtoken" package.
+	RefreshTokensInverseTable = "refresh_tokens"
+	// RefreshTokensColumn is the table column denoting the refresh_tokens relation/edge.
+	RefreshTokensColumn = "user_refresh_tokens"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -67,8 +66,6 @@ var (
 	SurnameValidator func(string) error
 	// DefaultRole holds the default value on creation for the "role" field.
 	DefaultRole int
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID func() uuid.UUID
 )
 
 // OrderOption defines the ordering options for the User queries.
@@ -104,23 +101,16 @@ func ByRole(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRole, opts...).ToFunc()
 }
 
-// ByTokenCount orders the results by token count.
-func ByTokenCount(opts ...sql.OrderTermOption) OrderOption {
+// ByRefreshTokensField orders the results by refresh_tokens field.
+func ByRefreshTokensField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTokenStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newRefreshTokensStep(), sql.OrderByField(field, opts...))
 	}
 }
-
-// ByToken orders the results by token terms.
-func ByToken(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTokenStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-func newTokenStep() *sqlgraph.Step {
+func newRefreshTokensStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TokenInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, TokenTable, TokenColumn),
+		sqlgraph.To(RefreshTokensInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, RefreshTokensTable, RefreshTokensColumn),
 	)
 }

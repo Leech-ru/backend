@@ -16,7 +16,6 @@ func (s *userService) Update(ctx context.Context, req *dto.UpdateUserRequest) (*
 	case err != nil:
 		return nil, err
 	}
-
 	if req.Name != nil {
 		userToUpdate.Name = *req.Name
 	}

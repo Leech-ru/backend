@@ -13,7 +13,7 @@ type userService interface {
 	Login(ctx context.Context, req *dto.LoginUserRequest) (*dto.LoginUserResponse, error)
 	ChangePassword(ctx context.Context, req *dto.ChangePasswordRequest) (*dto.ChangePasswordResponse, error)
 	Get(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error)
-	GetAll(ctx context.Context, req *dto.GetAllUsersRequest) ([]*dto.GetUserResponse, error)
+	GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (*dto.GetAllUsersResponse, error)
 	Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
 }
 
@@ -37,8 +37,8 @@ func NewHandler(
 }
 
 func (h *handler) Setup(router *echo.Group) {
-	router.POST("/user", h.Register)
-	router.POST("/user", h.Login)
+	router.POST("/user/register", h.Register)
+	router.POST("/user/login", h.Login)
 	router.POST("/user/password", h.ChangePassword, h.authMiddleware.RequireAuth)
 	router.GET("/user/all", h.GetAll, h.authMiddleware.RequireAuth) //TODO для админов
 	router.GET("/user", h.Get, h.authMiddleware.RequireAuth)

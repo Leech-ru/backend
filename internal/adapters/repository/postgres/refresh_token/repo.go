@@ -1,4 +1,4 @@
-package token
+package refresh_token
 
 import (
 	"Leech-ru/pkg/ent"

@@ -17,10 +17,12 @@ type userRepo interface {
 }
 
 type tokenService interface {
-	NewToken(ctx context.Context, id uuid.UUID) (string, error)
-	UpdateToken(ctx context.Context, id uuid.UUID) (string, error)
-	GetIDByToken(ctx context.Context, token string) (uuid.UUID, error)
-	GetTokenByID(ctx context.Context, id uuid.UUID) (string, error)
+	GenerateAccessToken(ctx context.Context, userID uuid.UUID) (string, error)
+	GenerateRefreshToken(ctx context.Context, userID uuid.UUID) (string, error)
+	ParseAccessToken(ctx context.Context, token string) (uuid.UUID, error)
+	ParseRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
+	RevokeAccessToken(ctx context.Context, token string) (uuid.UUID, error)
+	RevokeRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
 }
 
 type userService struct {

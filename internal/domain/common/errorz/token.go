@@ -3,5 +3,7 @@ package errorz
 import "errors"
 
 var (
-	TokenNotFound = errors.New("invalid token")
+	UserAlreadyHasToken = errors.New("user already has token")
+	TokenNotFound       = errors.New("token not found")
+	TokenRevoked        = errors.New("token has been revoked")
 )

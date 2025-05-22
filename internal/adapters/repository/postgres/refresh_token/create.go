@@ -1,4 +1,4 @@
-package token
+package refresh_token
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
@@ -7,16 +7,16 @@ import (
 )
 
 // Create creates a new user in the database
-func (s *tokenRepo) Create(ctx context.Context, entity ent.Token) (*ent.Token, error) {
-	created, err := s.client.Token.
+func (s *tokenRepo) Create(ctx context.Context, entity ent.RefreshToken) (*ent.RefreshToken, error) {
+	created, err := s.client.RefreshToken.
 		Create().
-		SetUserID(entity.UserID).
-		SetToken(entity.Token).
+		SetJti(entity.Jti).
+		SetUserID(entity.Edges.User.ID).
 		Save(ctx)
 
 	switch {
 	case ent.IsConstraintError(err):
-		return nil, errorz.EmailAlreadyExist
+		return nil, errorz.UserAlreadyHasToken
 	case err != nil:
 		return nil, err
 	}

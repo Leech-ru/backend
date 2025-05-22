@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 	"fmt"
 	"strings"
@@ -35,20 +36,22 @@ type User struct {
 
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
-	// Token holds the value of the token edge.
-	Token []*Token `json:"token,omitempty"`
+	// RefreshTokens holds the value of the refresh_tokens edge.
+	RefreshTokens *RefreshToken `json:"refresh_tokens,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// TokenOrErr returns the Token value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) TokenOrErr() ([]*Token, error) {
-	if e.loadedTypes[0] {
-		return e.Token, nil
+// RefreshTokensOrErr returns the RefreshTokens value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e UserEdges) RefreshTokensOrErr() (*RefreshToken, error) {
+	if e.RefreshTokens != nil {
+		return e.RefreshTokens, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: refreshtoken.Label}
 	}
-	return nil, &NotLoadedError{edge: "token"}
+	return nil, &NotLoadedError{edge: "refresh_tokens"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -126,9 +129,9 @@ func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
 }
 
-// QueryToken queries the "token" edge of the User entity.
-func (u *User) QueryToken() *TokenQuery {
-	return NewUserClient(u.config).QueryToken(u)
+// QueryRefreshTokens queries the "refresh_tokens" edge of the User entity.
+func (u *User) QueryRefreshTokens() *RefreshTokenQuery {
+	return NewUserClient(u.config).QueryRefreshTokens(u)
 }
 
 // Update returns a builder for updating this User.

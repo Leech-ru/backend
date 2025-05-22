@@ -22,7 +22,6 @@ func (h *handler) Register(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-
 	resp, err := h.userService.Register(c.Request().Context(), &req)
 	switch {
 	case errors.As(err, &errorz.EmailAlreadyExist):

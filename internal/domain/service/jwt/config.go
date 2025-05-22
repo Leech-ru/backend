@@ -2,23 +2,20 @@ package jwt
 
 import (
 	"crypto/rsa"
-	"time"
 )
 
 type jwtService struct {
-	privateKey   *rsa.PrivateKey
-	tokenExpires time.Duration
+	privateKey *rsa.PrivateKey
 }
 
 type jwtConfig interface {
 	PrivateKey() *rsa.PrivateKey
-	TokenExpires() time.Duration
+	PublicKey() *rsa.PublicKey
 }
 
 // NewJWTService returns new jwt service.
 func NewJWTService(config jwtConfig) *jwtService {
 	return &jwtService{
-		privateKey:   config.PrivateKey(),
-		tokenExpires: config.TokenExpires(),
+		privateKey: config.PrivateKey(),
 	}
 }

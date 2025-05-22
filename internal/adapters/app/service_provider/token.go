@@ -7,15 +7,17 @@ import (
 )
 
 type tokenService interface {
-	NewToken(ctx context.Context, id uuid.UUID) (string, error)
-	UpdateToken(ctx context.Context, id uuid.UUID) (string, error)
-	GetIDByToken(ctx context.Context, token string) (uuid.UUID, error)
-	GetTokenByID(ctx context.Context, id uuid.UUID) (string, error)
+	GenerateAccessToken(ctx context.Context, userID uuid.UUID) (string, error)
+	GenerateRefreshToken(ctx context.Context, userID uuid.UUID) (string, error)
+	ParseAccessToken(ctx context.Context, token string) (uuid.UUID, error)
+	ParseRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
+	RevokeAccessToken(ctx context.Context, token string) (uuid.UUID, error)
+	RevokeRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
 }
 
 func (s *ServiceProvider) TokenService() tokenService {
 	if s.tokenService == nil {
-		s.tokenService = token.NewTokenService(s.DB(), s.JWTService())
+		s.tokenService = token.NewTokenService(s.DB(), s.Redis(), s.JWTService(), s.JWTConfig())
 	}
 	return s.tokenService
 }

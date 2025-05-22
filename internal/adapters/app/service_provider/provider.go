@@ -6,16 +6,19 @@ import (
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/logger"
 	"github.com/go-playground/form"
+	"github.com/redis/go-redis/v9"
 )
 
 type ServiceProvider struct {
 	loggerConfig config.LoggerConfig
 	pgConfig     config.PGConfig
+	redisConfig  config.RedisConfig
 	httpConfig   config.HTTPConfig
 	jwtConfig    config.JWTConfig
 	mailConfig   config.MailConfig
 
-	db *ent.Client
+	db    *ent.Client
+	redis *redis.Client
 
 	logger    *logger.Logger
 	validator *validator.Validator

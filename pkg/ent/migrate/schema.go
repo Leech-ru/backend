@@ -8,21 +8,21 @@ import (
 )
 
 var (
-	// TokensColumns holds the columns for the "tokens" table.
-	TokensColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "token", Type: field.TypeString, Unique: true},
-		{Name: "user_id", Type: field.TypeUUID},
+	// RefreshTokensColumns holds the columns for the "refresh_tokens" table.
+	RefreshTokensColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "jti", Type: field.TypeString},
+		{Name: "user_refresh_tokens", Type: field.TypeUUID, Unique: true},
 	}
-	// TokensTable holds the schema information for the "tokens" table.
-	TokensTable = &schema.Table{
-		Name:       "tokens",
-		Columns:    TokensColumns,
-		PrimaryKey: []*schema.Column{TokensColumns[0]},
+	// RefreshTokensTable holds the schema information for the "refresh_tokens" table.
+	RefreshTokensTable = &schema.Table{
+		Name:       "refresh_tokens",
+		Columns:    RefreshTokensColumns,
+		PrimaryKey: []*schema.Column{RefreshTokensColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "tokens_users_token",
-				Columns:    []*schema.Column{TokensColumns[2]},
+				Symbol:     "refresh_tokens_users_refresh_tokens",
+				Columns:    []*schema.Column{RefreshTokensColumns[2]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -45,11 +45,11 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		TokensTable,
+		RefreshTokensTable,
 		UsersTable,
 	}
 )
 
 func init() {
-	TokensTable.ForeignKeys[0].RefTable = UsersTable
+	RefreshTokensTable.ForeignKeys[0].RefTable = UsersTable
 }

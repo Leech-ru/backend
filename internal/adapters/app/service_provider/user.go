@@ -11,7 +11,7 @@ type userService interface {
 	Login(ctx context.Context, req *dto.LoginUserRequest) (*dto.LoginUserResponse, error)
 	ChangePassword(ctx context.Context, req *dto.ChangePasswordRequest) (*dto.ChangePasswordResponse, error)
 	Get(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error)
-	GetAll(ctx context.Context, req *dto.GetAllUsersRequest) ([]*dto.GetUserResponse, error)
+	GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (*dto.GetAllUsersResponse, error)
 	Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
 	Delete(ctx context.Context, req *dto.DeleteUserRequest) error
 }

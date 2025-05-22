@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"Leech-ru/pkg/ent/token"
+	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 	"context"
 	"errors"
@@ -65,27 +65,23 @@ func (uc *UserCreate) SetID(u uuid.UUID) *UserCreate {
 	return uc
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (uc *UserCreate) SetNillableID(u *uuid.UUID) *UserCreate {
-	if u != nil {
-		uc.SetID(*u)
+// SetRefreshTokensID sets the "refresh_tokens" edge to the RefreshToken entity by ID.
+func (uc *UserCreate) SetRefreshTokensID(id uuid.UUID) *UserCreate {
+	uc.mutation.SetRefreshTokensID(id)
+	return uc
+}
+
+// SetNillableRefreshTokensID sets the "refresh_tokens" edge to the RefreshToken entity by ID if the given value is not nil.
+func (uc *UserCreate) SetNillableRefreshTokensID(id *uuid.UUID) *UserCreate {
+	if id != nil {
+		uc = uc.SetRefreshTokensID(*id)
 	}
 	return uc
 }
 
-// AddTokenIDs adds the "token" edge to the Token entity by IDs.
-func (uc *UserCreate) AddTokenIDs(ids ...int) *UserCreate {
-	uc.mutation.AddTokenIDs(ids...)
-	return uc
-}
-
-// AddToken adds the "token" edges to the Token entity.
-func (uc *UserCreate) AddToken(t ...*Token) *UserCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return uc.AddTokenIDs(ids...)
+// SetRefreshTokens sets the "refresh_tokens" edge to the RefreshToken entity.
+func (uc *UserCreate) SetRefreshTokens(r *RefreshToken) *UserCreate {
+	return uc.SetRefreshTokensID(r.ID)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -126,10 +122,6 @@ func (uc *UserCreate) defaults() {
 	if _, ok := uc.mutation.Role(); !ok {
 		v := user.DefaultRole
 		uc.mutation.SetRole(v)
-	}
-	if _, ok := uc.mutation.ID(); !ok {
-		v := user.DefaultID()
-		uc.mutation.SetID(v)
 	}
 }
 
@@ -225,15 +217,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldRole, field.TypeInt, value)
 		_node.Role = value
 	}
-	if nodes := uc.mutation.TokenIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.RefreshTokensIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
-			Table:   user.TokenTable,
-			Columns: []string{user.TokenColumn},
+			Table:   user.RefreshTokensTable,
+			Columns: []string{user.RefreshTokensColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(refreshtoken.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

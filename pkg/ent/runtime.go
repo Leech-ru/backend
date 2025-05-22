@@ -4,7 +4,7 @@ package ent
 
 import (
 	"Leech-ru/internal/domain/schema"
-	"Leech-ru/pkg/ent/token"
+	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 
 	"github.com/google/uuid"
@@ -14,12 +14,16 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	tokenFields := schema.Token{}.Fields()
-	_ = tokenFields
-	// tokenDescToken is the schema descriptor for token field.
-	tokenDescToken := tokenFields[1].Descriptor()
-	// token.TokenValidator is a validator for the "token" field. It is called by the builders before save.
-	token.TokenValidator = tokenDescToken.Validators[0].(func(string) error)
+	refreshtokenFields := schema.RefreshToken{}.Fields()
+	_ = refreshtokenFields
+	// refreshtokenDescJti is the schema descriptor for jti field.
+	refreshtokenDescJti := refreshtokenFields[1].Descriptor()
+	// refreshtoken.JtiValidator is a validator for the "jti" field. It is called by the builders before save.
+	refreshtoken.JtiValidator = refreshtokenDescJti.Validators[0].(func(string) error)
+	// refreshtokenDescID is the schema descriptor for id field.
+	refreshtokenDescID := refreshtokenFields[0].Descriptor()
+	// refreshtoken.DefaultID holds the default value on creation for the id field.
+	refreshtoken.DefaultID = refreshtokenDescID.Default.(func() uuid.UUID)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescEmail is the schema descriptor for email field.
@@ -70,8 +74,4 @@ func init() {
 	userDescRole := userFields[5].Descriptor()
 	// user.DefaultRole holds the default value on creation for the role field.
 	user.DefaultRole = userDescRole.Default.(int)
-	// userDescID is the schema descriptor for id field.
-	userDescID := userFields[0].Descriptor()
-	// user.DefaultID holds the default value on creation for the id field.
-	user.DefaultID = userDescID.Default.(func() uuid.UUID)
 }

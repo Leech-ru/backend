@@ -14,13 +14,15 @@ import (
 type JWTConfig interface {
 	PrivateKey() *rsa.PrivateKey
 	PublicKey() *rsa.PublicKey
-	TokenExpires() time.Duration
+	RefreshTokenExpires() time.Duration
+	AccessTokenExpires() time.Duration
 }
 
 type jwtConfig struct {
-	privateKey   *rsa.PrivateKey
-	publicKey    *rsa.PublicKey
-	tokenExpires time.Duration
+	privateKey          *rsa.PrivateKey
+	publicKey           *rsa.PublicKey
+	refreshTokenExpires time.Duration
+	accessTokenExpires  time.Duration
 }
 
 func NewJWTConfig() (JWTConfig, error) {
@@ -41,12 +43,24 @@ func NewJWTConfig() (JWTConfig, error) {
 	}
 
 	publicKey := &privateKey.PublicKey
-	tokenExpires := viper.GetDuration("service.jwt.token_expires")
+
+	refreshExpiresRaw := viper.GetString("service.jwt.refresh-token-expires")
+	refreshTokenExpires, err := time.ParseDuration(refreshExpiresRaw)
+	if err != nil {
+		return nil, fmt.Errorf("invalid token_expires duration: %w", err)
+	}
+
+	accessExpiresRaw := viper.GetString("service.jwt.access-token-expires")
+	accessTokenExpires, err := time.ParseDuration(accessExpiresRaw)
+	if err != nil {
+		return nil, fmt.Errorf("invalid token_expires duration: %w", err)
+	}
 
 	return &jwtConfig{
-		privateKey:   privateKey,
-		publicKey:    publicKey,
-		tokenExpires: tokenExpires,
+		privateKey:          privateKey,
+		publicKey:           publicKey,
+		refreshTokenExpires: refreshTokenExpires,
+		accessTokenExpires:  accessTokenExpires,
 	}, nil
 }
 
@@ -58,6 +72,9 @@ func (cfg *jwtConfig) PublicKey() *rsa.PublicKey {
 	return cfg.publicKey
 }
 
-func (cfg *jwtConfig) TokenExpires() time.Duration {
-	return cfg.tokenExpires
+func (cfg *jwtConfig) RefreshTokenExpires() time.Duration {
+	return cfg.refreshTokenExpires
+}
+func (cfg *jwtConfig) AccessTokenExpires() time.Duration {
+	return cfg.accessTokenExpires
 }

@@ -6,7 +6,7 @@ import (
 )
 
 // Get returns list of users.
-func (s *userService) GetAll(ctx context.Context, req *dto.GetAllUsersRequest) ([]*dto.GetUserResponse, error) {
+func (s *userService) GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (*dto.GetAllUsersResponse, error) {
 	limit := 10
 	if req.Limit != nil {
 		limit = *req.Limit
@@ -17,14 +17,13 @@ func (s *userService) GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (
 	}
 
 	users, err := s.userRepo.GetAll(ctx, limit, offset)
-	switch {
-	case err != nil:
+	if err != nil {
 		return nil, err
 	}
 
-	var userList []*dto.GetUserResponse
+	var userList dto.GetAllUsersResponse
 	for _, user := range users {
-		userList = append(userList, &dto.GetUserResponse{
+		userList = append(userList, dto.User{
 			ID:      user.ID,
 			Email:   user.Email,
 			Name:    user.Name,
@@ -32,5 +31,6 @@ func (s *userService) GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (
 			Role:    user.Role,
 		})
 	}
-	return userList, err
+
+	return &userList, nil
 }

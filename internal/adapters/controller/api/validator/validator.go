@@ -31,6 +31,8 @@ func New() *Validator {
 	_ = newValidator.RegisterValidation("minleechsum", validateMinLeechSum)
 	_ = newValidator.RegisterValidation("maxleechsum", validateMaxLeechSum)
 
+	_ = newValidator.RegisterValidation("role", validateRole)
+
 	return &Validator{
 		newValidator,
 	}

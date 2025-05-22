@@ -1,13 +1,14 @@
 package service_provider
 
 import (
-	"Leech-ru/internal/domain/utils/jwt"
+	"Leech-ru/internal/domain/service/jwt"
 	"github.com/google/uuid"
+	"time"
 )
 
 type jwtService interface {
-	GenerateToken(userID uuid.UUID) (string, error)
-	ParseToken(tokenString string) (uuid.UUID, error)
+	GenerateToken(userID uuid.UUID, ttl time.Duration) (token string, jti string, err error)
+	ParseToken(tokenString string) (userID uuid.UUID, jti string, err error)
 }
 
 func (s *ServiceProvider) JWTService() jwtService {

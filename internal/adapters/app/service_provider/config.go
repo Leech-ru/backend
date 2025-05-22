@@ -29,6 +29,18 @@ func (s *ServiceProvider) PGConfig() config.PGConfig {
 	return s.pgConfig
 }
 
+func (s *ServiceProvider) RedisConfig() config.RedisConfig {
+	if s.redisConfig == nil {
+		var err error
+		s.redisConfig, err = config.NewRedisConfig()
+		if err != nil {
+			panic(fmt.Errorf("failed to get redis config: %w", err))
+		}
+	}
+
+	return s.redisConfig
+}
+
 func (s *ServiceProvider) HTTPConfig() config.HTTPConfig {
 	if s.httpConfig == nil {
 		cfg, err := config.NewHTTPConfig()
