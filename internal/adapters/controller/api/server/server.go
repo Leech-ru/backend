@@ -57,12 +57,12 @@ func addRouters(app *app.App) {
 	pingHandler := ping.NewHandler()
 	pingHandler.Setup(apiV1)
 
-	refreshTokenHandler := token.NewHandler(app.ServiceProvider.TokenService(), app.ServiceProvider.JWTConfig(), app.ServiceProvider.Validator(), app.ServiceProvider.Decoder())
+	refreshTokenHandler := token.NewHandler(app.ServiceProvider.TokenService(), app.ServiceProvider.JWTConfig(), app.ServiceProvider.ServerConfig(), app.ServiceProvider.Validator(), app.ServiceProvider.Decoder())
 	refreshTokenHandler.Setup(apiV1)
 
 	orderHandler := order.NewHandler(app.ServiceProvider.OrderService(app.ServiceProvider.MailConfig()), app.ServiceProvider.Validator())
 	orderHandler.Setup(apiV1)
 
-	userHandler := user.NewHandler(app.ServiceProvider.UserService(), app.ServiceProvider.JWTConfig(), authMiddleware, app.ServiceProvider.Validator(), app.ServiceProvider.Decoder())
+	userHandler := user.NewHandler(app.ServiceProvider.UserService(), app.ServiceProvider.JWTConfig(), app.ServiceProvider.ServerConfig(), authMiddleware, app.ServiceProvider.Validator(), app.ServiceProvider.Decoder())
 	userHandler.Setup(apiV1)
 }

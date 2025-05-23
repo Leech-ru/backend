@@ -53,8 +53,8 @@ func (h *handler) ChangePassword(c echo.Context) error {
 
 	}
 
-	createdCookie := cookie.NewRefreshTokenCookie(resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), true)
-	c.SetCookie(createdCookie)
+	cookie.SetRefreshTokenCookie(c, resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
+	cookie.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
 
 	return c.NoContent(http.StatusNoContent)
 

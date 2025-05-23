@@ -41,7 +41,7 @@ func (s *ServiceProvider) RedisConfig() config.RedisConfig {
 	return s.redisConfig
 }
 
-func (s *ServiceProvider) HTTPConfig() config.HTTPConfig {
+func (s *ServiceProvider) ServerConfig() config.ServerConfig {
 	if s.httpConfig == nil {
 		cfg, err := config.NewHTTPConfig()
 		if err != nil {

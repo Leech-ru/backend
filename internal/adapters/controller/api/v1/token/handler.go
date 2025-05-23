@@ -11,16 +11,23 @@ import (
 
 type tokenService interface {
 	GenerateAccessToken(ctx context.Context, userID uuid.UUID) (string, error)
+	GenerateRefreshToken(ctx context.Context, userID uuid.UUID) (string, error)
 	ParseRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
+}
+
+type serverConfig interface {
+	DevMode() bool
 }
 
 type jwtConfig interface {
 	AccessTokenExpires() time.Duration
+	RefreshTokenExpires() time.Duration
 }
 
 type handler struct {
 	tokenService tokenService
 	jwtConfig    jwtConfig
+	serverConfig serverConfig
 	validator    *validator.Validator
 	formDecoder  *form.Decoder
 }
@@ -28,6 +35,7 @@ type handler struct {
 func NewHandler(
 	tokenService tokenService,
 	jwtConfig jwtConfig,
+	serverConfig serverConfig,
 	validator *validator.Validator,
 	formDecoder *form.Decoder,
 
@@ -35,6 +43,7 @@ func NewHandler(
 	return &handler{
 		tokenService: tokenService,
 		jwtConfig:    jwtConfig,
+		serverConfig: serverConfig,
 		validator:    validator,
 		formDecoder:  formDecoder,
 	}

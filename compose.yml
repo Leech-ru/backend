@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -18,18 +20,22 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-# TODO БЛЯТЬ ПАРОЛИ К РЕДИСУ ДОБАВИТЬ
+
   valkey:
     image: valkey/valkey:7.2-alpine
     container_name: LeechValkey
+    env_file:
+      - .env
+    environment:
+      - VALKEY_PASSWORD=${VALKEY_PASSWORD}
     ports:
-      - "6379:6379"
+      - "${VALKEY_PORT}:6379"
     volumes:
       - valkey_data:/data
-    command: [ "valkey-server", "--appendonly", "yes" ]
+    command: [ "valkey-server", "--appendonly", "yes", "--requirepass", "${VALKEY_PASSWORD}" ]
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "valkey-cli", "ping" ]
+      test: [ "CMD", "valkey-cli", "-a", "${VALKEY_PASSWORD}", "ping" ]
       interval: 10s
       timeout: 3s
       retries: 3

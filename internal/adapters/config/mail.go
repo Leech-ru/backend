@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// HTTPConfig defines an interface for HTTP server configuration.
+// ServerConfig defines an interface for HTTP server configuration.
 type MailConfig interface {
 	Host() string
 	Port() int

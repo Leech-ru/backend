@@ -38,9 +38,9 @@ func (h *handler) Login(c echo.Context) error {
 		})
 
 	}
-	//TODO прокинуть конфиг http
-	createdCookie := cookie.NewRefreshTokenCookie(resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), true)
-	c.SetCookie(createdCookie)
+
+	cookie.SetRefreshTokenCookie(c, resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
+	cookie.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
 
 	return c.JSON(http.StatusOK, resp)
 

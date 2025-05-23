@@ -9,12 +9,12 @@ type tokenService interface {
 	ParseAccessToken(ctx context.Context, token string) (uuid.UUID, error)
 }
 
-type AuthMiddleware struct {
+type Middleware struct {
 	tokenService tokenService
 }
 
-func NewAuthMiddleware(tokenService tokenService) *AuthMiddleware {
-	return &AuthMiddleware{
+func NewAuthMiddleware(tokenService tokenService) *Middleware {
+	return &Middleware{
 		tokenService: tokenService,
 	}
 }

@@ -5,7 +5,6 @@ import (
 	"Leech-ru/pkg/ent"
 	"context"
 	"entgo.io/ent/dialect"
-	"fmt"
 	_ "github.com/lib/pq"
 )
 
@@ -16,7 +15,6 @@ func (s *ServiceProvider) DB() *ent.Client {
 		if err != nil {
 			s.Logger().Panicf("failed to open database: %v", err)
 		}
-		fmt.Println(db)
 		client := db
 
 		loggerCfg := s.LoggerConfig()

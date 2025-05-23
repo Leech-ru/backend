@@ -23,10 +23,16 @@ type jwtConfig interface {
 	RefreshTokenExpires() time.Duration
 }
 
+type serverConfig interface {
+	DevMode() bool
+}
+
+// TODO логаут реализовать
 type handler struct {
 	userService    userService
 	jwtConfig      jwtConfig
-	authMiddleware auth.AuthMiddleware
+	serverConfig   serverConfig
+	authMiddleware auth.Middleware
 	validator      *validator.Validator
 	formDecoder    *form.Decoder
 }
@@ -34,7 +40,8 @@ type handler struct {
 func NewHandler(
 	userService userService,
 	jwtConfig jwtConfig,
-	authMiddleware *auth.AuthMiddleware,
+	serverConfig serverConfig,
+	authMiddleware *auth.Middleware,
 	validator *validator.Validator,
 	formDecoder *form.Decoder,
 
@@ -42,6 +49,7 @@ func NewHandler(
 	return &handler{
 		userService:    userService,
 		jwtConfig:      jwtConfig,
+		serverConfig:   serverConfig,
 		authMiddleware: *authMiddleware,
 		validator:      validator,
 		formDecoder:    formDecoder,

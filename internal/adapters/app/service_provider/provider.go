@@ -13,14 +13,14 @@ type ServiceProvider struct {
 	loggerConfig config.LoggerConfig
 	pgConfig     config.PGConfig
 	redisConfig  config.RedisConfig
-	httpConfig   config.HTTPConfig
+	httpConfig   config.ServerConfig
 	jwtConfig    config.JWTConfig
 	mailConfig   config.MailConfig
 
 	db    *ent.Client
 	redis *redis.Client
 
-	logger    *logger.Logger
+	logger      *logger.Logger
 	validator   *validator.Validator
 	formDecoder *form.Decoder
 

@@ -31,7 +31,6 @@ type jwtConfig interface {
 	AccessTokenExpires() time.Duration
 }
 
-// TODO настроить ошибки нормально (вместо nil errorz.Err...)
 type tokenService struct {
 	refreshTokenRepo refreshTokenRepo
 	accessTokenRepo  accessTokenRepo

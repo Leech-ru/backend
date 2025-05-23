@@ -38,7 +38,7 @@ func New() (*App, error) {
 	}
 
 	// Configure TLS if enabled
-	if a.ServiceProvider.HTTPConfig().EnabledTLS() {
+	if a.ServiceProvider.ServerConfig().EnabledTLS() {
 		// To enable TLS in Echo, you would use StartTLS() instead of Start()
 		// But we'll handle that in the Start() method
 		log.Println("TLS is enabled, but certificate paths are not specified.")
@@ -49,10 +49,10 @@ func New() (*App, error) {
 
 // Start starts the server.
 func (a *App) Start() {
-	addr := a.ServiceProvider.HTTPConfig().Address()
+	addr := a.ServiceProvider.ServerConfig().Address()
 	log.Printf("Starting server on http://%s\n", addr)
 
-	if a.ServiceProvider.HTTPConfig().EnabledTLS() {
+	if a.ServiceProvider.ServerConfig().EnabledTLS() {
 		// Example for TLS:
 		// log.Fatal(a.Server.StartTLS(addr, "cert.pem", "key.pem"))
 		log.Fatal(a.Server.Start(addr))

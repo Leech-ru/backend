@@ -56,16 +56,24 @@ func (h *handler) Refresh(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-
-	newToken, err := h.tokenService.GenerateAccessToken(c.Request().Context(), userID)
+	refreshToken, err := h.tokenService.GenerateRefreshToken(c.Request().Context(), userID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.HTTPStatus{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 	}
-	createdCookie := cookie.NewAccessTokenCookie(newToken, h.jwtConfig.AccessTokenExpires(), true)
-	c.SetCookie(createdCookie)
+	
+	accessToken, err := h.tokenService.GenerateAccessToken(c.Request().Context(), userID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.HTTPStatus{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+	}
+
+	cookie.SetRefreshTokenCookie(c, refreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
+	cookie.SetAccessTokenCookie(c, accessToken, h.jwtConfig.AccessTokenExpires(), h.serverConfig.DevMode())
 
 	return c.NoContent(http.StatusNoContent)
 }

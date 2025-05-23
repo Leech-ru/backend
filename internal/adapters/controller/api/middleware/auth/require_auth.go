@@ -8,16 +8,15 @@ import (
 	"net/http"
 )
 
-func (m *AuthMiddleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
+func (m *Middleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token, err := cookie.ReadAccessTokenCookie(c.Request())
 		switch {
 		case errors.Is(err, errorz.NoCookie):
-			return echo.NewHTTPError(http.StatusUnauthorized, errorz.InvalidToken)
+			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)
 		case err != nil:
 			return err
 		}
-
 		userID, err := m.tokenService.ParseAccessToken(c.Request().Context(), token)
 		switch {
 		case errors.Is(err, errorz.InvalidToken):
