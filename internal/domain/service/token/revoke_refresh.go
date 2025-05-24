@@ -5,40 +5,31 @@ import (
 	"context"
 	"errors"
 	"github.com/google/uuid"
-	"time"
 )
 
 // RevokeRefreshToken revoke refresh token.
-func (s *tokenService) RevokeRefreshToken(ctx context.Context, token string) (uuid.UUID, error) {
-	userID, jti, err := s.jwtService.ParseToken(token)
-	if err != nil {
-		return uuid.Nil, errorz.InvalidToken
-	}
-
+func (s *tokenService) RevokeRefreshToken(ctx context.Context, userID uuid.UUID) error {
 	tokenEntity, err := s.refreshTokenRepo.GetByUserID(ctx, userID)
 	switch {
 	case errors.Is(err, errorz.TokenNotFound):
-		return uuid.Nil, errorz.Unauthorized
+		return errorz.Unauthorized
 	case err != nil:
-		return uuid.Nil, err
-	}
-	if tokenEntity.Jti != jti {
-		return uuid.Nil, errorz.Unauthorized
+		return err
 	}
 
 	tokenEntity.Jti = "-"
 	_, err = s.refreshTokenRepo.Update(ctx, *tokenEntity)
 	switch {
 	case errors.Is(err, errorz.TokenNotFound):
-		return uuid.Nil, errorz.Unauthorized
+		return errorz.Unauthorized
 	case err != nil:
-		return uuid.Nil, err
+		return err
 	}
 
-	err = s.accessTokenRepo.Set(ctx, userID, "-", time.Now().Add(s.jwtConfig.AccessTokenExpires()))
+	err = s.accessTokenRepo.Delete(ctx, userID)
 	if err != nil {
-		return uuid.Nil, err
+		return err
 	}
 
-	return userID, nil
+	return nil
 }

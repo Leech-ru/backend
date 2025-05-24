@@ -41,6 +41,10 @@ func (s *userService) ChangePassword(ctx context.Context, req *dto.ChangePasswor
 	if err != nil {
 		return nil, err
 	}
+	err = s.tokenService.RevokeAccessToken(ctx, req.ID)
+	if err != nil {
+		return nil, err
+	}
 
 	return &dto.ChangePasswordResponse{
 		RefreshToken: token,

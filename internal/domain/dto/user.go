@@ -2,8 +2,6 @@ package dto
 
 import "github.com/google/uuid"
 
-//TODO убрать роль, чтобы ее не могли менять все подряд
-
 type User struct {
 	ID      uuid.UUID `json:"id"`
 	Email   string    `json:"email"`
@@ -52,12 +50,10 @@ type LogoutRequest struct {
 	ID uuid.UUID `json:"id" validate:"required,uuid"`
 }
 
-// TODO нельзя менять роль
 type UpdateUserRequest struct {
 	ID      uuid.UUID `json:"id" validate:"required,uuid"`
 	Name    *string   `json:"name,omitempty" validate:"omitempty,min=2,max=100"`
 	Surname *string   `json:"surname,omitempty" validate:"omitempty,min=2,max=100"`
-	Role    *int      `json:"role,omitempty" validate:"omitempty,role"`
 }
 
 type UpdateUserResponse User

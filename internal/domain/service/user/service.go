@@ -17,8 +17,8 @@ type userRepo interface {
 }
 
 type tokenService interface {
+	RevokeAccessToken(ctx context.Context, userID uuid.UUID) error
 	GenerateRefreshToken(ctx context.Context, userID uuid.UUID) (string, error)
-	ParseRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
 	LogoutAllSessions(ctx context.Context, userID uuid.UUID) error
 }
 

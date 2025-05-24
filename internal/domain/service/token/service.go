@@ -13,6 +13,7 @@ import (
 type accessTokenRepo interface {
 	Set(ctx context.Context, userID uuid.UUID, value string, exp time.Time) error
 	Get(ctx context.Context, userID uuid.UUID) (string, error)
+	Delete(ctx context.Context, userID uuid.UUID) error
 }
 
 type refreshTokenRepo interface {

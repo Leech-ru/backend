@@ -5,7 +5,6 @@ import (
 	"context"
 	"errors"
 	"github.com/google/uuid"
-	"time"
 )
 
 func (s *tokenService) LogoutAllSessions(ctx context.Context, userID uuid.UUID) error {
@@ -26,7 +25,7 @@ func (s *tokenService) LogoutAllSessions(ctx context.Context, userID uuid.UUID) 
 		return err
 	}
 
-	err = s.accessTokenRepo.Set(ctx, userID, "-", time.Now().Add(s.jwtConfig.AccessTokenExpires()))
+	err = s.accessTokenRepo.Delete(ctx, userID)
 	if err != nil {
 		return err
 	}

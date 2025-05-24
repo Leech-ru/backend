@@ -25,6 +25,10 @@ func (s *userService) Login(ctx context.Context, req *dto.LoginUserRequest) (*dt
 	if err != nil {
 		return nil, err
 	}
+	err = s.tokenService.RevokeAccessToken(ctx, u.ID)
+	if err != nil {
+		return nil, err
+	}
 
 	return &dto.LoginUserResponse{
 		RefreshToken: token,

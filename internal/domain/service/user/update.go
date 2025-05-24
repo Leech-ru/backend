@@ -22,9 +22,6 @@ func (s *userService) Update(ctx context.Context, req *dto.UpdateUserRequest) (*
 	if req.Surname != nil {
 		userToUpdate.Surname = *req.Surname
 	}
-	if req.Role != nil {
-		userToUpdate.Role = *req.Role
-	}
 
 	updatedUser, err := s.userRepo.Update(ctx, *userToUpdate)
 	switch {

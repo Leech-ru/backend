@@ -34,6 +34,10 @@ func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest
 	if err != nil {
 		return nil, err
 	}
+	err = s.tokenService.RevokeAccessToken(ctx, u.ID)
+	if err != nil {
+		return nil, err
+	}
 
 	return &dto.RegisterUserResponse{
 		RefreshToken: token,
