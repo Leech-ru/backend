@@ -19,7 +19,7 @@ type userRepo interface {
 type tokenService interface {
 	GenerateRefreshToken(ctx context.Context, userID uuid.UUID) (string, error)
 	ParseRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
-	RevokeRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
+	LogoutAllSessions(ctx context.Context, userID uuid.UUID) error
 }
 
 type userService struct {

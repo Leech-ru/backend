@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func (h *handler) Get(c echo.Context) error {
+func (h *handler) GetMe(c echo.Context) error {
 	var req dto.GetUserRequest
 	userID, _ := c.Get("user_id").(uuid.UUID)
 	req.ID = userID

@@ -17,6 +17,7 @@ type userService interface {
 	Get(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error)
 	GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (*dto.GetAllUsersResponse, error)
 	Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
+	Logout(ctx context.Context, req *dto.LogoutRequest) error
 }
 
 type jwtConfig interface {
@@ -27,7 +28,6 @@ type serverConfig interface {
 	DevMode() bool
 }
 
-// TODO логаут реализовать
 type handler struct {
 	userService    userService
 	jwtConfig      jwtConfig
@@ -61,6 +61,7 @@ func (h *handler) Setup(router *echo.Group) {
 	router.POST("/user/login", h.Login)
 	router.POST("/user/password", h.ChangePassword, h.authMiddleware.RequireAuth)
 	router.GET("/user/all", h.GetAll, h.authMiddleware.RequireAuth) //TODO для админов
-	router.GET("/user", h.Get, h.authMiddleware.RequireAuth)
+	router.GET("/user", h.GetMe, h.authMiddleware.RequireAuth)
 	router.PATCH("/user", h.Update, h.authMiddleware.RequireAuth)
+	router.POST("/user/logout", h.Logout, h.authMiddleware.RequireAuth)
 }

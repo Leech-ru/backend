@@ -48,6 +48,10 @@ type LoginUserResponse struct {
 	User
 }
 
+type LogoutRequest struct {
+	ID uuid.UUID `json:"id" validate:"required,uuid"`
+}
+
 // TODO нельзя менять роль
 type UpdateUserRequest struct {
 	ID      uuid.UUID `json:"id" validate:"required,uuid"`

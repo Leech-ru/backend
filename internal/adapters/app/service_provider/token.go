@@ -13,6 +13,7 @@ type tokenService interface {
 	ParseRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
 	RevokeAccessToken(ctx context.Context, token string) (uuid.UUID, error)
 	RevokeRefreshToken(ctx context.Context, token string) (uuid.UUID, error)
+	LogoutAllSessions(ctx context.Context, userID uuid.UUID) error
 }
 
 func (s *ServiceProvider) TokenService() tokenService {

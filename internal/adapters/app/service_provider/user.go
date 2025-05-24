@@ -14,6 +14,7 @@ type userService interface {
 	GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (*dto.GetAllUsersResponse, error)
 	Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
 	Delete(ctx context.Context, req *dto.DeleteUserRequest) error
+	Logout(ctx context.Context, req *dto.LogoutRequest) error
 }
 
 func (s *ServiceProvider) UserService() userService {
