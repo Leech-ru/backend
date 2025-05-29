@@ -15,7 +15,6 @@ type RegisterUserRequest struct {
 	Password string `json:"password" validate:"required,min=8,max=100"`
 	Name     string `json:"name" validate:"required,min=2,max=100"`
 	Surname  string `json:"surname" validate:"required,min=2,max=100"`
-	Role     int    `json:"role" validate:"required,role"`
 }
 
 type RegisterUserResponse struct {

@@ -21,7 +21,6 @@ func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest
 		Password: passwordHash,
 		Name:     req.Name,
 		Surname:  req.Surname,
-		Role:     req.Role,
 	})
 	switch {
 	case errors.As(err, &errorz.EmailAlreadyExist):
