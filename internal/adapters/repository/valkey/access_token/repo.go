@@ -8,7 +8,6 @@ const (
 	KeyTemplate = "user_jti:%s"
 )
 
-// TODO удаление токенов (чтобы пустой токен не висел 15 мин)
 type repo struct {
 	client *redis.Client
 }

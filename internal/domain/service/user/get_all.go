@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-// Get returns list of users.
+// GetById returns list of users.
 func (s *userService) GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (*dto.GetAllUsersResponse, error) {
 	limit := 10
 	if req.Limit != nil {

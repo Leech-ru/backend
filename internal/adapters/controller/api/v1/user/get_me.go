@@ -21,7 +21,7 @@ func (h *handler) GetMe(c echo.Context) error {
 		})
 	}
 
-	resp, err := h.userService.Get(c.Request().Context(), &req)
+	resp, err := h.userService.GetByID(c.Request().Context(), &req)
 	switch {
 	case errors.As(err, &errorz.UserNotFound):
 		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
