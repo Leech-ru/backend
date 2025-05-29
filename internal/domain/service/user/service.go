@@ -22,14 +22,20 @@ type tokenService interface {
 	LogoutAllSessions(ctx context.Context, userID uuid.UUID) error
 }
 
+type serverConfig interface {
+	DevMode() bool
+}
+
 type userService struct {
 	userRepo     userRepo
 	tokenService tokenService
+	serverConfig serverConfig
 }
 
-func NewUserService(client *ent.Client, tokenService tokenService) *userService {
+func NewUserService(client *ent.Client, tokenService tokenService, serverConfig serverConfig) *userService {
 	return &userService{
 		userRepo:     user.NewUserRepo(client),
 		tokenService: tokenService,
+		serverConfig: serverConfig,
 	}
 }

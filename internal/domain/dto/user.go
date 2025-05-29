@@ -1,20 +1,24 @@
 package dto
 
-import "github.com/google/uuid"
+import (
+	"Leech-ru/internal/domain/types"
+	"github.com/google/uuid"
+)
 
 type User struct {
-	ID      uuid.UUID `json:"id"`
-	Email   string    `json:"email"`
-	Name    string    `json:"name"`
-	Surname string    `json:"surname"`
-	Role    int       `json:"role"`
+	ID      uuid.UUID  `json:"id"`
+	Email   string     `json:"email"`
+	Name    string     `json:"name"`
+	Surname string     `json:"surname"`
+	Role    types.Role `json:"role"`
 }
 
 type RegisterUserRequest struct {
-	Email    string `json:"email" validate:"required,email,min=6,max=254"`
-	Password string `json:"password" validate:"required,min=8,max=100"`
-	Name     string `json:"name" validate:"required,min=2,max=100"`
-	Surname  string `json:"surname" validate:"required,min=2,max=100"`
+	Email    string      `json:"email" validate:"required,email,min=6,max=254"`
+	Password string      `json:"password" validate:"required,min=8,max=100"`
+	Name     string      `json:"name" validate:"required,min=2,max=100"`
+	Surname  string      `json:"surname" validate:"required,min=2,max=100"`
+	Role     *types.Role `json:"role,omitempty" validate:"omitempty,role"`
 }
 
 type RegisterUserResponse struct {

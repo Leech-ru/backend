@@ -22,7 +22,7 @@ type userService interface {
 
 func (s *ServiceProvider) UserService() userService {
 	if s.userService == nil {
-		s.userService = user.NewUserService(s.DB(), s.TokenService())
+		s.userService = user.NewUserService(s.DB(), s.TokenService(), s.ServerConfig())
 	}
 	return s.userService
 }

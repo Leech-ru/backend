@@ -15,13 +15,17 @@ func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest
 	if err != nil {
 		return nil, err
 	}
-
-	u, err := s.userRepo.Create(ctx, ent.User{
+	user := ent.User{
 		Email:    req.Email,
 		Password: passwordHash,
 		Name:     req.Name,
 		Surname:  req.Surname,
-	})
+	}
+	if s.serverConfig.DevMode() && req.Role != nil {
+		user.Role = *req.Role
+
+	}
+	u, err := s.userRepo.Create(ctx, user)
 	switch {
 	case errors.As(err, &errorz.EmailAlreadyExist):
 		return nil, errorz.EmailAlreadyExist
