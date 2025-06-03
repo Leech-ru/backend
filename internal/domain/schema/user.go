@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"Leech-ru/internal/domain/types"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -36,8 +37,9 @@ func (User) Fields() []ent.Field {
 			NotEmpty().
 			MaxLen(100),
 
-		field.Int("role").
-			Default(0),
+		field.Int("role").GoType(types.Role(0)).
+			GoType(types.Role(0)).
+			Default(int(types.RoleUser)),
 	}
 }
 

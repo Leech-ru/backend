@@ -8,6 +8,21 @@ import (
 )
 
 var (
+	// CosmeticsColumns holds the columns for the "cosmetics" table.
+	CosmeticsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "category", Type: field.TypeInt},
+		{Name: "title", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "application_method", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "volume", Type: field.TypeInt, Nullable: true},
+	}
+	// CosmeticsTable holds the schema information for the "cosmetics" table.
+	CosmeticsTable = &schema.Table{
+		Name:       "cosmetics",
+		Columns:    CosmeticsColumns,
+		PrimaryKey: []*schema.Column{CosmeticsColumns[0]},
+	}
 	// RefreshTokensColumns holds the columns for the "refresh_tokens" table.
 	RefreshTokensColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -45,6 +60,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CosmeticsTable,
 		RefreshTokensTable,
 		UsersTable,
 	}

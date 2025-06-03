@@ -8,6 +8,18 @@ import (
 	"fmt"
 )
 
+// The CosmeticsFunc type is an adapter to allow the use of ordinary
+// function as Cosmetics mutator.
+type CosmeticsFunc func(context.Context, *ent.CosmeticsMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CosmeticsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CosmeticsMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CosmeticsMutation", m)
+}
+
 // The RefreshTokenFunc type is an adapter to allow the use of ordinary
 // function as RefreshToken mutator.
 type RefreshTokenFunc func(context.Context, *ent.RefreshTokenMutation) (ent.Value, error)

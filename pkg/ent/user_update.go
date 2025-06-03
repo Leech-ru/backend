@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/predicate"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
@@ -86,23 +87,23 @@ func (uu *UserUpdate) SetNillableSurname(s *string) *UserUpdate {
 }
 
 // SetRole sets the "role" field.
-func (uu *UserUpdate) SetRole(i int) *UserUpdate {
+func (uu *UserUpdate) SetRole(t types.Role) *UserUpdate {
 	uu.mutation.ResetRole()
-	uu.mutation.SetRole(i)
+	uu.mutation.SetRole(t)
 	return uu
 }
 
 // SetNillableRole sets the "role" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableRole(i *int) *UserUpdate {
-	if i != nil {
-		uu.SetRole(*i)
+func (uu *UserUpdate) SetNillableRole(t *types.Role) *UserUpdate {
+	if t != nil {
+		uu.SetRole(*t)
 	}
 	return uu
 }
 
-// AddRole adds i to the "role" field.
-func (uu *UserUpdate) AddRole(i int) *UserUpdate {
-	uu.mutation.AddRole(i)
+// AddRole adds t to the "role" field.
+func (uu *UserUpdate) AddRole(t types.Role) *UserUpdate {
+	uu.mutation.AddRole(t)
 	return uu
 }
 
@@ -324,23 +325,23 @@ func (uuo *UserUpdateOne) SetNillableSurname(s *string) *UserUpdateOne {
 }
 
 // SetRole sets the "role" field.
-func (uuo *UserUpdateOne) SetRole(i int) *UserUpdateOne {
+func (uuo *UserUpdateOne) SetRole(t types.Role) *UserUpdateOne {
 	uuo.mutation.ResetRole()
-	uuo.mutation.SetRole(i)
+	uuo.mutation.SetRole(t)
 	return uuo
 }
 
 // SetNillableRole sets the "role" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableRole(i *int) *UserUpdateOne {
-	if i != nil {
-		uuo.SetRole(*i)
+func (uuo *UserUpdateOne) SetNillableRole(t *types.Role) *UserUpdateOne {
+	if t != nil {
+		uuo.SetRole(*t)
 	}
 	return uuo
 }
 
-// AddRole adds i to the "role" field.
-func (uuo *UserUpdateOne) AddRole(i int) *UserUpdateOne {
-	uuo.mutation.AddRole(i)
+// AddRole adds t to the "role" field.
+func (uuo *UserUpdateOne) AddRole(t types.Role) *UserUpdateOne {
+	uuo.mutation.AddRole(t)
 	return uuo
 }
 

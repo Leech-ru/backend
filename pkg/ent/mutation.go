@@ -3,6 +3,8 @@
 package ent
 
 import (
+	"Leech-ru/internal/domain/types"
+	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/predicate"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
@@ -25,9 +27,688 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypeCosmetics    = "Cosmetics"
 	TypeRefreshToken = "RefreshToken"
 	TypeUser         = "User"
 )
+
+// CosmeticsMutation represents an operation that mutates the Cosmetics nodes in the graph.
+type CosmeticsMutation struct {
+	config
+	op                Op
+	typ               string
+	id                *uuid.UUID
+	category          *types.Category
+	addcategory       *types.Category
+	title             *string
+	description       *string
+	applicationMethod *string
+	volume            *int
+	addvolume         *int
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*Cosmetics, error)
+	predicates        []predicate.Cosmetics
+}
+
+var _ ent.Mutation = (*CosmeticsMutation)(nil)
+
+// cosmeticsOption allows management of the mutation configuration using functional options.
+type cosmeticsOption func(*CosmeticsMutation)
+
+// newCosmeticsMutation creates new mutation for the Cosmetics entity.
+func newCosmeticsMutation(c config, op Op, opts ...cosmeticsOption) *CosmeticsMutation {
+	m := &CosmeticsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCosmetics,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCosmeticsID sets the ID field of the mutation.
+func withCosmeticsID(id uuid.UUID) cosmeticsOption {
+	return func(m *CosmeticsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Cosmetics
+		)
+		m.oldValue = func(ctx context.Context) (*Cosmetics, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Cosmetics.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCosmetics sets the old Cosmetics of the mutation.
+func withCosmetics(node *Cosmetics) cosmeticsOption {
+	return func(m *CosmeticsMutation) {
+		m.oldValue = func(context.Context) (*Cosmetics, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CosmeticsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CosmeticsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Cosmetics entities.
+func (m *CosmeticsMutation) SetID(id uuid.UUID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CosmeticsMutation) ID() (id uuid.UUID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CosmeticsMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uuid.UUID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Cosmetics.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCategory sets the "category" field.
+func (m *CosmeticsMutation) SetCategory(t types.Category) {
+	m.category = &t
+	m.addcategory = nil
+}
+
+// Category returns the value of the "category" field in the mutation.
+func (m *CosmeticsMutation) Category() (r types.Category, exists bool) {
+	v := m.category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCategory returns the old "category" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldCategory(ctx context.Context) (v types.Category, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCategory is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCategory requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCategory: %w", err)
+	}
+	return oldValue.Category, nil
+}
+
+// AddCategory adds t to the "category" field.
+func (m *CosmeticsMutation) AddCategory(t types.Category) {
+	if m.addcategory != nil {
+		*m.addcategory += t
+	} else {
+		m.addcategory = &t
+	}
+}
+
+// AddedCategory returns the value that was added to the "category" field in this mutation.
+func (m *CosmeticsMutation) AddedCategory() (r types.Category, exists bool) {
+	v := m.addcategory
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCategory resets all changes to the "category" field.
+func (m *CosmeticsMutation) ResetCategory() {
+	m.category = nil
+	m.addcategory = nil
+}
+
+// SetTitle sets the "title" field.
+func (m *CosmeticsMutation) SetTitle(s string) {
+	m.title = &s
+}
+
+// Title returns the value of the "title" field in the mutation.
+func (m *CosmeticsMutation) Title() (r string, exists bool) {
+	v := m.title
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTitle returns the old "title" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldTitle(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTitle is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTitle requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTitle: %w", err)
+	}
+	return oldValue.Title, nil
+}
+
+// ResetTitle resets all changes to the "title" field.
+func (m *CosmeticsMutation) ResetTitle() {
+	m.title = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *CosmeticsMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *CosmeticsMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *CosmeticsMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[cosmetics.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *CosmeticsMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[cosmetics.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *CosmeticsMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, cosmetics.FieldDescription)
+}
+
+// SetApplicationMethod sets the "applicationMethod" field.
+func (m *CosmeticsMutation) SetApplicationMethod(s string) {
+	m.applicationMethod = &s
+}
+
+// ApplicationMethod returns the value of the "applicationMethod" field in the mutation.
+func (m *CosmeticsMutation) ApplicationMethod() (r string, exists bool) {
+	v := m.applicationMethod
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldApplicationMethod returns the old "applicationMethod" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldApplicationMethod(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldApplicationMethod is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldApplicationMethod requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldApplicationMethod: %w", err)
+	}
+	return oldValue.ApplicationMethod, nil
+}
+
+// ClearApplicationMethod clears the value of the "applicationMethod" field.
+func (m *CosmeticsMutation) ClearApplicationMethod() {
+	m.applicationMethod = nil
+	m.clearedFields[cosmetics.FieldApplicationMethod] = struct{}{}
+}
+
+// ApplicationMethodCleared returns if the "applicationMethod" field was cleared in this mutation.
+func (m *CosmeticsMutation) ApplicationMethodCleared() bool {
+	_, ok := m.clearedFields[cosmetics.FieldApplicationMethod]
+	return ok
+}
+
+// ResetApplicationMethod resets all changes to the "applicationMethod" field.
+func (m *CosmeticsMutation) ResetApplicationMethod() {
+	m.applicationMethod = nil
+	delete(m.clearedFields, cosmetics.FieldApplicationMethod)
+}
+
+// SetVolume sets the "volume" field.
+func (m *CosmeticsMutation) SetVolume(i int) {
+	m.volume = &i
+	m.addvolume = nil
+}
+
+// Volume returns the value of the "volume" field in the mutation.
+func (m *CosmeticsMutation) Volume() (r int, exists bool) {
+	v := m.volume
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVolume returns the old "volume" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldVolume(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVolume is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVolume requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVolume: %w", err)
+	}
+	return oldValue.Volume, nil
+}
+
+// AddVolume adds i to the "volume" field.
+func (m *CosmeticsMutation) AddVolume(i int) {
+	if m.addvolume != nil {
+		*m.addvolume += i
+	} else {
+		m.addvolume = &i
+	}
+}
+
+// AddedVolume returns the value that was added to the "volume" field in this mutation.
+func (m *CosmeticsMutation) AddedVolume() (r int, exists bool) {
+	v := m.addvolume
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearVolume clears the value of the "volume" field.
+func (m *CosmeticsMutation) ClearVolume() {
+	m.volume = nil
+	m.addvolume = nil
+	m.clearedFields[cosmetics.FieldVolume] = struct{}{}
+}
+
+// VolumeCleared returns if the "volume" field was cleared in this mutation.
+func (m *CosmeticsMutation) VolumeCleared() bool {
+	_, ok := m.clearedFields[cosmetics.FieldVolume]
+	return ok
+}
+
+// ResetVolume resets all changes to the "volume" field.
+func (m *CosmeticsMutation) ResetVolume() {
+	m.volume = nil
+	m.addvolume = nil
+	delete(m.clearedFields, cosmetics.FieldVolume)
+}
+
+// Where appends a list predicates to the CosmeticsMutation builder.
+func (m *CosmeticsMutation) Where(ps ...predicate.Cosmetics) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CosmeticsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CosmeticsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Cosmetics, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CosmeticsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CosmeticsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Cosmetics).
+func (m *CosmeticsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CosmeticsMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.category != nil {
+		fields = append(fields, cosmetics.FieldCategory)
+	}
+	if m.title != nil {
+		fields = append(fields, cosmetics.FieldTitle)
+	}
+	if m.description != nil {
+		fields = append(fields, cosmetics.FieldDescription)
+	}
+	if m.applicationMethod != nil {
+		fields = append(fields, cosmetics.FieldApplicationMethod)
+	}
+	if m.volume != nil {
+		fields = append(fields, cosmetics.FieldVolume)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CosmeticsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case cosmetics.FieldCategory:
+		return m.Category()
+	case cosmetics.FieldTitle:
+		return m.Title()
+	case cosmetics.FieldDescription:
+		return m.Description()
+	case cosmetics.FieldApplicationMethod:
+		return m.ApplicationMethod()
+	case cosmetics.FieldVolume:
+		return m.Volume()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CosmeticsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case cosmetics.FieldCategory:
+		return m.OldCategory(ctx)
+	case cosmetics.FieldTitle:
+		return m.OldTitle(ctx)
+	case cosmetics.FieldDescription:
+		return m.OldDescription(ctx)
+	case cosmetics.FieldApplicationMethod:
+		return m.OldApplicationMethod(ctx)
+	case cosmetics.FieldVolume:
+		return m.OldVolume(ctx)
+	}
+	return nil, fmt.Errorf("unknown Cosmetics field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CosmeticsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case cosmetics.FieldCategory:
+		v, ok := value.(types.Category)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCategory(v)
+		return nil
+	case cosmetics.FieldTitle:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTitle(v)
+		return nil
+	case cosmetics.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case cosmetics.FieldApplicationMethod:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetApplicationMethod(v)
+		return nil
+	case cosmetics.FieldVolume:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVolume(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Cosmetics field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CosmeticsMutation) AddedFields() []string {
+	var fields []string
+	if m.addcategory != nil {
+		fields = append(fields, cosmetics.FieldCategory)
+	}
+	if m.addvolume != nil {
+		fields = append(fields, cosmetics.FieldVolume)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CosmeticsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case cosmetics.FieldCategory:
+		return m.AddedCategory()
+	case cosmetics.FieldVolume:
+		return m.AddedVolume()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CosmeticsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case cosmetics.FieldCategory:
+		v, ok := value.(types.Category)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCategory(v)
+		return nil
+	case cosmetics.FieldVolume:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddVolume(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Cosmetics numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CosmeticsMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(cosmetics.FieldDescription) {
+		fields = append(fields, cosmetics.FieldDescription)
+	}
+	if m.FieldCleared(cosmetics.FieldApplicationMethod) {
+		fields = append(fields, cosmetics.FieldApplicationMethod)
+	}
+	if m.FieldCleared(cosmetics.FieldVolume) {
+		fields = append(fields, cosmetics.FieldVolume)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CosmeticsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CosmeticsMutation) ClearField(name string) error {
+	switch name {
+	case cosmetics.FieldDescription:
+		m.ClearDescription()
+		return nil
+	case cosmetics.FieldApplicationMethod:
+		m.ClearApplicationMethod()
+		return nil
+	case cosmetics.FieldVolume:
+		m.ClearVolume()
+		return nil
+	}
+	return fmt.Errorf("unknown Cosmetics nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CosmeticsMutation) ResetField(name string) error {
+	switch name {
+	case cosmetics.FieldCategory:
+		m.ResetCategory()
+		return nil
+	case cosmetics.FieldTitle:
+		m.ResetTitle()
+		return nil
+	case cosmetics.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case cosmetics.FieldApplicationMethod:
+		m.ResetApplicationMethod()
+		return nil
+	case cosmetics.FieldVolume:
+		m.ResetVolume()
+		return nil
+	}
+	return fmt.Errorf("unknown Cosmetics field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CosmeticsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CosmeticsMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CosmeticsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CosmeticsMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CosmeticsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CosmeticsMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CosmeticsMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Cosmetics unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CosmeticsMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Cosmetics edge %s", name)
+}
 
 // RefreshTokenMutation represents an operation that mutates the RefreshToken nodes in the graph.
 type RefreshTokenMutation struct {
@@ -438,8 +1119,8 @@ type UserMutation struct {
 	password              *string
 	name                  *string
 	surname               *string
-	role                  *int
-	addrole               *int
+	role                  *types.Role
+	addrole               *types.Role
 	clearedFields         map[string]struct{}
 	refresh_tokens        *uuid.UUID
 	clearedrefresh_tokens bool
@@ -697,13 +1378,13 @@ func (m *UserMutation) ResetSurname() {
 }
 
 // SetRole sets the "role" field.
-func (m *UserMutation) SetRole(i int) {
-	m.role = &i
+func (m *UserMutation) SetRole(t types.Role) {
+	m.role = &t
 	m.addrole = nil
 }
 
 // Role returns the value of the "role" field in the mutation.
-func (m *UserMutation) Role() (r int, exists bool) {
+func (m *UserMutation) Role() (r types.Role, exists bool) {
 	v := m.role
 	if v == nil {
 		return
@@ -714,7 +1395,7 @@ func (m *UserMutation) Role() (r int, exists bool) {
 // OldRole returns the old "role" field's value of the User entity.
 // If the User object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldRole(ctx context.Context) (v int, err error) {
+func (m *UserMutation) OldRole(ctx context.Context) (v types.Role, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRole is only allowed on UpdateOne operations")
 	}
@@ -728,17 +1409,17 @@ func (m *UserMutation) OldRole(ctx context.Context) (v int, err error) {
 	return oldValue.Role, nil
 }
 
-// AddRole adds i to the "role" field.
-func (m *UserMutation) AddRole(i int) {
+// AddRole adds t to the "role" field.
+func (m *UserMutation) AddRole(t types.Role) {
 	if m.addrole != nil {
-		*m.addrole += i
+		*m.addrole += t
 	} else {
-		m.addrole = &i
+		m.addrole = &t
 	}
 }
 
 // AddedRole returns the value that was added to the "role" field in this mutation.
-func (m *UserMutation) AddedRole() (r int, exists bool) {
+func (m *UserMutation) AddedRole() (r types.Role, exists bool) {
 	v := m.addrole
 	if v == nil {
 		return
@@ -916,7 +1597,7 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		m.SetSurname(v)
 		return nil
 	case user.FieldRole:
-		v, ok := value.(int)
+		v, ok := value.(types.Role)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -953,7 +1634,7 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case user.FieldRole:
-		v, ok := value.(int)
+		v, ok := value.(types.Role)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

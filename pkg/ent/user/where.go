@@ -3,6 +3,7 @@
 package user
 
 import (
+	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
@@ -76,8 +77,9 @@ func Surname(v string) predicate.User {
 }
 
 // Role applies equality check predicate on the "role" field. It's identical to RoleEQ.
-func Role(v int) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldRole, v))
+func Role(v types.Role) predicate.User {
+	vc := int(v)
+	return predicate.User(sql.FieldEQ(FieldRole, vc))
 }
 
 // EmailEQ applies the EQ predicate on the "email" field.
@@ -341,43 +343,57 @@ func SurnameContainsFold(v string) predicate.User {
 }
 
 // RoleEQ applies the EQ predicate on the "role" field.
-func RoleEQ(v int) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldRole, v))
+func RoleEQ(v types.Role) predicate.User {
+	vc := int(v)
+	return predicate.User(sql.FieldEQ(FieldRole, vc))
 }
 
 // RoleNEQ applies the NEQ predicate on the "role" field.
-func RoleNEQ(v int) predicate.User {
-	return predicate.User(sql.FieldNEQ(FieldRole, v))
+func RoleNEQ(v types.Role) predicate.User {
+	vc := int(v)
+	return predicate.User(sql.FieldNEQ(FieldRole, vc))
 }
 
 // RoleIn applies the In predicate on the "role" field.
-func RoleIn(vs ...int) predicate.User {
-	return predicate.User(sql.FieldIn(FieldRole, vs...))
+func RoleIn(vs ...types.Role) predicate.User {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int(vs[i])
+	}
+	return predicate.User(sql.FieldIn(FieldRole, v...))
 }
 
 // RoleNotIn applies the NotIn predicate on the "role" field.
-func RoleNotIn(vs ...int) predicate.User {
-	return predicate.User(sql.FieldNotIn(FieldRole, vs...))
+func RoleNotIn(vs ...types.Role) predicate.User {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int(vs[i])
+	}
+	return predicate.User(sql.FieldNotIn(FieldRole, v...))
 }
 
 // RoleGT applies the GT predicate on the "role" field.
-func RoleGT(v int) predicate.User {
-	return predicate.User(sql.FieldGT(FieldRole, v))
+func RoleGT(v types.Role) predicate.User {
+	vc := int(v)
+	return predicate.User(sql.FieldGT(FieldRole, vc))
 }
 
 // RoleGTE applies the GTE predicate on the "role" field.
-func RoleGTE(v int) predicate.User {
-	return predicate.User(sql.FieldGTE(FieldRole, v))
+func RoleGTE(v types.Role) predicate.User {
+	vc := int(v)
+	return predicate.User(sql.FieldGTE(FieldRole, vc))
 }
 
 // RoleLT applies the LT predicate on the "role" field.
-func RoleLT(v int) predicate.User {
-	return predicate.User(sql.FieldLT(FieldRole, v))
+func RoleLT(v types.Role) predicate.User {
+	vc := int(v)
+	return predicate.User(sql.FieldLT(FieldRole, vc))
 }
 
 // RoleLTE applies the LTE predicate on the "role" field.
-func RoleLTE(v int) predicate.User {
-	return predicate.User(sql.FieldLTE(FieldRole, v))
+func RoleLTE(v types.Role) predicate.User {
+	vc := int(v)
+	return predicate.User(sql.FieldLTE(FieldRole, vc))
 }
 
 // HasRefreshTokens applies the HasEdge predicate on the "refresh_tokens" edge.

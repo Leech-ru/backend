@@ -4,6 +4,8 @@ package ent
 
 import (
 	"Leech-ru/internal/domain/schema"
+	"Leech-ru/internal/domain/types"
+	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 
@@ -14,6 +16,32 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	cosmeticsFields := schema.Cosmetics{}.Fields()
+	_ = cosmeticsFields
+	// cosmeticsDescCategory is the schema descriptor for category field.
+	cosmeticsDescCategory := cosmeticsFields[1].Descriptor()
+	// cosmetics.CategoryValidator is a validator for the "category" field. It is called by the builders before save.
+	cosmetics.CategoryValidator = cosmeticsDescCategory.Validators[0].(func(int) error)
+	// cosmeticsDescTitle is the schema descriptor for title field.
+	cosmeticsDescTitle := cosmeticsFields[2].Descriptor()
+	// cosmetics.TitleValidator is a validator for the "title" field. It is called by the builders before save.
+	cosmetics.TitleValidator = cosmeticsDescTitle.Validators[0].(func(string) error)
+	// cosmeticsDescDescription is the schema descriptor for description field.
+	cosmeticsDescDescription := cosmeticsFields[3].Descriptor()
+	// cosmetics.DefaultDescription holds the default value on creation for the description field.
+	cosmetics.DefaultDescription = cosmeticsDescDescription.Default.(string)
+	// cosmeticsDescApplicationMethod is the schema descriptor for applicationMethod field.
+	cosmeticsDescApplicationMethod := cosmeticsFields[4].Descriptor()
+	// cosmetics.DefaultApplicationMethod holds the default value on creation for the applicationMethod field.
+	cosmetics.DefaultApplicationMethod = cosmeticsDescApplicationMethod.Default.(string)
+	// cosmeticsDescVolume is the schema descriptor for volume field.
+	cosmeticsDescVolume := cosmeticsFields[5].Descriptor()
+	// cosmetics.VolumeValidator is a validator for the "volume" field. It is called by the builders before save.
+	cosmetics.VolumeValidator = cosmeticsDescVolume.Validators[0].(func(int) error)
+	// cosmeticsDescID is the schema descriptor for id field.
+	cosmeticsDescID := cosmeticsFields[0].Descriptor()
+	// cosmetics.DefaultID holds the default value on creation for the id field.
+	cosmetics.DefaultID = cosmeticsDescID.Default.(func() uuid.UUID)
 	refreshtokenFields := schema.RefreshToken{}.Fields()
 	_ = refreshtokenFields
 	// refreshtokenDescJti is the schema descriptor for jti field.
@@ -73,7 +101,7 @@ func init() {
 	// userDescRole is the schema descriptor for role field.
 	userDescRole := userFields[5].Descriptor()
 	// user.DefaultRole holds the default value on creation for the role field.
-	user.DefaultRole = userDescRole.Default.(int)
+	user.DefaultRole = types.Role(userDescRole.Default.(int))
 	// userDescID is the schema descriptor for id field.
 	userDescID := userFields[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.

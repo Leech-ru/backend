@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Cosmetics is the predicate function for cosmetics builders.
+type Cosmetics func(*sql.Selector)
+
 // RefreshToken is the predicate function for refreshtoken builders.
 type RefreshToken func(*sql.Selector)
 

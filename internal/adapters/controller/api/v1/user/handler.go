@@ -65,7 +65,7 @@ func (h *handler) Setup(router *echo.Group) {
 	router.POST("/user/register", h.Register)
 	router.POST("/user/login", h.Login)
 	router.POST("/user/password", h.ChangePassword, h.authMiddleware.RequireAuth)
-	router.GET("/user/all", h.GetAll, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.Moderator))
+	router.GET("/user/all", h.GetAll, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 	router.GET("/user", h.GetMe, h.authMiddleware.RequireAuth)
 	router.PATCH("/user", h.Update, h.authMiddleware.RequireAuth)
 	router.POST("/user/logout", h.Logout, h.authMiddleware.RequireAuth)

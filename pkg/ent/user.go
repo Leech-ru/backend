@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 	"fmt"
@@ -27,7 +28,7 @@ type User struct {
 	// Surname holds the value of the "surname" field.
 	Surname string `json:"surname,omitempty"`
 	// Role holds the value of the "role" field.
-	Role int `json:"role,omitempty"`
+	Role types.Role `json:"role,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -114,7 +115,7 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field role", values[i])
 			} else if value.Valid {
-				u.Role = int(value.Int64)
+				u.Role = types.Role(value.Int64)
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])

@@ -3,6 +3,8 @@
 package user
 
 import (
+	"Leech-ru/internal/domain/types"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
@@ -66,7 +68,7 @@ var (
 	// SurnameValidator is a validator for the "surname" field. It is called by the builders before save.
 	SurnameValidator func(string) error
 	// DefaultRole holds the default value on creation for the "role" field.
-	DefaultRole int
+	DefaultRole types.Role
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

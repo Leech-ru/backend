@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 	"context"
@@ -46,15 +47,15 @@ func (uc *UserCreate) SetSurname(s string) *UserCreate {
 }
 
 // SetRole sets the "role" field.
-func (uc *UserCreate) SetRole(i int) *UserCreate {
-	uc.mutation.SetRole(i)
+func (uc *UserCreate) SetRole(t types.Role) *UserCreate {
+	uc.mutation.SetRole(t)
 	return uc
 }
 
 // SetNillableRole sets the "role" field if the given value is not nil.
-func (uc *UserCreate) SetNillableRole(i *int) *UserCreate {
-	if i != nil {
-		uc.SetRole(*i)
+func (uc *UserCreate) SetNillableRole(t *types.Role) *UserCreate {
+	if t != nil {
+		uc.SetRole(*t)
 	}
 	return uc
 }
