@@ -1,0 +1,39 @@
+service:
+  database:
+    host: 'localhost'
+    user: 'user'
+    password: 'password'
+    port: 5432
+    name: 'db'
+    ssl-mode: 'disable'
+
+  redis:
+    host: "localhost"
+    port: 6379
+    password: "valkeypass"
+    db: 0
+
+  mail:
+    host: 'smtp.gmail.com'
+    port: 587
+    mail: 'example@mail.com'
+    password: 'xxxx xxxx xxxx xxxx'
+
+  jwt:
+    path-to-private-key: "keys/private.pem"
+    refresh-token-expires: "720h"
+    access-token-expires: "15m"
+
+backend:
+  host: "0.0.0.0"
+  port: 8000
+  dev-mode: true
+  tls:
+    enabled: false
+    port: 443
+settings:
+  timezone: 'Europe/Moscow'
+  debug: false #TODO везде подключить и почистить
+  logger:
+    log-to-file: false #TODO починить и разобраться
+    logs-dir: 'logs'
