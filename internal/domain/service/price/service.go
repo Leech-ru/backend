@@ -2,6 +2,10 @@ package price
 
 import "Leech-ru/internal/domain/common/errorz"
 
+type priceService struct {
+	leechPrices map[int]int
+}
+
 // CalculateTotal calculates the total cost of the order
 func (s *priceService) CalculateTotal(size1, size2, size3, packageType int) (float64, error) {
 	total := size1*s.leechPrices[1] +

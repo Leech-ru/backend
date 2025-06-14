@@ -1,9 +1,5 @@
 package price
 
-type priceService struct {
-	leechPrices map[int]int
-}
-
 func NewPriceService() *priceService {
 	return &priceService{
 		leechPrices: map[int]int{
