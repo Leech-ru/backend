@@ -12,7 +12,7 @@ import (
 func (s *userService) Login(ctx context.Context, req *dto.LoginUserRequest) (*dto.LoginUserResponse, error) {
 	u, err := s.userRepo.GetByEmail(ctx, req.Email)
 	switch {
-	case errors.As(err, &errorz.UserNotFound):
+	case errors.Is(err, errorz.UserNotFound):
 		return nil, errorz.UserNotFound
 	case err != nil:
 		return nil, err

@@ -27,7 +27,7 @@ func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest
 	}
 	u, err := s.userRepo.Create(ctx, user)
 	switch {
-	case errors.As(err, &errorz.EmailAlreadyExist):
+	case errors.Is(err, errorz.EmailAlreadyExist):
 		return nil, errorz.EmailAlreadyExist
 	case err != nil:
 		return nil, err

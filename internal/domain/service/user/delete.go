@@ -11,7 +11,7 @@ import (
 func (s *userService) Delete(ctx context.Context, req *dto.DeleteUserRequest) error {
 	err := s.userRepo.Delete(ctx, req.ID)
 	switch {
-	case errors.As(err, &errorz.UserNotFound):
+	case errors.Is(err, errorz.UserNotFound):
 		return errorz.UserNotFound
 	case err != nil:
 		return err

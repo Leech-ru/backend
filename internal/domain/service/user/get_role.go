@@ -12,10 +12,10 @@ import (
 func (s *userService) GetRoleByID(ctx context.Context, userID uuid.UUID) (types.Role, error) {
 	u, err := s.userRepo.GetById(ctx, userID)
 	switch {
-	case errors.As(err, &errorz.UserNotFound):
+	case errors.Is(err, errorz.UserNotFound):
 		return 0, errorz.UserNotFound
 	case err != nil:
 		return 0, err
 	}
-	return types.Role(u.Role), nil
+	return u.Role, nil
 }

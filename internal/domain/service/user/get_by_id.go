@@ -11,7 +11,7 @@ import (
 func (s *userService) GetByID(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error) {
 	u, err := s.userRepo.GetById(ctx, req.ID)
 	switch {
-	case errors.As(err, &errorz.UserNotFound):
+	case errors.Is(err, errorz.UserNotFound):
 		return nil, errorz.UserNotFound
 	case err != nil:
 		return nil, err

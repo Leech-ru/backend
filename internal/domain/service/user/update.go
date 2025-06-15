@@ -11,7 +11,7 @@ import (
 func (s *userService) Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error) {
 	userToUpdate, err := s.userRepo.GetById(ctx, req.ID)
 	switch {
-	case errors.As(err, &errorz.UserNotFound):
+	case errors.Is(err, errorz.UserNotFound):
 		return nil, errorz.UserNotFound
 	case err != nil:
 		return nil, err
@@ -25,7 +25,7 @@ func (s *userService) Update(ctx context.Context, req *dto.UpdateUserRequest) (*
 
 	updatedUser, err := s.userRepo.Update(ctx, *userToUpdate)
 	switch {
-	case errors.As(err, &errorz.UserNotFound):
+	case errors.Is(err, errorz.UserNotFound):
 		return nil, errorz.UserNotFound
 	case err != nil:
 		return nil, err
