@@ -1,6 +1,7 @@
 package cosmetics
 
 import (
+	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
 )
@@ -17,6 +18,8 @@ func (s *cosmeticsRepo) Create(ctx context.Context, entity ent.Cosmetics) (*ent.
 		Save(ctx)
 
 	switch {
+	case ent.IsConstraintError(err):
+		return nil, errorz.InvalidCosmeticsFormat
 	case err != nil:
 		return nil, err
 	}

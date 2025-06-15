@@ -33,7 +33,7 @@ backend:
     port: 443
 settings:
   timezone: 'Europe/Moscow'
-  debug: false #TODO везде подключить и почистить
+  debug: false
   logger:
-    log-to-file: false #TODO починить и разобраться
+    log-to-file: false
     logs-dir: 'logs'
