@@ -37,7 +37,16 @@ type GetAllUsersRequest struct {
 	Offset *int `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0"`
 }
 
-type GetAllUsersResponse []*User
+type GetAllByFilterUsersRequest struct {
+	Limit         *int        `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100"`
+	Offset        *int        `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0"`
+	Role          *types.Role `json:"role,omitempty" form:"role" validate:"omitempty,role"`
+	NamePrefix    *string     `json:"name_prefix,omitempty" form:"name_prefix" validate:"omitempty,min=1,max=100"`
+	SurnamePrefix *string     `json:"surname_prefix,omitempty" form:"surname_prefix" validate:"omitempty,min=1,max=100"`
+	EmailPrefix   *string     `json:"email_prefix,omitempty" form:"email_prefix" validate:"omitempty,email"`
+}
+
+type GetAllByFilterUsersResponse []*User
 
 type LoginUserRequest struct {
 	Email    string `json:"email" validate:"required,email,min=6,max=254"`

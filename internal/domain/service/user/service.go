@@ -12,7 +12,6 @@ type userRepo interface {
 	Create(ctx context.Context, userEntity ent.User) (*ent.User, error)
 	GetById(ctx context.Context, id uuid.UUID) (*ent.User, error)
 	GetByEmail(ctx context.Context, email string) (*ent.User, error)
-	GetAll(ctx context.Context, limit, offset int) ([]*ent.User, error)
 	GetAllByFilter(
 		ctx context.Context,
 		limit, offset int,

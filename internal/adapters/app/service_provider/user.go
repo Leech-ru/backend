@@ -14,7 +14,7 @@ type userService interface {
 	ChangePassword(ctx context.Context, req *dto.ChangePasswordRequest) (*dto.ChangePasswordResponse, error)
 	GetByID(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error)
 	GetRoleByID(ctx context.Context, userID uuid.UUID) (types.Role, error)
-	GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (*dto.GetAllUsersResponse, error)
+	GetAllByFilter(ctx context.Context, req *dto.GetAllByFilterUsersRequest) (*dto.GetAllByFilterUsersResponse, error)
 	Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
 	Delete(ctx context.Context, req *dto.DeleteUserRequest) error
 	Logout(ctx context.Context, req *dto.LogoutRequest) error
