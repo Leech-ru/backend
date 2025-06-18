@@ -5,48 +5,63 @@ import (
 	"github.com/google/uuid"
 )
 
+// Cosmetics represents the cosmetic product structure.
+// @Description Contains product information such as category, title, description, and volume.
 type Cosmetics struct {
-	ID                uuid.UUID      `json:"id"`
-	Category          types.Category `json:"category"`
-	Title             string         `json:"title"`
-	Description       *string        `json:"description,omitempty"`
-	ApplicationMethod *string        `json:"application_method,omitempty"`
-	Volume            *int           `json:"volume,omitempty"`
+	ID                uuid.UUID      `json:"id" example:"123e4567-e89b-12d3-a456-426614174000"`
+	Category          types.Category `json:"category" example:"3" enums:"0,1,2,3,4,5,6,7,8"`
+	Title             string         `json:"title" example:"Hair Shampoo"`
+	Description       *string        `json:"description,omitempty" example:"Suitable for daily use."`
+	ApplicationMethod *string        `json:"application_method,omitempty" example:"Apply to wet hair, lather, rinse."`
+	Volume            *int           `json:"volume,omitempty" example:"250"`
 }
 
+// CreateCosmeticsRequest represents a request to create a new cosmetic product.
 type CreateCosmeticsRequest struct {
-	Category          types.Category `json:"category" validate:"required,category"`
-	Title             string         `json:"title" validate:"required,min=3,max=100"`
-	Description       *string        `json:"description,omitempty" validate:"omitempty,min=3,max=3000"`
-	ApplicationMethod *string        `json:"application_method,omitempty" validate:"omitempty,min=3,max=500"`
-	Volume            *int           `json:"volume,omitempty" validate:"omitempty,min=1,max=10000"`
+	Category          types.Category `json:"category" validate:"required,category" example:"3" enums:"0,1,2,3,4,5,6,7,8"`
+	Title             string         `json:"title" validate:"required,min=3,max=100" example:"Hair Shampoo"`
+	Description       *string        `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Suitable for daily use."`
+	ApplicationMethod *string        `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
+	Volume            *int           `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
 }
+
+// CreateCosmeticsResponse represents the response after creating a cosmetic product.
 type CreateCosmeticsResponse Cosmetics
 
+// GetCosmeticsRequest represents a request to get a cosmetic product by ID.
 type GetCosmeticsRequest struct {
-	ID uuid.UUID `json:"id" validate:"required,uuid"`
+	ID uuid.UUID `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
 }
+
+// GetCosmeticsResponse returns a cosmetic product by ID.
 type GetCosmeticsResponse Cosmetics
 
+// GetAllByFilterCosmeticsRequest is used to filter and list cosmetic products.
 type GetAllByFilterCosmeticsRequest struct {
-	Limit       *int            `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100"`
-	Offset      *int            `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0"`
-	Category    *types.Category `json:"category,omitempty" form:"category" validate:"omitempty,category"`
-	TitlePrefix *string         `json:"title_prefix,omitempty" form:"titlePrefix" validate:"omitempty,min=1,max=100"`
-	Volume      *int            `json:"volume,omitempty" form:"volume" validate:"omitempty,min=1,max=10000"`
+	Limit       *int            `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100" example:"10"`
+	Offset      *int            `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0" example:"0"`
+	Category    *types.Category `json:"category,omitempty" form:"category" validate:"omitempty,category" example:"2" enums:"0,1,2,3,4,5,6,7,8"`
+	TitlePrefix *string         `json:"title_prefix,omitempty" form:"titlePrefix" validate:"omitempty,min=1,max=100" example:"Hair"`
+	Volume      *int            `json:"volume,omitempty" form:"volume" validate:"omitempty,min=1,max=10000" example:"250"`
 }
+
+// GetAllByFilterCosmeticsResponse is the list of cosmetics returned by filters.
 type GetAllByFilterCosmeticsResponse []*Cosmetics
 
+// UpdateCosmeticsRequest represents an update request for a cosmetic product.
 type UpdateCosmeticsRequest struct {
-	ID                uuid.UUID       `json:"id" validate:"required,uuid"`
-	Category          *types.Category `json:"category,omitempty" validate:"omitempty,category"`
-	Title             *string         `json:"title,omitempty" validate:"omitempty,min=3,max=100"`
-	Description       *string         `json:"description,omitempty" validate:"omitempty,min=3,max=3000"`
-	ApplicationMethod *string         `json:"application_method,omitempty" validate:"omitempty,min=3,max=500"`
-	Volume            *int            `json:"volume,omitempty" validate:"omitempty,min=1,max=10000"`
+	ID                uuid.UUID       `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	Category          *types.Category `json:"category,omitempty" validate:"omitempty,category" example:"4" enums:"0,1,2,3,4,5,6,7,8"`
+	Title             *string         `json:"title,omitempty" validate:"omitempty,min=3,max=100" example:"New Hair Shampoo"`
+	Description       *string         `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Updated product description."`
+	ApplicationMethod *string         `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply evenly and rinse well."`
+	Volume            *int            `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"500"`
 }
+
+// UpdateCosmeticsResponse returns the updated cosmetic product.
 type UpdateCosmeticsResponse Cosmetics
 
+// DeleteCosmeticsRequest represents a request to delete a cosmetic product by ID.
 type DeleteCosmeticsRequest struct {
-	ID uuid.UUID `json:"id" validate:"required,uuid"`
+	ID uuid.UUID `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
 }

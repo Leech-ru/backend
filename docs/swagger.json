@@ -4,9 +4,9 @@
         "contact": {}
     },
     "paths": {
-        "/order": {
-            "post": {
-                "description": "Processes an order request and returns order details if successful",
+        "/cosmetics": {
+            "get": {
+                "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14,29 +14,119 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "cosmetics"
                 ],
-                "summary": "Create a new order",
+                "summary": "Get cosmetics by filters",
                 "parameters": [
                     {
-                        "description": "Order request payload",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateOrderRequest"
-                        }
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Max number of items",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8
+                        ],
+                        "type": "integer",
+                        "description": "Category enum (0–8)",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by title prefix",
+                        "name": "titlePrefix",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 10000,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Exact volume in ml",
+                        "name": "volume",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateOrderResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.Cosmetics"
+                            }
                         }
                     },
                     "400": {
-                        "description": "Bad request",
+                        "description": "Invalid query parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new cosmetic product with provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cosmetics"
+                ],
+                "summary": "Create a new cosmetic product",
+                "parameters": [
+                    {
+                        "description": "Cosmetic product data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCosmeticsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCosmeticsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict: invalid cosmetics format",
                         "schema": {
                             "$ref": "#/definitions/dto.HTTPStatus"
                         }
@@ -50,9 +140,9 @@
                 }
             }
         },
-        "/ping": {
+        "/cosmetics/{id}": {
             "get": {
-                "description": "Returns an \"ok\" message if the server is running",
+                "description": "Retrieves a cosmetic product using its UUID.",
                 "consumes": [
                     "application/json"
                 ],
@@ -60,14 +150,140 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Ping"
+                    "cosmetics"
                 ],
-                "summary": "Server health check",
+                "summary": "Get cosmetic by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Cosmetic ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PingResponse"
+                            "$ref": "#/definitions/dto.GetCosmeticsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Cosmetic not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes the cosmetic product with the given UUID.",
+                "tags": [
+                    "cosmetics"
+                ],
+                "summary": "Delete cosmetic by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Cosmetic ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successfully deleted"
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Cosmetic not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Updates cosmetic product fields by given ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cosmetics"
+                ],
+                "summary": "Update cosmetic",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Cosmetic ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated cosmetic fields",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateCosmeticsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateCosmeticsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation or binding error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Cosmetic not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
                         }
                     }
                 }
@@ -75,48 +291,190 @@
         }
     },
     "definitions": {
-        "dto.CreateOrderRequest": {
+        "dto.Cosmetics": {
+            "description": "Contains product information such as category, title, description, and volume.",
             "type": "object",
             "properties": {
-                "customer_info": {
-                    "$ref": "#/definitions/dto.CustomerInfo"
+                "application_method": {
+                    "type": "string",
+                    "example": "Apply to wet hair, lather, rinse."
                 },
-                "orderDetails": {
-                    "$ref": "#/definitions/dto.OrderDetails"
+                "category": {
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Category"
+                        }
+                    ],
+                    "example": 3
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Suitable for daily use."
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Hair Shampoo"
+                },
+                "volume": {
+                    "type": "integer",
+                    "example": 250
                 }
             }
         },
-        "dto.CreateOrderResponse": {
+        "dto.CreateCosmeticsRequest": {
             "type": "object",
+            "required": [
+                "category",
+                "title"
+            ],
             "properties": {
-                "customer_info": {
-                    "$ref": "#/definitions/dto.CustomerInfo"
+                "application_method": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 3,
+                    "example": "Apply to wet hair, lather, rinse."
                 },
-                "order_details": {
-                    "$ref": "#/definitions/dto.OrderDetails"
+                "category": {
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Category"
+                        }
+                    ],
+                    "example": 3
                 },
-                "total_price": {
-                    "type": "number"
+                "description": {
+                    "type": "string",
+                    "maxLength": 3000,
+                    "minLength": 3,
+                    "example": "Suitable for daily use."
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Hair Shampoo"
+                },
+                "volume": {
+                    "type": "integer",
+                    "maximum": 10000,
+                    "minimum": 1,
+                    "example": 250
                 }
             }
         },
-        "dto.CustomerInfo": {
+        "dto.CreateCosmeticsResponse": {
+            "description": "Contains product information such as category, title, description, and volume.",
             "type": "object",
             "properties": {
-                "address": {
-                    "type": "string"
+                "application_method": {
+                    "type": "string",
+                    "example": "Apply to wet hair, lather, rinse."
                 },
-                "comment": {
-                    "type": "string"
+                "category": {
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Category"
+                        }
+                    ],
+                    "example": 3
                 },
-                "email": {
-                    "type": "string"
+                "description": {
+                    "type": "string",
+                    "example": "Suitable for daily use."
                 },
-                "fio": {
-                    "type": "string"
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
-                "phone_number": {
-                    "type": "string"
+                "title": {
+                    "type": "string",
+                    "example": "Hair Shampoo"
+                },
+                "volume": {
+                    "type": "integer",
+                    "example": 250
+                }
+            }
+        },
+        "dto.GetCosmeticsResponse": {
+            "description": "Contains product information such as category, title, description, and volume.",
+            "type": "object",
+            "properties": {
+                "application_method": {
+                    "type": "string",
+                    "example": "Apply to wet hair, lather, rinse."
+                },
+                "category": {
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Category"
+                        }
+                    ],
+                    "example": 3
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Suitable for daily use."
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Hair Shampoo"
+                },
+                "volume": {
+                    "type": "integer",
+                    "example": 250
                 }
             }
         },
@@ -131,30 +489,130 @@
                 }
             }
         },
-        "dto.OrderDetails": {
+        "dto.UpdateCosmeticsRequest": {
             "type": "object",
+            "required": [
+                "id"
+            ],
             "properties": {
-                "leech_size_1": {
-                    "type": "integer"
+                "application_method": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 3,
+                    "example": "Apply evenly and rinse well."
                 },
-                "leech_size_2": {
-                    "type": "integer"
+                "category": {
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Category"
+                        }
+                    ],
+                    "example": 4
                 },
-                "leech_size_3": {
-                    "type": "integer"
+                "description": {
+                    "type": "string",
+                    "maxLength": 3000,
+                    "minLength": 3,
+                    "example": "Updated product description."
                 },
-                "package_type": {
-                    "type": "integer"
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "New Hair Shampoo"
+                },
+                "volume": {
+                    "type": "integer",
+                    "maximum": 10000,
+                    "minimum": 1,
+                    "example": 500
                 }
             }
         },
-        "dto.PingResponse": {
+        "dto.UpdateCosmeticsResponse": {
+            "description": "Contains product information such as category, title, description, and volume.",
             "type": "object",
             "properties": {
-                "message": {
-                    "type": "string"
+                "application_method": {
+                    "type": "string",
+                    "example": "Apply to wet hair, lather, rinse."
+                },
+                "category": {
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Category"
+                        }
+                    ],
+                    "example": 3
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Suitable for daily use."
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Hair Shampoo"
+                },
+                "volume": {
+                    "type": "integer",
+                    "example": 250
                 }
             }
+        },
+        "types.Category": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "x-enum-varnames": [
+                "CategoryMainFace",
+                "CategoryMainBody",
+                "CategoryHairCare",
+                "CategoryMen",
+                "CategoryIntensive",
+                "CategoryLuxury",
+                "CategoryExclusive",
+                "CategoryWholesale",
+                "CategoryLeech"
+            ]
         }
     }
 }

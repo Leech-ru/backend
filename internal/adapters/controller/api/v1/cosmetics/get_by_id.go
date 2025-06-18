@@ -9,6 +9,19 @@ import (
 	"net/http"
 )
 
+// GetById returns a cosmetic product by its ID.
+//
+// @Summary      Get cosmetic by ID
+// @Description  Retrieves a cosmetic product using its UUID.
+// @Tags         cosmetics
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Cosmetic ID (UUID)"  Format(uuid)
+// @Success      200  {object}  dto.GetCosmeticsResponse
+// @Failure      400  {object}  dto.HTTPStatus "Validation error"
+// @Failure      404  {object}  dto.HTTPStatus "Cosmetic not found"
+// @Failure      500  {object}  dto.HTTPStatus "Internal server error"
+// @Router       /cosmetics/{id} [get]
 func (h *handler) GetById(c echo.Context) error {
 	id := c.Param("id")
 	userID, err := uuid.Parse(id)

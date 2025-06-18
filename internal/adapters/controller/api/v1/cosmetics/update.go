@@ -9,6 +9,20 @@ import (
 	"net/http"
 )
 
+// Update updates a cosmetic product by ID.
+//
+// @Summary      Update cosmetic
+// @Description  Updates cosmetic product fields by given ID.
+// @Tags         cosmetics
+// @Accept       json
+// @Produce      json
+// @Param        id      path      string                    true  "Cosmetic ID (UUID)"  Format(uuid)
+// @Param        request body      dto.UpdateCosmeticsRequest true  "Updated cosmetic fields"
+// @Success      200     {object}  dto.UpdateCosmeticsResponse
+// @Failure      400     {object}  dto.HTTPStatus "Validation or binding error"
+// @Failure      404     {object}  dto.HTTPStatus "Cosmetic not found"
+// @Failure      500     {object}  dto.HTTPStatus "Internal server error"
+// @Router       /cosmetics/{id} [patch]
 func (h *handler) Update(c echo.Context) error {
 	id := c.Param("id")
 	userID, err := uuid.Parse(id)

@@ -1,32 +1,145 @@
 definitions:
-  dto.CreateOrderRequest:
+  dto.Cosmetics:
+    description: Contains product information such as category, title, description,
+      and volume.
     properties:
-      customer_info:
-        $ref: '#/definitions/dto.CustomerInfo'
-      orderDetails:
-        $ref: '#/definitions/dto.OrderDetails'
+      application_method:
+        example: Apply to wet hair, lather, rinse.
+        type: string
+      category:
+        allOf:
+        - $ref: '#/definitions/types.Category'
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        example: 3
+      description:
+        example: Suitable for daily use.
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      title:
+        example: Hair Shampoo
+        type: string
+      volume:
+        example: 250
+        type: integer
     type: object
-  dto.CreateOrderResponse:
+  dto.CreateCosmeticsRequest:
     properties:
-      customer_info:
-        $ref: '#/definitions/dto.CustomerInfo'
-      order_details:
-        $ref: '#/definitions/dto.OrderDetails'
-      total_price:
-        type: number
+      application_method:
+        example: Apply to wet hair, lather, rinse.
+        maxLength: 500
+        minLength: 3
+        type: string
+      category:
+        allOf:
+        - $ref: '#/definitions/types.Category'
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        example: 3
+      description:
+        example: Suitable for daily use.
+        maxLength: 3000
+        minLength: 3
+        type: string
+      title:
+        example: Hair Shampoo
+        maxLength: 100
+        minLength: 3
+        type: string
+      volume:
+        example: 250
+        maximum: 10000
+        minimum: 1
+        type: integer
+    required:
+    - category
+    - title
     type: object
-  dto.CustomerInfo:
+  dto.CreateCosmeticsResponse:
+    description: Contains product information such as category, title, description,
+      and volume.
     properties:
-      address:
+      application_method:
+        example: Apply to wet hair, lather, rinse.
         type: string
-      comment:
+      category:
+        allOf:
+        - $ref: '#/definitions/types.Category'
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        example: 3
+      description:
+        example: Suitable for daily use.
         type: string
-      email:
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
         type: string
-      fio:
+      title:
+        example: Hair Shampoo
         type: string
-      phone_number:
+      volume:
+        example: 250
+        type: integer
+    type: object
+  dto.GetCosmeticsResponse:
+    description: Contains product information such as category, title, description,
+      and volume.
+    properties:
+      application_method:
+        example: Apply to wet hair, lather, rinse.
         type: string
+      category:
+        allOf:
+        - $ref: '#/definitions/types.Category'
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        example: 3
+      description:
+        example: Suitable for daily use.
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      title:
+        example: Hair Shampoo
+        type: string
+      volume:
+        example: 250
+        type: integer
     type: object
   dto.HTTPStatus:
     properties:
@@ -35,68 +148,300 @@ definitions:
       message:
         type: string
     type: object
-  dto.OrderDetails:
+  dto.UpdateCosmeticsRequest:
     properties:
-      leech_size_1:
-        type: integer
-      leech_size_2:
-        type: integer
-      leech_size_3:
-        type: integer
-      package_type:
-        type: integer
-    type: object
-  dto.PingResponse:
-    properties:
-      message:
+      application_method:
+        example: Apply evenly and rinse well.
+        maxLength: 500
+        minLength: 3
         type: string
+      category:
+        allOf:
+        - $ref: '#/definitions/types.Category'
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        example: 4
+      description:
+        example: Updated product description.
+        maxLength: 3000
+        minLength: 3
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      title:
+        example: New Hair Shampoo
+        maxLength: 100
+        minLength: 3
+        type: string
+      volume:
+        example: 500
+        maximum: 10000
+        minimum: 1
+        type: integer
+    required:
+    - id
     type: object
+  dto.UpdateCosmeticsResponse:
+    description: Contains product information such as category, title, description,
+      and volume.
+    properties:
+      application_method:
+        example: Apply to wet hair, lather, rinse.
+        type: string
+      category:
+        allOf:
+        - $ref: '#/definitions/types.Category'
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        example: 3
+      description:
+        example: Suitable for daily use.
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      title:
+        example: Hair Shampoo
+        type: string
+      volume:
+        example: 250
+        type: integer
+    type: object
+  types.Category:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    type: integer
+    x-enum-varnames:
+    - CategoryMainFace
+    - CategoryMainBody
+    - CategoryHairCare
+    - CategoryMen
+    - CategoryIntensive
+    - CategoryLuxury
+    - CategoryExclusive
+    - CategoryWholesale
+    - CategoryLeech
 info:
   contact: {}
 paths:
-  /order:
-    post:
+  /cosmetics:
+    get:
       consumes:
       - application/json
-      description: Processes an order request and returns order details if successful
+      description: Retrieves a list of cosmetics filtered by category, volume, title,
+        etc.
       parameters:
-      - description: Order request payload
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateOrderRequest'
+      - description: Max number of items
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - description: Category enum (0–8)
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        in: query
+        name: category
+        type: integer
+      - description: Filter by title prefix
+        in: query
+        name: titlePrefix
+        type: string
+      - description: Exact volume in ml
+        in: query
+        maximum: 10000
+        minimum: 1
+        name: volume
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.CreateOrderResponse'
+            items:
+              $ref: '#/definitions/dto.Cosmetics'
+            type: array
         "400":
-          description: Bad request
+          description: Invalid query parameters
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
         "500":
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
-      summary: Create a new order
+      summary: Get cosmetics by filters
       tags:
-      - Order
-  /ping:
+      - cosmetics
+    post:
+      consumes:
+      - application/json
+      description: Creates a new cosmetic product with provided details.
+      parameters:
+      - description: Cosmetic product data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCosmeticsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateCosmeticsResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "409":
+          description: 'Conflict: invalid cosmetics format'
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Create a new cosmetic product
+      tags:
+      - cosmetics
+  /cosmetics/{id}:
+    delete:
+      description: Deletes the cosmetic product with the given UUID.
+      parameters:
+      - description: Cosmetic ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Successfully deleted
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Cosmetic not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Delete cosmetic by ID
+      tags:
+      - cosmetics
     get:
       consumes:
       - application/json
-      description: Returns an "ok" message if the server is running
+      description: Retrieves a cosmetic product using its UUID.
+      parameters:
+      - description: Cosmetic ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PingResponse'
-      summary: Server health check
+            $ref: '#/definitions/dto.GetCosmeticsResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Cosmetic not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get cosmetic by ID
       tags:
-      - Ping
+      - cosmetics
+    patch:
+      consumes:
+      - application/json
+      description: Updates cosmetic product fields by given ID.
+      parameters:
+      - description: Cosmetic ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated cosmetic fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCosmeticsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateCosmeticsResponse'
+        "400":
+          description: Validation or binding error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Cosmetic not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Update cosmetic
+      tags:
+      - cosmetics
 swagger: "2.0"
