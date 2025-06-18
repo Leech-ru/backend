@@ -33,6 +33,8 @@ func New() *Validator {
 
 	_ = newValidator.RegisterValidation("role", validateRole)
 
+	_ = newValidator.RegisterValidation("category", validateCategory)
+
 	return &Validator{
 		newValidator,
 	}

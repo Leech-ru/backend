@@ -30,17 +30,17 @@ func (h *handler) ChangePassword(c echo.Context) error {
 
 	resp, err := h.userService.ChangePassword(c.Request().Context(), &req)
 	switch {
-	case errors.As(err, &errorz.UserNotFound):
+	case errors.Is(err, errorz.UserNotFound):
 		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
 			Code:    http.StatusNotFound,
 			Message: errorz.UserNotFound.Error(),
 		})
-	case errors.As(err, &errorz.PasswordMismatch):
+	case errors.Is(err, errorz.PasswordMismatch):
 		return c.JSON(http.StatusForbidden, dto.HTTPStatus{
 			Code:    http.StatusForbidden,
 			Message: errorz.PasswordMismatch.Error(),
 		})
-	case errors.As(err, &errorz.PasswordsCoincidence):
+	case errors.Is(err, errorz.PasswordsCoincidence):
 		return c.JSON(http.StatusConflict, dto.HTTPStatus{
 			Code:    http.StatusConflict,
 			Message: errorz.PasswordsCoincidence.Error(),

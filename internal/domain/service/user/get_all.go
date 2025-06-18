@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-// GetById returns list of users.
+// GetAll returns list of users.
 func (s *userService) GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (*dto.GetAllUsersResponse, error) {
 	limit := 10
 	if req.Limit != nil {
@@ -23,7 +23,7 @@ func (s *userService) GetAll(ctx context.Context, req *dto.GetAllUsersRequest) (
 
 	var userList dto.GetAllUsersResponse
 	for _, user := range users {
-		userList = append(userList, dto.User{
+		userList = append(userList, &dto.User{
 			ID:      user.ID,
 			Email:   user.Email,
 			Name:    user.Name,

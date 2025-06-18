@@ -1,18 +1,24 @@
-package user
+package cosmetics
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
-	"Leech-ru/internal/domain/utils/cookie"
 	"errors"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-func (h *handler) Logout(c echo.Context) error {
-	var req dto.LogoutRequest
-	userID, _ := c.Get("user_id").(uuid.UUID)
+func (h *handler) Delete(c echo.Context) error {
+	id := c.Param("id")
+	userID, err := uuid.Parse(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
+			Code:    http.StatusNotFound,
+			Message: errorz.CosmeticsNotFound.Error(),
+		})
+	}
+	var req dto.DeleteCosmeticsRequest
 	req.ID = userID
 
 	if err := h.validator.ValidateData(req); err != nil {
@@ -22,11 +28,11 @@ func (h *handler) Logout(c echo.Context) error {
 		})
 	}
 
-	err := h.userService.Logout(c.Request().Context(), &req)
+	err = h.cosmeticsService.Delete(c.Request().Context(), &req)
 	switch {
-	case errors.Is(err, errorz.Unauthorized):
-		return c.JSON(http.StatusForbidden, dto.HTTPStatus{
-			Code:    http.StatusForbidden,
+	case errors.Is(err, errorz.CosmeticsNotFound):
+		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
+			Code:    http.StatusNotFound,
 			Message: err.Error(),
 		})
 	case err != nil:
@@ -34,9 +40,8 @@ func (h *handler) Logout(c echo.Context) error {
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
+
 	}
-	cookie.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
-	cookie.ClearRefreshTokenCookie(c, h.serverConfig.DevMode())
 
 	return c.NoContent(http.StatusNoContent)
 }

@@ -14,6 +14,7 @@ func (s *userRepo) Create(ctx context.Context, entity ent.User) (*ent.User, erro
 		SetPassword(entity.Password).
 		SetName(entity.Name).
 		SetSurname(entity.Surname).
+		SetRole(entity.Role).
 		Save(ctx)
 
 	switch {

@@ -25,10 +25,10 @@ func (h *handler) Register(c echo.Context) error {
 	}
 	resp, err := h.userService.Register(c.Request().Context(), &req)
 	switch {
-	case errors.As(err, &errorz.EmailAlreadyExist):
+	case errors.Is(err, errorz.EmailAlreadyExist):
 		return c.JSON(http.StatusConflict, dto.HTTPStatus{
 			Code:    http.StatusConflict,
-			Message: errorz.EmailAlreadyExist.Error(),
+			Message: err.Error(),
 		})
 	case err != nil:
 		return c.JSON(http.StatusInternalServerError, dto.HTTPStatus{

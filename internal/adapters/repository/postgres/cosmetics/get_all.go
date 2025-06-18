@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-// GetAll retrieves all cosmetics with optional pagination
+// GetAll retrieves all cosmetics with optional pagination.
 func (s *cosmeticsRepo) GetAll(ctx context.Context, limit, offset int) ([]*ent.Cosmetics, error) {
 	cosmetics, err := s.client.Cosmetics.
 		Query().
@@ -19,5 +19,3 @@ func (s *cosmeticsRepo) GetAll(ctx context.Context, limit, offset int) ([]*ent.C
 
 	return cosmetics, nil
 }
-
-//TODO GetAllByFilter

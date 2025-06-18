@@ -26,7 +26,7 @@ func (h *handler) Login(c echo.Context) error {
 
 	resp, err := h.userService.Login(c.Request().Context(), &req)
 	switch {
-	case errors.As(err, &errorz.UserNotFound) || errors.As(err, &errorz.PasswordMismatch):
+	case errors.Is(err, errorz.UserNotFound) || errors.Is(err, errorz.PasswordMismatch):
 		return c.JSON(http.StatusUnauthorized, dto.HTTPStatus{
 			Code:    http.StatusUnauthorized,
 			Message: errorz.InvalidEmailOrPassword.Error(),

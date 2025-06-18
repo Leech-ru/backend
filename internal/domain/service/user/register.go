@@ -3,6 +3,7 @@ package user
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
+	"Leech-ru/internal/domain/types"
 	"Leech-ru/internal/domain/utils/password"
 	"Leech-ru/pkg/ent"
 	"context"
@@ -20,10 +21,10 @@ func (s *userService) Register(ctx context.Context, req *dto.RegisterUserRequest
 		Password: passwordHash,
 		Name:     req.Name,
 		Surname:  req.Surname,
+		Role:     types.RoleUser,
 	}
 	if s.serverConfig.DevMode() && req.Role != nil {
 		user.Role = *req.Role
-
 	}
 	u, err := s.userRepo.Create(ctx, user)
 	switch {

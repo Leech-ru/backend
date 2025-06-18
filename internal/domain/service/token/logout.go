@@ -11,7 +11,7 @@ func (s *tokenService) LogoutAllSessions(ctx context.Context, userID uuid.UUID) 
 	tokenEntity, err := s.refreshTokenRepo.GetByUserID(ctx, userID)
 	switch {
 	case errors.Is(err, errorz.TokenNotFound):
-		return nil
+		return errorz.Unauthorized
 	case err != nil:
 		return err
 	}
@@ -20,7 +20,7 @@ func (s *tokenService) LogoutAllSessions(ctx context.Context, userID uuid.UUID) 
 	_, err = s.refreshTokenRepo.Update(ctx, *tokenEntity)
 	switch {
 	case errors.Is(err, errorz.TokenNotFound):
-		return nil
+		return errorz.Unauthorized
 	case err != nil:
 		return err
 	}

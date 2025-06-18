@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/adapters/app"
 	"Leech-ru/internal/adapters/controller/api/middleware/auth"
 	"Leech-ru/internal/adapters/controller/api/middleware/role"
+	"Leech-ru/internal/adapters/controller/api/v1/cosmetics"
 	"Leech-ru/internal/adapters/controller/api/v1/order"
 	"Leech-ru/internal/adapters/controller/api/v1/ping"
 	"Leech-ru/internal/adapters/controller/api/v1/token"
@@ -51,20 +52,25 @@ func Setup(app *app.App) {
 }
 
 func addRouters(app *app.App) {
-	authMiddleware := auth.NewAuthMiddleware(app.ServiceProvider.TokenService())
-	roleMiddleware := role.NewRoleMiddleware(app.ServiceProvider.UserService())
+	serviceProvider := app.ServiceProvider
+
+	authMiddleware := auth.NewAuthMiddleware(serviceProvider.TokenService())
+	roleMiddleware := role.NewRoleMiddleware(serviceProvider.UserService())
 
 	apiV1 := app.Server.Group("/api/v1")
 
 	pingHandler := ping.NewHandler()
 	pingHandler.Setup(apiV1)
 
-	refreshTokenHandler := token.NewHandler(app.ServiceProvider.TokenService(), app.ServiceProvider.JWTConfig(), app.ServiceProvider.ServerConfig(), app.ServiceProvider.Validator(), app.ServiceProvider.Decoder())
+	refreshTokenHandler := token.NewHandler(serviceProvider.TokenService(), serviceProvider.JWTConfig(), serviceProvider.ServerConfig(), serviceProvider.Validator(), serviceProvider.Decoder())
 	refreshTokenHandler.Setup(apiV1)
 
-	orderHandler := order.NewHandler(app.ServiceProvider.OrderService(app.ServiceProvider.MailConfig()), app.ServiceProvider.Validator())
+	orderHandler := order.NewHandler(serviceProvider.OrderService(serviceProvider.MailConfig()), serviceProvider.Validator())
 	orderHandler.Setup(apiV1)
 
-	userHandler := user.NewHandler(app.ServiceProvider.UserService(), app.ServiceProvider.JWTConfig(), app.ServiceProvider.ServerConfig(), authMiddleware, roleMiddleware, app.ServiceProvider.Validator(), app.ServiceProvider.Decoder())
+	userHandler := user.NewHandler(serviceProvider.UserService(), serviceProvider.JWTConfig(), serviceProvider.ServerConfig(), authMiddleware, roleMiddleware, serviceProvider.Validator(), serviceProvider.Decoder())
 	userHandler.Setup(apiV1)
+
+	cosmeticsHandler := cosmetics.NewHandler(serviceProvider.CosmeticsService(), authMiddleware, roleMiddleware, serviceProvider.Validator(), serviceProvider.Decoder())
+	cosmeticsHandler.Setup(apiV1)
 }

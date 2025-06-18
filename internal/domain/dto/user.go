@@ -37,8 +37,7 @@ type GetAllUsersRequest struct {
 	Offset *int `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0"`
 }
 
-// TODO сделать []*User
-type GetAllUsersResponse []User
+type GetAllUsersResponse []*User
 
 type LoginUserRequest struct {
 	Email    string `json:"email" validate:"required,email,min=6,max=254"`

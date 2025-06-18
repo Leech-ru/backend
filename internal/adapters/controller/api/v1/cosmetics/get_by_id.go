@@ -1,4 +1,4 @@
-package user
+package cosmetics
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
@@ -9,17 +9,18 @@ import (
 	"net/http"
 )
 
-func (h *handler) Update(c echo.Context) error {
-	var req dto.UpdateUserRequest
-	userID, _ := c.Get("user_id").(uuid.UUID)
-	req.ID = userID
-
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
+func (h *handler) GetById(c echo.Context) error {
+	id := c.Param("id")
+	userID, err := uuid.Parse(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
+			Code:    http.StatusNotFound,
+			Message: errorz.CosmeticsNotFound.Error(),
 		})
 	}
+	var req dto.GetCosmeticsRequest
+	req.ID = userID
+
 	if err := h.validator.ValidateData(req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
 			Code:    http.StatusBadRequest,
@@ -27,12 +28,12 @@ func (h *handler) Update(c echo.Context) error {
 		})
 	}
 
-	resp, err := h.userService.Update(c.Request().Context(), &req)
+	resp, err := h.cosmeticsService.GetByID(c.Request().Context(), &req)
 	switch {
-	case errors.Is(err, errorz.UserNotFound):
-		return c.JSON(http.StatusUnauthorized, dto.HTTPStatus{
-			Code:    http.StatusUnauthorized,
-			Message: errorz.InvalidEmailOrPassword.Error(),
+	case errors.Is(err, errorz.CosmeticsNotFound):
+		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
 		})
 	case err != nil:
 		return c.JSON(http.StatusInternalServerError, dto.HTTPStatus{
@@ -43,5 +44,4 @@ func (h *handler) Update(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, resp)
-
 }

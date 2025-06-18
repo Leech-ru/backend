@@ -26,6 +26,7 @@ type serverConfig interface {
 	DevMode() bool
 }
 
+// TODO users search
 type userService struct {
 	userRepo     userRepo
 	tokenService tokenService
