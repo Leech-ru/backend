@@ -1,6 +1,7 @@
 package server
 
 import (
+	_ "Leech-ru/docs"
 	"Leech-ru/internal/adapters/app"
 	"Leech-ru/internal/adapters/controller/api/middleware/auth"
 	"Leech-ru/internal/adapters/controller/api/middleware/role"
@@ -11,7 +12,9 @@ import (
 	"Leech-ru/internal/adapters/controller/api/v1/user"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"io"
+	"net/http"
 )
 
 func Setup(app *app.App) {
@@ -52,12 +55,18 @@ func Setup(app *app.App) {
 }
 
 func addRouters(app *app.App) {
+	server := app.Server
 	serviceProvider := app.ServiceProvider
 
 	authMiddleware := auth.NewAuthMiddleware(serviceProvider.TokenService())
 	roleMiddleware := role.NewRoleMiddleware(serviceProvider.UserService())
 
-	apiV1 := app.Server.Group("/api/v1")
+	server.GET("/swagger/*", echoSwagger.WrapHandler)
+	server.GET("/swagger", func(c echo.Context) error {
+		return c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
+	})
+
+	apiV1 := server.Group("/api/v1")
 
 	pingHandler := ping.NewHandler()
 	pingHandler.Setup(apiV1)
