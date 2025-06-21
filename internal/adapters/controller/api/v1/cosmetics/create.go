@@ -20,7 +20,7 @@ import (
 // @Failure      400      {object}  dto.HTTPStatus "Invalid request body or validation error"
 // @Failure      409      {object}  dto.HTTPStatus "Conflict: invalid cosmetics format"
 // @Failure      500      {object}  dto.HTTPStatus "Internal server error"
-// @Router       /cosmetics [post]
+// @Router       /api/v1/cosmetics [post]
 func (h *handler) Create(c echo.Context) error {
 	var req dto.CreateCosmeticsRequest
 	if err := c.Bind(&req); err != nil {

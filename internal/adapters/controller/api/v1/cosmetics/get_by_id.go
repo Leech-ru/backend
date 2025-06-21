@@ -21,7 +21,7 @@ import (
 // @Failure      400  {object}  dto.HTTPStatus "Validation error"
 // @Failure      404  {object}  dto.HTTPStatus "Cosmetic not found"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
-// @Router       /cosmetics/{id} [get]
+// @Router       /api/v1/cosmetics/{id} [get]
 func (h *handler) GetById(c echo.Context) error {
 	id := c.Param("id")
 	userID, err := uuid.Parse(id)
