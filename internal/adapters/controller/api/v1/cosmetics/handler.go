@@ -5,7 +5,6 @@ import (
 	"Leech-ru/internal/adapters/controller/api/middleware/role"
 	"Leech-ru/internal/adapters/controller/api/validator"
 	"Leech-ru/internal/domain/dto"
-	"Leech-ru/internal/domain/types"
 	"context"
 	"github.com/go-playground/form"
 	"github.com/labstack/echo/v4"
@@ -43,12 +42,16 @@ func NewHandler(
 		formDecoder:      formDecoder,
 	}
 }
-func (h *handler) Setup(router *echo.Group) {
-	group := router.Group("/cosmetics", h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 
-	group.POST("", h.Create)
-	group.GET("/search", h.GetAllByFilter)
-	group.GET("/:id", h.GetById)
-	group.PATCH("/:id", h.Update)
-	group.DELETE("/:id", h.Delete)
+func (h *handler) Setup(router *echo.Group) {
+	router.GET("/cosmetics/search", h.GetAllByFilter)
+	router.GET("/cosmetics/:id", h.GetById)
+	router.POST("/cosmetics", h.Create)
+	router.PATCH("/cosmetics/:id", h.Update)
+	router.DELETE("/cosmetics/:id", h.Delete)
+
+	//TODO включить когда будут юзеры
+	//router.POST("/cosmetics", h.Create, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	//router.PATCH("/cosmetics/:id", h.Update, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	//router.DELETE("/cosmetics/:id", h.Delete, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 }
