@@ -5,7 +5,7 @@ go run entgo.io/ent/cmd/ent new --target internal/domain/schema [TableName]
 
 Генерация орм
 ```shell
-go run -mod=mod entgo.io/ent/cmd/ent generate .\internal\domain\schema\ --target ./pkg/ent
+go run -mod=mod entgo.io/ent/cmd/ent generate --target ./pkg/ent ./internal/domain/schema
 ```
 
 Сгенерировать RSA ключи
