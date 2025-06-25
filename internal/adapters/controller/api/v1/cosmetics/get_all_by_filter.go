@@ -21,7 +21,7 @@ import (
 // @Success      200  {array}   dto.Cosmetics
 // @Failure      400  {object}  dto.HTTPStatus "Invalid query parameters"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
-// @Router       /api/v1/cosmetics [get]
+// @Router       /cosmetics [get]
 func (h *handler) GetAllByFilter(c echo.Context) error {
 	var req dto.GetAllByFilterCosmeticsRequest
 
