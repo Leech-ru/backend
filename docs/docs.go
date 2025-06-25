@@ -341,7 +341,7 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "links": {
-                    "type": "object"
+                    "$ref": "#/definitions/dto.Links"
                 },
                 "title": {
                     "type": "string",
@@ -392,7 +392,12 @@ const docTemplate = `{
                     "example": "Suitable for daily use."
                 },
                 "links": {
-                    "type": "object"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.Links"
+                        }
+                    ],
+                    "x-go-name": "Links"
                 },
                 "title": {
                     "type": "string",
@@ -444,7 +449,7 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "links": {
-                    "type": "object"
+                    "$ref": "#/definitions/dto.Links"
                 },
                 "title": {
                     "type": "string",
@@ -492,7 +497,7 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "links": {
-                    "type": "object"
+                    "$ref": "#/definitions/dto.Links"
                 },
                 "title": {
                     "type": "string",
@@ -512,6 +517,21 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.Links": {
+            "type": "object",
+            "properties": {
+                "ozon": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "example": "https://www.ozon.ru/product/gel-girudo-dr-nikonov-dlya-tela-100-ml-1907286044/?at=OgtEDAg59hR8AYgGimrnA9YIqYo9mocJYEzPjHR666Gm"
+                },
+                "wildberries": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "example": "https://www.wildberries.ru/catalog/344283033/detail.aspx"
                 }
             }
         },
@@ -557,7 +577,12 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "links": {
-                    "type": "object"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.Links"
+                        }
+                    ],
+                    "x-go-name": "Links"
                 },
                 "title": {
                     "type": "string",
@@ -609,7 +634,7 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "links": {
-                    "type": "object"
+                    "$ref": "#/definitions/dto.Links"
                 },
                 "title": {
                     "type": "string",

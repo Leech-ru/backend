@@ -14,7 +14,7 @@ type Cosmetics struct {
 	Description       *string        `json:"description,omitempty" example:"Suitable for daily use."`
 	ApplicationMethod *string        `json:"application_method,omitempty" example:"Apply to wet hair, lather, rinse."`
 	Volume            *int           `json:"volume,omitempty" example:"250"`
-	Links             *Links         `json:"links" swaggertype:"object"`
+	Links             *Links         `json:"links"`
 }
 
 //todo в сваге не видно эти ссылки
@@ -32,7 +32,7 @@ type CreateCosmeticsRequest struct {
 	Description       *string        `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Suitable for daily use."`
 	ApplicationMethod *string        `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
 	Volume            *int           `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
-	Links             *Links         `json:"links,omitempty" validate:"omitempty" swaggertype:"object"`
+	Links             *Links         `json:"links,omitempty" validate:"omitempty" extensions:"x-go-name=Links"`
 }
 
 // CreateCosmeticsResponse represents the response after creating a cosmetic product.
@@ -68,7 +68,7 @@ type UpdateCosmeticsRequest struct {
 	Description       *string         `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Updated product description."`
 	ApplicationMethod *string         `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply evenly and rinse well."`
 	Volume            *int            `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"500"`
-	Links             *Links          `json:"links,omitempty" validate:"omitempty" swaggertype:"object"`
+	Links             *Links          `json:"links,omitempty" validate:"omitempty" extensions:"x-go-name=Links"`
 }
 
 // UpdateCosmeticsResponse returns the updated cosmetic product.

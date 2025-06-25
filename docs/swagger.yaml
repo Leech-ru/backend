@@ -27,7 +27,7 @@ definitions:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
       links:
-        type: object
+        $ref: '#/definitions/dto.Links'
       title:
         example: Hair Shampoo
         type: string
@@ -62,7 +62,9 @@ definitions:
         minLength: 3
         type: string
       links:
-        type: object
+        allOf:
+        - $ref: '#/definitions/dto.Links'
+        x-go-name: Links
       title:
         example: Hair Shampoo
         maxLength: 100
@@ -105,7 +107,7 @@ definitions:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
       links:
-        type: object
+        $ref: '#/definitions/dto.Links'
       title:
         example: Hair Shampoo
         type: string
@@ -141,7 +143,7 @@ definitions:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
       links:
-        type: object
+        $ref: '#/definitions/dto.Links'
       title:
         example: Hair Shampoo
         type: string
@@ -154,6 +156,17 @@ definitions:
       code:
         type: integer
       message:
+        type: string
+    type: object
+  dto.Links:
+    properties:
+      ozon:
+        example: https://www.ozon.ru/product/gel-girudo-dr-nikonov-dlya-tela-100-ml-1907286044/?at=OgtEDAg59hR8AYgGimrnA9YIqYo9mocJYEzPjHR666Gm
+        maxLength: 500
+        type: string
+      wildberries:
+        example: https://www.wildberries.ru/catalog/344283033/detail.aspx
+        maxLength: 500
         type: string
     type: object
   dto.UpdateCosmeticsRequest:
@@ -186,7 +199,9 @@ definitions:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
       links:
-        type: object
+        allOf:
+        - $ref: '#/definitions/dto.Links'
+        x-go-name: Links
       title:
         example: New Hair Shampoo
         maxLength: 100
@@ -228,7 +243,7 @@ definitions:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
       links:
-        type: object
+        $ref: '#/definitions/dto.Links'
       title:
         example: Hair Shampoo
         type: string
