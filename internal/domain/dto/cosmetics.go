@@ -14,6 +14,15 @@ type Cosmetics struct {
 	Description       *string        `json:"description,omitempty" example:"Suitable for daily use."`
 	ApplicationMethod *string        `json:"application_method,omitempty" example:"Apply to wet hair, lather, rinse."`
 	Volume            *int           `json:"volume,omitempty" example:"250"`
+	Links             *Links         `json:"links" swaggertype:"object"`
+}
+
+//todo в сваге не видно эти ссылки
+
+// Links contains links information.
+type Links struct {
+	Ozon        *string `json:"ozon" validate:"omitempty,max=500,ozonlink" example:"https://www.ozon.ru/product/gel-girudo-dr-nikonov-dlya-tela-100-ml-1907286044/?at=OgtEDAg59hR8AYgGimrnA9YIqYo9mocJYEzPjHR666Gm"`
+	Wildberries *string `json:"wildberries" validate:"omitempty,max=500,wildberrieslink" example:"https://www.wildberries.ru/catalog/344283033/detail.aspx"`
 }
 
 // CreateCosmeticsRequest represents a request to create a new cosmetic product.
@@ -23,6 +32,7 @@ type CreateCosmeticsRequest struct {
 	Description       *string        `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Suitable for daily use."`
 	ApplicationMethod *string        `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
 	Volume            *int           `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
+	Links             *Links         `json:"links,omitempty" validate:"omitempty" swaggertype:"object"`
 }
 
 // CreateCosmeticsResponse represents the response after creating a cosmetic product.
@@ -37,6 +47,8 @@ type GetCosmeticsRequest struct {
 type GetCosmeticsResponse Cosmetics
 
 // GetAllByFilterCosmeticsRequest is used to filter and list cosmetic products.
+// TODO add volume from - volume to
+// TODO add have links ozon / wildberries
 type GetAllByFilterCosmeticsRequest struct {
 	Limit       *int            `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100" example:"10"`
 	Offset      *int            `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0" example:"0"`
@@ -56,6 +68,7 @@ type UpdateCosmeticsRequest struct {
 	Description       *string         `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Updated product description."`
 	ApplicationMethod *string         `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply evenly and rinse well."`
 	Volume            *int            `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"500"`
+	Links             *Links          `json:"links,omitempty" validate:"omitempty" swaggertype:"object"`
 }
 
 // UpdateCosmeticsResponse returns the updated cosmetic product.

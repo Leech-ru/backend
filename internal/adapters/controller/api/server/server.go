@@ -61,12 +61,12 @@ func addRouters(app *app.App) {
 	authMiddleware := auth.NewAuthMiddleware(serviceProvider.TokenService())
 	roleMiddleware := role.NewRoleMiddleware(serviceProvider.UserService())
 
-	server.GET("/swagger/*", echoSwagger.WrapHandler)
-	server.GET("/swagger", func(c echo.Context) error {
+	apiV1 := server.Group("/api/v1")
+
+	apiV1.GET("/swagger/*", echoSwagger.WrapHandler)
+	apiV1.GET("/swagger", func(c echo.Context) error {
 		return c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
 	})
-
-	apiV1 := server.Group("/api/v1")
 
 	pingHandler := ping.NewHandler()
 	pingHandler.Setup(apiV1)

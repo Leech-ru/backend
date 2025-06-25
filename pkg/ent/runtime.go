@@ -38,6 +38,14 @@ func init() {
 	cosmeticsDescVolume := cosmeticsFields[5].Descriptor()
 	// cosmetics.VolumeValidator is a validator for the "volume" field. It is called by the builders before save.
 	cosmetics.VolumeValidator = cosmeticsDescVolume.Validators[0].(func(int) error)
+	// cosmeticsDescOzonLink is the schema descriptor for ozon_link field.
+	cosmeticsDescOzonLink := cosmeticsFields[6].Descriptor()
+	// cosmetics.DefaultOzonLink holds the default value on creation for the ozon_link field.
+	cosmetics.DefaultOzonLink = cosmeticsDescOzonLink.Default.(string)
+	// cosmeticsDescWildberriesLink is the schema descriptor for wildberries_link field.
+	cosmeticsDescWildberriesLink := cosmeticsFields[7].Descriptor()
+	// cosmetics.DefaultWildberriesLink holds the default value on creation for the wildberries_link field.
+	cosmetics.DefaultWildberriesLink = cosmeticsDescWildberriesLink.Default.(string)
 	// cosmeticsDescID is the schema descriptor for id field.
 	cosmeticsDescID := cosmeticsFields[0].Descriptor()
 	// cosmetics.DefaultID holds the default value on creation for the id field.

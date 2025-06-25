@@ -130,6 +130,46 @@ func (cu *CosmeticsUpdate) ClearVolume() *CosmeticsUpdate {
 	return cu
 }
 
+// SetOzonLink sets the "ozon_link" field.
+func (cu *CosmeticsUpdate) SetOzonLink(s string) *CosmeticsUpdate {
+	cu.mutation.SetOzonLink(s)
+	return cu
+}
+
+// SetNillableOzonLink sets the "ozon_link" field if the given value is not nil.
+func (cu *CosmeticsUpdate) SetNillableOzonLink(s *string) *CosmeticsUpdate {
+	if s != nil {
+		cu.SetOzonLink(*s)
+	}
+	return cu
+}
+
+// ClearOzonLink clears the value of the "ozon_link" field.
+func (cu *CosmeticsUpdate) ClearOzonLink() *CosmeticsUpdate {
+	cu.mutation.ClearOzonLink()
+	return cu
+}
+
+// SetWildberriesLink sets the "wildberries_link" field.
+func (cu *CosmeticsUpdate) SetWildberriesLink(s string) *CosmeticsUpdate {
+	cu.mutation.SetWildberriesLink(s)
+	return cu
+}
+
+// SetNillableWildberriesLink sets the "wildberries_link" field if the given value is not nil.
+func (cu *CosmeticsUpdate) SetNillableWildberriesLink(s *string) *CosmeticsUpdate {
+	if s != nil {
+		cu.SetWildberriesLink(*s)
+	}
+	return cu
+}
+
+// ClearWildberriesLink clears the value of the "wildberries_link" field.
+func (cu *CosmeticsUpdate) ClearWildberriesLink() *CosmeticsUpdate {
+	cu.mutation.ClearWildberriesLink()
+	return cu
+}
+
 // Mutation returns the CosmeticsMutation object of the builder.
 func (cu *CosmeticsUpdate) Mutation() *CosmeticsMutation {
 	return cu.mutation
@@ -223,6 +263,18 @@ func (cu *CosmeticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if cu.mutation.VolumeCleared() {
 		_spec.ClearField(cosmetics.FieldVolume, field.TypeInt)
+	}
+	if value, ok := cu.mutation.OzonLink(); ok {
+		_spec.SetField(cosmetics.FieldOzonLink, field.TypeString, value)
+	}
+	if cu.mutation.OzonLinkCleared() {
+		_spec.ClearField(cosmetics.FieldOzonLink, field.TypeString)
+	}
+	if value, ok := cu.mutation.WildberriesLink(); ok {
+		_spec.SetField(cosmetics.FieldWildberriesLink, field.TypeString, value)
+	}
+	if cu.mutation.WildberriesLinkCleared() {
+		_spec.ClearField(cosmetics.FieldWildberriesLink, field.TypeString)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -343,6 +395,46 @@ func (cuo *CosmeticsUpdateOne) AddVolume(i int) *CosmeticsUpdateOne {
 // ClearVolume clears the value of the "volume" field.
 func (cuo *CosmeticsUpdateOne) ClearVolume() *CosmeticsUpdateOne {
 	cuo.mutation.ClearVolume()
+	return cuo
+}
+
+// SetOzonLink sets the "ozon_link" field.
+func (cuo *CosmeticsUpdateOne) SetOzonLink(s string) *CosmeticsUpdateOne {
+	cuo.mutation.SetOzonLink(s)
+	return cuo
+}
+
+// SetNillableOzonLink sets the "ozon_link" field if the given value is not nil.
+func (cuo *CosmeticsUpdateOne) SetNillableOzonLink(s *string) *CosmeticsUpdateOne {
+	if s != nil {
+		cuo.SetOzonLink(*s)
+	}
+	return cuo
+}
+
+// ClearOzonLink clears the value of the "ozon_link" field.
+func (cuo *CosmeticsUpdateOne) ClearOzonLink() *CosmeticsUpdateOne {
+	cuo.mutation.ClearOzonLink()
+	return cuo
+}
+
+// SetWildberriesLink sets the "wildberries_link" field.
+func (cuo *CosmeticsUpdateOne) SetWildberriesLink(s string) *CosmeticsUpdateOne {
+	cuo.mutation.SetWildberriesLink(s)
+	return cuo
+}
+
+// SetNillableWildberriesLink sets the "wildberries_link" field if the given value is not nil.
+func (cuo *CosmeticsUpdateOne) SetNillableWildberriesLink(s *string) *CosmeticsUpdateOne {
+	if s != nil {
+		cuo.SetWildberriesLink(*s)
+	}
+	return cuo
+}
+
+// ClearWildberriesLink clears the value of the "wildberries_link" field.
+func (cuo *CosmeticsUpdateOne) ClearWildberriesLink() *CosmeticsUpdateOne {
+	cuo.mutation.ClearWildberriesLink()
 	return cuo
 }
 
@@ -469,6 +561,18 @@ func (cuo *CosmeticsUpdateOne) sqlSave(ctx context.Context) (_node *Cosmetics, e
 	}
 	if cuo.mutation.VolumeCleared() {
 		_spec.ClearField(cosmetics.FieldVolume, field.TypeInt)
+	}
+	if value, ok := cuo.mutation.OzonLink(); ok {
+		_spec.SetField(cosmetics.FieldOzonLink, field.TypeString, value)
+	}
+	if cuo.mutation.OzonLinkCleared() {
+		_spec.ClearField(cosmetics.FieldOzonLink, field.TypeString)
+	}
+	if value, ok := cuo.mutation.WildberriesLink(); ok {
+		_spec.SetField(cosmetics.FieldWildberriesLink, field.TypeString, value)
+	}
+	if cuo.mutation.WildberriesLinkCleared() {
+		_spec.ClearField(cosmetics.FieldWildberriesLink, field.TypeString)
 	}
 	_node = &Cosmetics{config: cuo.config}
 	_spec.Assign = _node.assignValues

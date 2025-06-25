@@ -10,13 +10,18 @@ import (
 
 // Create create cosmetics and returns it.
 func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsRequest) (*dto.CreateCosmeticsResponse, error) {
-	c, err := s.cosmeticsRepo.Create(ctx, ent.Cosmetics{
+	cosmetics := &ent.Cosmetics{
 		Category:          req.Category,
 		Title:             req.Title,
 		Description:       req.Description,
 		ApplicationMethod: req.ApplicationMethod,
 		Volume:            req.Volume,
-	})
+	}
+	if req.Links != nil {
+		cosmetics.OzonLink = req.Links.Ozon
+		cosmetics.WildberriesLink = req.Links.Wildberries
+	}
+	cosmetics, err := s.cosmeticsRepo.Create(ctx, *cosmetics)
 	switch {
 	case errors.Is(err, errorz.InvalidCosmeticsFormat):
 		return nil, errorz.InvalidCosmeticsFormat
@@ -24,11 +29,15 @@ func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsR
 		return nil, err
 	}
 	return &dto.CreateCosmeticsResponse{
-		ID:                c.ID,
-		Category:          c.Category,
-		Title:             c.Title,
-		Description:       c.Description,
-		ApplicationMethod: c.ApplicationMethod,
-		Volume:            c.Volume,
+		ID:                cosmetics.ID,
+		Category:          cosmetics.Category,
+		Title:             cosmetics.Title,
+		Description:       cosmetics.Description,
+		ApplicationMethod: cosmetics.ApplicationMethod,
+		Volume:            cosmetics.Volume,
+		Links: &dto.Links{
+			Ozon:        cosmetics.OzonLink,
+			Wildberries: cosmetics.WildberriesLink,
+		},
 	}, nil
 }

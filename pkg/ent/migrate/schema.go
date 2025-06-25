@@ -16,6 +16,8 @@ var (
 		{Name: "description", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "application_method", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "volume", Type: field.TypeInt, Nullable: true},
+		{Name: "ozon_link", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "wildberries_link", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// CosmeticsTable holds the schema information for the "cosmetics" table.
 	CosmeticsTable = &schema.Table{

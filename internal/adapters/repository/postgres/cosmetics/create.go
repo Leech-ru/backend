@@ -15,6 +15,8 @@ func (s *cosmeticsRepo) Create(ctx context.Context, entity ent.Cosmetics) (*ent.
 		SetNillableDescription(entity.Description).
 		SetNillableApplicationMethod(entity.ApplicationMethod).
 		SetNillableVolume(entity.Volume).
+		SetNillableOzonLink(entity.OzonLink).
+		SetNillableWildberriesLink(entity.WildberriesLink).
 		Save(ctx)
 
 	switch {
@@ -23,12 +25,5 @@ func (s *cosmeticsRepo) Create(ctx context.Context, entity ent.Cosmetics) (*ent.
 	case err != nil:
 		return nil, err
 	}
-	return &ent.Cosmetics{
-		ID:                created.ID,
-		Category:          created.Category,
-		Title:             created.Title,
-		Description:       created.Description,
-		ApplicationMethod: created.ApplicationMethod,
-		Volume:            created.Volume,
-	}, nil
+	return created, nil
 }

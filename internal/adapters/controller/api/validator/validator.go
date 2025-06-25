@@ -35,6 +35,9 @@ func New() *Validator {
 
 	_ = newValidator.RegisterValidation("category", validateCategory)
 
+	_ = newValidator.RegisterValidation("ozonlink", validateOzonLink)
+	_ = newValidator.RegisterValidation("wildberrieslink", validateWildberriesLink)
+
 	return &Validator{
 		newValidator,
 	}

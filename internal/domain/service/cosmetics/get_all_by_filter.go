@@ -28,6 +28,10 @@ func (s *cosmeticsService) GetAllByFilter(ctx context.Context, req *dto.GetAllBy
 			Description:       cosmetics.Description,
 			ApplicationMethod: cosmetics.ApplicationMethod,
 			Volume:            cosmetics.Volume,
+			Links: &dto.Links{
+				Ozon:        cosmetics.OzonLink,
+				Wildberries: cosmetics.WildberriesLink,
+			},
 		})
 	}
 	return &resp, nil

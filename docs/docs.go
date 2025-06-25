@@ -9,13 +9,16 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "API Support",
+            "email": "mmishin2107@gmail.com"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/cosmetics": {
+        "/api/v1/cosmetics": {
             "get": {
                 "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc.",
                 "consumes": [
@@ -151,7 +154,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/cosmetics/{id}": {
+        "/api/v1/cosmetics/{id}": {
             "get": {
                 "description": "Retrieves a cosmetic product using its UUID.",
                 "consumes": [
@@ -337,6 +340,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "links": {
+                    "type": "object"
+                },
                 "title": {
                     "type": "string",
                     "example": "Hair Shampoo"
@@ -384,6 +390,9 @@ const docTemplate = `{
                     "maxLength": 3000,
                     "minLength": 3,
                     "example": "Suitable for daily use."
+                },
+                "links": {
+                    "type": "object"
                 },
                 "title": {
                     "type": "string",
@@ -434,6 +443,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "links": {
+                    "type": "object"
+                },
                 "title": {
                     "type": "string",
                     "example": "Hair Shampoo"
@@ -478,6 +490,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "links": {
+                    "type": "object"
                 },
                 "title": {
                     "type": "string",
@@ -541,6 +556,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "links": {
+                    "type": "object"
+                },
                 "title": {
                     "type": "string",
                     "maxLength": 100,
@@ -590,6 +608,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "links": {
+                    "type": "object"
+                },
                 "title": {
                     "type": "string",
                     "example": "Hair Shampoo"
@@ -630,12 +651,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.0",
+	Host:             "localhost:8000",
+	BasePath:         "/api/v1",
+	Schemes:          []string{"http"},
+	Title:            "Leech API",
+	Description:      "Backend service for Leech-ru platform.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

@@ -1,10 +1,21 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Backend service for Leech-ru platform.",
+        "title": "Leech API",
+        "contact": {
+            "name": "API Support",
+            "email": "mmishin2107@gmail.com"
+        },
+        "version": "1.0"
     },
+    "host": "localhost:8000",
+    "basePath": "/api/v1",
     "paths": {
-        "/cosmetics": {
+        "/api/v1/cosmetics": {
             "get": {
                 "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc.",
                 "consumes": [
@@ -140,7 +151,7 @@
                 }
             }
         },
-        "/cosmetics/{id}": {
+        "/api/v1/cosmetics/{id}": {
             "get": {
                 "description": "Retrieves a cosmetic product using its UUID.",
                 "consumes": [
@@ -326,6 +337,9 @@
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "links": {
+                    "type": "object"
+                },
                 "title": {
                     "type": "string",
                     "example": "Hair Shampoo"
@@ -373,6 +387,9 @@
                     "maxLength": 3000,
                     "minLength": 3,
                     "example": "Suitable for daily use."
+                },
+                "links": {
+                    "type": "object"
                 },
                 "title": {
                     "type": "string",
@@ -423,6 +440,9 @@
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "links": {
+                    "type": "object"
+                },
                 "title": {
                     "type": "string",
                     "example": "Hair Shampoo"
@@ -467,6 +487,9 @@
                 "id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "links": {
+                    "type": "object"
                 },
                 "title": {
                     "type": "string",
@@ -530,6 +553,9 @@
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "links": {
+                    "type": "object"
+                },
                 "title": {
                     "type": "string",
                     "maxLength": 100,
@@ -578,6 +604,9 @@
                 "id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "links": {
+                    "type": "object"
                 },
                 "title": {
                     "type": "string",

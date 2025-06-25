@@ -27,8 +27,12 @@ type Cosmetics struct {
 	// ApplicationMethod holds the value of the "applicationMethod" field.
 	ApplicationMethod *string `json:"applicationMethod,omitempty"`
 	// Volume holds the value of the "volume" field.
-	Volume       *int `json:"volume,omitempty"`
-	selectValues sql.SelectValues
+	Volume *int `json:"volume,omitempty"`
+	// OzonLink holds the value of the "ozon_link" field.
+	OzonLink *string `json:"ozon_link,omitempty"`
+	// WildberriesLink holds the value of the "wildberries_link" field.
+	WildberriesLink *string `json:"wildberries_link,omitempty"`
+	selectValues    sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -38,7 +42,7 @@ func (*Cosmetics) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case cosmetics.FieldCategory, cosmetics.FieldVolume:
 			values[i] = new(sql.NullInt64)
-		case cosmetics.FieldTitle, cosmetics.FieldDescription, cosmetics.FieldApplicationMethod:
+		case cosmetics.FieldTitle, cosmetics.FieldDescription, cosmetics.FieldApplicationMethod, cosmetics.FieldOzonLink, cosmetics.FieldWildberriesLink:
 			values[i] = new(sql.NullString)
 		case cosmetics.FieldID:
 			values[i] = new(uuid.UUID)
@@ -96,6 +100,20 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 				c.Volume = new(int)
 				*c.Volume = int(value.Int64)
 			}
+		case cosmetics.FieldOzonLink:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field ozon_link", values[i])
+			} else if value.Valid {
+				c.OzonLink = new(string)
+				*c.OzonLink = value.String
+			}
+		case cosmetics.FieldWildberriesLink:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field wildberries_link", values[i])
+			} else if value.Valid {
+				c.WildberriesLink = new(string)
+				*c.WildberriesLink = value.String
+			}
 		default:
 			c.selectValues.Set(columns[i], values[i])
 		}
@@ -151,6 +169,16 @@ func (c *Cosmetics) String() string {
 	if v := c.Volume; v != nil {
 		builder.WriteString("volume=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := c.OzonLink; v != nil {
+		builder.WriteString("ozon_link=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := c.WildberriesLink; v != nil {
+		builder.WriteString("wildberries_link=")
+		builder.WriteString(*v)
 	}
 	builder.WriteByte(')')
 	return builder.String()

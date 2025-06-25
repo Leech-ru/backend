@@ -9,7 +9,7 @@ import (
 
 // GetByID returns the cosmetics by ID.
 func (s *cosmeticsService) GetByID(ctx context.Context, req *dto.GetCosmeticsRequest) (*dto.GetCosmeticsResponse, error) {
-	c, err := s.cosmeticsRepo.GetById(ctx, req.ID)
+	cosmetics, err := s.cosmeticsRepo.GetById(ctx, req.ID)
 	switch {
 	case errors.Is(err, errorz.CosmeticsNotFound):
 		return nil, errorz.CosmeticsNotFound
@@ -18,11 +18,15 @@ func (s *cosmeticsService) GetByID(ctx context.Context, req *dto.GetCosmeticsReq
 	}
 
 	return &dto.GetCosmeticsResponse{
-		ID:                c.ID,
-		Category:          c.Category,
-		Title:             c.Title,
-		Description:       c.Description,
-		ApplicationMethod: c.ApplicationMethod,
-		Volume:            c.Volume,
+		ID:                cosmetics.ID,
+		Category:          cosmetics.Category,
+		Title:             cosmetics.Title,
+		Description:       cosmetics.Description,
+		ApplicationMethod: cosmetics.ApplicationMethod,
+		Volume:            cosmetics.Volume,
+		Links: &dto.Links{
+			Ozon:        cosmetics.OzonLink,
+			Wildberries: cosmetics.WildberriesLink,
+		},
 	}, nil
 }

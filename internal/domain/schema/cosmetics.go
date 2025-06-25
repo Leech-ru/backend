@@ -38,6 +38,14 @@ func (Cosmetics) Fields() []ent.Field {
 		field.Int("volume").
 			Optional().Nillable().
 			Positive(),
+
+		field.String("ozon_link").
+			Optional().Nillable().
+			Default(""),
+
+		field.String("wildberries_link").
+			Optional().Nillable().
+			Default(""),
 	}
 
 }

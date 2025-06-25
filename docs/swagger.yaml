@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   dto.Cosmetics:
     description: Contains product information such as category, title, description,
@@ -26,6 +27,8 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        type: object
       title:
         example: Hair Shampoo
         type: string
@@ -59,6 +62,8 @@ definitions:
         maxLength: 3000
         minLength: 3
         type: string
+      links:
+        type: object
       title:
         example: Hair Shampoo
         maxLength: 100
@@ -100,6 +105,8 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        type: object
       title:
         example: Hair Shampoo
         type: string
@@ -134,6 +141,8 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        type: object
       title:
         example: Hair Shampoo
         type: string
@@ -177,6 +186,8 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        type: object
       title:
         example: New Hair Shampoo
         maxLength: 100
@@ -217,6 +228,8 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        type: object
       title:
         example: Hair Shampoo
         type: string
@@ -246,10 +259,16 @@ definitions:
     - CategoryExclusive
     - CategoryWholesale
     - CategoryLeech
+host: localhost:8000
 info:
-  contact: {}
+  contact:
+    email: mmishin2107@gmail.com
+    name: API Support
+  description: Backend service for Leech-ru platform.
+  title: Leech API
+  version: "1.0"
 paths:
-  /cosmetics:
+  /api/v1/cosmetics:
     get:
       consumes:
       - application/json
@@ -344,7 +363,7 @@ paths:
       summary: Create a new cosmetic product
       tags:
       - cosmetics
-  /cosmetics/{id}:
+  /api/v1/cosmetics/{id}:
     delete:
       description: Deletes the cosmetic product with the given UUID.
       parameters:
@@ -444,4 +463,6 @@ paths:
       summary: Update cosmetic
       tags:
       - cosmetics
+schemes:
+- http
 swagger: "2.0"

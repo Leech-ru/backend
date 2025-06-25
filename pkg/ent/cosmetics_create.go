@@ -75,6 +75,34 @@ func (cc *CosmeticsCreate) SetNillableVolume(i *int) *CosmeticsCreate {
 	return cc
 }
 
+// SetOzonLink sets the "ozon_link" field.
+func (cc *CosmeticsCreate) SetOzonLink(s string) *CosmeticsCreate {
+	cc.mutation.SetOzonLink(s)
+	return cc
+}
+
+// SetNillableOzonLink sets the "ozon_link" field if the given value is not nil.
+func (cc *CosmeticsCreate) SetNillableOzonLink(s *string) *CosmeticsCreate {
+	if s != nil {
+		cc.SetOzonLink(*s)
+	}
+	return cc
+}
+
+// SetWildberriesLink sets the "wildberries_link" field.
+func (cc *CosmeticsCreate) SetWildberriesLink(s string) *CosmeticsCreate {
+	cc.mutation.SetWildberriesLink(s)
+	return cc
+}
+
+// SetNillableWildberriesLink sets the "wildberries_link" field if the given value is not nil.
+func (cc *CosmeticsCreate) SetNillableWildberriesLink(s *string) *CosmeticsCreate {
+	if s != nil {
+		cc.SetWildberriesLink(*s)
+	}
+	return cc
+}
+
 // SetID sets the "id" field.
 func (cc *CosmeticsCreate) SetID(u uuid.UUID) *CosmeticsCreate {
 	cc.mutation.SetID(u)
@@ -131,6 +159,14 @@ func (cc *CosmeticsCreate) defaults() {
 	if _, ok := cc.mutation.ApplicationMethod(); !ok {
 		v := cosmetics.DefaultApplicationMethod
 		cc.mutation.SetApplicationMethod(v)
+	}
+	if _, ok := cc.mutation.OzonLink(); !ok {
+		v := cosmetics.DefaultOzonLink
+		cc.mutation.SetOzonLink(v)
+	}
+	if _, ok := cc.mutation.WildberriesLink(); !ok {
+		v := cosmetics.DefaultWildberriesLink
+		cc.mutation.SetWildberriesLink(v)
 	}
 	if _, ok := cc.mutation.ID(); !ok {
 		v := cosmetics.DefaultID()
@@ -215,6 +251,14 @@ func (cc *CosmeticsCreate) createSpec() (*Cosmetics, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.Volume(); ok {
 		_spec.SetField(cosmetics.FieldVolume, field.TypeInt, value)
 		_node.Volume = &value
+	}
+	if value, ok := cc.mutation.OzonLink(); ok {
+		_spec.SetField(cosmetics.FieldOzonLink, field.TypeString, value)
+		_node.OzonLink = &value
+	}
+	if value, ok := cc.mutation.WildberriesLink(); ok {
+		_spec.SetField(cosmetics.FieldWildberriesLink, field.TypeString, value)
+		_node.WildberriesLink = &value
 	}
 	return _node, _spec
 }

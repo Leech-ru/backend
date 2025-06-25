@@ -81,6 +81,16 @@ func Volume(v int) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldEQ(FieldVolume, v))
 }
 
+// OzonLink applies equality check predicate on the "ozon_link" field. It's identical to OzonLinkEQ.
+func OzonLink(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEQ(FieldOzonLink, v))
+}
+
+// WildberriesLink applies equality check predicate on the "wildberries_link" field. It's identical to WildberriesLinkEQ.
+func WildberriesLink(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEQ(FieldWildberriesLink, v))
+}
+
 // CategoryEQ applies the EQ predicate on the "category" field.
 func CategoryEQ(v types.Category) predicate.Cosmetics {
 	vc := int(v)
@@ -398,6 +408,156 @@ func VolumeIsNil() predicate.Cosmetics {
 // VolumeNotNil applies the NotNil predicate on the "volume" field.
 func VolumeNotNil() predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldNotNull(FieldVolume))
+}
+
+// OzonLinkEQ applies the EQ predicate on the "ozon_link" field.
+func OzonLinkEQ(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEQ(FieldOzonLink, v))
+}
+
+// OzonLinkNEQ applies the NEQ predicate on the "ozon_link" field.
+func OzonLinkNEQ(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNEQ(FieldOzonLink, v))
+}
+
+// OzonLinkIn applies the In predicate on the "ozon_link" field.
+func OzonLinkIn(vs ...string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldIn(FieldOzonLink, vs...))
+}
+
+// OzonLinkNotIn applies the NotIn predicate on the "ozon_link" field.
+func OzonLinkNotIn(vs ...string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNotIn(FieldOzonLink, vs...))
+}
+
+// OzonLinkGT applies the GT predicate on the "ozon_link" field.
+func OzonLinkGT(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldGT(FieldOzonLink, v))
+}
+
+// OzonLinkGTE applies the GTE predicate on the "ozon_link" field.
+func OzonLinkGTE(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldGTE(FieldOzonLink, v))
+}
+
+// OzonLinkLT applies the LT predicate on the "ozon_link" field.
+func OzonLinkLT(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldLT(FieldOzonLink, v))
+}
+
+// OzonLinkLTE applies the LTE predicate on the "ozon_link" field.
+func OzonLinkLTE(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldLTE(FieldOzonLink, v))
+}
+
+// OzonLinkContains applies the Contains predicate on the "ozon_link" field.
+func OzonLinkContains(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldContains(FieldOzonLink, v))
+}
+
+// OzonLinkHasPrefix applies the HasPrefix predicate on the "ozon_link" field.
+func OzonLinkHasPrefix(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldHasPrefix(FieldOzonLink, v))
+}
+
+// OzonLinkHasSuffix applies the HasSuffix predicate on the "ozon_link" field.
+func OzonLinkHasSuffix(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldHasSuffix(FieldOzonLink, v))
+}
+
+// OzonLinkIsNil applies the IsNil predicate on the "ozon_link" field.
+func OzonLinkIsNil() predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldIsNull(FieldOzonLink))
+}
+
+// OzonLinkNotNil applies the NotNil predicate on the "ozon_link" field.
+func OzonLinkNotNil() predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNotNull(FieldOzonLink))
+}
+
+// OzonLinkEqualFold applies the EqualFold predicate on the "ozon_link" field.
+func OzonLinkEqualFold(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEqualFold(FieldOzonLink, v))
+}
+
+// OzonLinkContainsFold applies the ContainsFold predicate on the "ozon_link" field.
+func OzonLinkContainsFold(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldContainsFold(FieldOzonLink, v))
+}
+
+// WildberriesLinkEQ applies the EQ predicate on the "wildberries_link" field.
+func WildberriesLinkEQ(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEQ(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkNEQ applies the NEQ predicate on the "wildberries_link" field.
+func WildberriesLinkNEQ(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNEQ(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkIn applies the In predicate on the "wildberries_link" field.
+func WildberriesLinkIn(vs ...string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldIn(FieldWildberriesLink, vs...))
+}
+
+// WildberriesLinkNotIn applies the NotIn predicate on the "wildberries_link" field.
+func WildberriesLinkNotIn(vs ...string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNotIn(FieldWildberriesLink, vs...))
+}
+
+// WildberriesLinkGT applies the GT predicate on the "wildberries_link" field.
+func WildberriesLinkGT(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldGT(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkGTE applies the GTE predicate on the "wildberries_link" field.
+func WildberriesLinkGTE(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldGTE(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkLT applies the LT predicate on the "wildberries_link" field.
+func WildberriesLinkLT(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldLT(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkLTE applies the LTE predicate on the "wildberries_link" field.
+func WildberriesLinkLTE(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldLTE(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkContains applies the Contains predicate on the "wildberries_link" field.
+func WildberriesLinkContains(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldContains(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkHasPrefix applies the HasPrefix predicate on the "wildberries_link" field.
+func WildberriesLinkHasPrefix(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldHasPrefix(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkHasSuffix applies the HasSuffix predicate on the "wildberries_link" field.
+func WildberriesLinkHasSuffix(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldHasSuffix(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkIsNil applies the IsNil predicate on the "wildberries_link" field.
+func WildberriesLinkIsNil() predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldIsNull(FieldWildberriesLink))
+}
+
+// WildberriesLinkNotNil applies the NotNil predicate on the "wildberries_link" field.
+func WildberriesLinkNotNil() predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNotNull(FieldWildberriesLink))
+}
+
+// WildberriesLinkEqualFold applies the EqualFold predicate on the "wildberries_link" field.
+func WildberriesLinkEqualFold(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEqualFold(FieldWildberriesLink, v))
+}
+
+// WildberriesLinkContainsFold applies the ContainsFold predicate on the "wildberries_link" field.
+func WildberriesLinkContainsFold(v string) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldContainsFold(FieldWildberriesLink, v))
 }
 
 // And groups predicates with the AND operator between them.

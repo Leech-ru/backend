@@ -6,6 +6,17 @@ import (
 	"log"
 )
 
+// @title           Leech API
+// @version         1.0
+// @description     Backend service for Leech-ru platform.
+
+// @contact.name   API Support
+// @contact.email  mmishin2107@gmail.com
+
+// @host      localhost:8000
+// @BasePath  /api/v1
+
+// @schemes http
 func main() {
 	mainApp, err := app.New()
 	if err != nil {

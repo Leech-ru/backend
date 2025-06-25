@@ -22,6 +22,10 @@ const (
 	FieldApplicationMethod = "application_method"
 	// FieldVolume holds the string denoting the volume field in the database.
 	FieldVolume = "volume"
+	// FieldOzonLink holds the string denoting the ozon_link field in the database.
+	FieldOzonLink = "ozon_link"
+	// FieldWildberriesLink holds the string denoting the wildberries_link field in the database.
+	FieldWildberriesLink = "wildberries_link"
 	// Table holds the table name of the cosmetics in the database.
 	Table = "cosmetics"
 )
@@ -34,6 +38,8 @@ var Columns = []string{
 	FieldDescription,
 	FieldApplicationMethod,
 	FieldVolume,
+	FieldOzonLink,
+	FieldWildberriesLink,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -57,6 +63,10 @@ var (
 	DefaultApplicationMethod string
 	// VolumeValidator is a validator for the "volume" field. It is called by the builders before save.
 	VolumeValidator func(int) error
+	// DefaultOzonLink holds the default value on creation for the "ozon_link" field.
+	DefaultOzonLink string
+	// DefaultWildberriesLink holds the default value on creation for the "wildberries_link" field.
+	DefaultWildberriesLink string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -92,4 +102,14 @@ func ByApplicationMethod(opts ...sql.OrderTermOption) OrderOption {
 // ByVolume orders the results by the volume field.
 func ByVolume(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldVolume, opts...).ToFunc()
+}
+
+// ByOzonLink orders the results by the ozon_link field.
+func ByOzonLink(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOzonLink, opts...).ToFunc()
+}
+
+// ByWildberriesLink orders the results by the wildberries_link field.
+func ByWildberriesLink(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldWildberriesLink, opts...).ToFunc()
 }

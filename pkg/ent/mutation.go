@@ -45,6 +45,8 @@ type CosmeticsMutation struct {
 	applicationMethod *string
 	volume            *int
 	addvolume         *int
+	ozon_link         *string
+	wildberries_link  *string
 	clearedFields     map[string]struct{}
 	done              bool
 	oldValue          func(context.Context) (*Cosmetics, error)
@@ -415,6 +417,104 @@ func (m *CosmeticsMutation) ResetVolume() {
 	delete(m.clearedFields, cosmetics.FieldVolume)
 }
 
+// SetOzonLink sets the "ozon_link" field.
+func (m *CosmeticsMutation) SetOzonLink(s string) {
+	m.ozon_link = &s
+}
+
+// OzonLink returns the value of the "ozon_link" field in the mutation.
+func (m *CosmeticsMutation) OzonLink() (r string, exists bool) {
+	v := m.ozon_link
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOzonLink returns the old "ozon_link" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldOzonLink(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOzonLink is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOzonLink requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOzonLink: %w", err)
+	}
+	return oldValue.OzonLink, nil
+}
+
+// ClearOzonLink clears the value of the "ozon_link" field.
+func (m *CosmeticsMutation) ClearOzonLink() {
+	m.ozon_link = nil
+	m.clearedFields[cosmetics.FieldOzonLink] = struct{}{}
+}
+
+// OzonLinkCleared returns if the "ozon_link" field was cleared in this mutation.
+func (m *CosmeticsMutation) OzonLinkCleared() bool {
+	_, ok := m.clearedFields[cosmetics.FieldOzonLink]
+	return ok
+}
+
+// ResetOzonLink resets all changes to the "ozon_link" field.
+func (m *CosmeticsMutation) ResetOzonLink() {
+	m.ozon_link = nil
+	delete(m.clearedFields, cosmetics.FieldOzonLink)
+}
+
+// SetWildberriesLink sets the "wildberries_link" field.
+func (m *CosmeticsMutation) SetWildberriesLink(s string) {
+	m.wildberries_link = &s
+}
+
+// WildberriesLink returns the value of the "wildberries_link" field in the mutation.
+func (m *CosmeticsMutation) WildberriesLink() (r string, exists bool) {
+	v := m.wildberries_link
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWildberriesLink returns the old "wildberries_link" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldWildberriesLink(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWildberriesLink is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWildberriesLink requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWildberriesLink: %w", err)
+	}
+	return oldValue.WildberriesLink, nil
+}
+
+// ClearWildberriesLink clears the value of the "wildberries_link" field.
+func (m *CosmeticsMutation) ClearWildberriesLink() {
+	m.wildberries_link = nil
+	m.clearedFields[cosmetics.FieldWildberriesLink] = struct{}{}
+}
+
+// WildberriesLinkCleared returns if the "wildberries_link" field was cleared in this mutation.
+func (m *CosmeticsMutation) WildberriesLinkCleared() bool {
+	_, ok := m.clearedFields[cosmetics.FieldWildberriesLink]
+	return ok
+}
+
+// ResetWildberriesLink resets all changes to the "wildberries_link" field.
+func (m *CosmeticsMutation) ResetWildberriesLink() {
+	m.wildberries_link = nil
+	delete(m.clearedFields, cosmetics.FieldWildberriesLink)
+}
+
 // Where appends a list predicates to the CosmeticsMutation builder.
 func (m *CosmeticsMutation) Where(ps ...predicate.Cosmetics) {
 	m.predicates = append(m.predicates, ps...)
@@ -449,7 +549,7 @@ func (m *CosmeticsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CosmeticsMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 7)
 	if m.category != nil {
 		fields = append(fields, cosmetics.FieldCategory)
 	}
@@ -464,6 +564,12 @@ func (m *CosmeticsMutation) Fields() []string {
 	}
 	if m.volume != nil {
 		fields = append(fields, cosmetics.FieldVolume)
+	}
+	if m.ozon_link != nil {
+		fields = append(fields, cosmetics.FieldOzonLink)
+	}
+	if m.wildberries_link != nil {
+		fields = append(fields, cosmetics.FieldWildberriesLink)
 	}
 	return fields
 }
@@ -483,6 +589,10 @@ func (m *CosmeticsMutation) Field(name string) (ent.Value, bool) {
 		return m.ApplicationMethod()
 	case cosmetics.FieldVolume:
 		return m.Volume()
+	case cosmetics.FieldOzonLink:
+		return m.OzonLink()
+	case cosmetics.FieldWildberriesLink:
+		return m.WildberriesLink()
 	}
 	return nil, false
 }
@@ -502,6 +612,10 @@ func (m *CosmeticsMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldApplicationMethod(ctx)
 	case cosmetics.FieldVolume:
 		return m.OldVolume(ctx)
+	case cosmetics.FieldOzonLink:
+		return m.OldOzonLink(ctx)
+	case cosmetics.FieldWildberriesLink:
+		return m.OldWildberriesLink(ctx)
 	}
 	return nil, fmt.Errorf("unknown Cosmetics field %s", name)
 }
@@ -545,6 +659,20 @@ func (m *CosmeticsMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetVolume(v)
+		return nil
+	case cosmetics.FieldOzonLink:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOzonLink(v)
+		return nil
+	case cosmetics.FieldWildberriesLink:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWildberriesLink(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Cosmetics field %s", name)
@@ -612,6 +740,12 @@ func (m *CosmeticsMutation) ClearedFields() []string {
 	if m.FieldCleared(cosmetics.FieldVolume) {
 		fields = append(fields, cosmetics.FieldVolume)
 	}
+	if m.FieldCleared(cosmetics.FieldOzonLink) {
+		fields = append(fields, cosmetics.FieldOzonLink)
+	}
+	if m.FieldCleared(cosmetics.FieldWildberriesLink) {
+		fields = append(fields, cosmetics.FieldWildberriesLink)
+	}
 	return fields
 }
 
@@ -635,6 +769,12 @@ func (m *CosmeticsMutation) ClearField(name string) error {
 	case cosmetics.FieldVolume:
 		m.ClearVolume()
 		return nil
+	case cosmetics.FieldOzonLink:
+		m.ClearOzonLink()
+		return nil
+	case cosmetics.FieldWildberriesLink:
+		m.ClearWildberriesLink()
+		return nil
 	}
 	return fmt.Errorf("unknown Cosmetics nullable field %s", name)
 }
@@ -657,6 +797,12 @@ func (m *CosmeticsMutation) ResetField(name string) error {
 		return nil
 	case cosmetics.FieldVolume:
 		m.ResetVolume()
+		return nil
+	case cosmetics.FieldOzonLink:
+		m.ResetOzonLink()
+		return nil
+	case cosmetics.FieldWildberriesLink:
+		m.ResetWildberriesLink()
 		return nil
 	}
 	return fmt.Errorf("unknown Cosmetics field %s", name)
