@@ -14,7 +14,6 @@ import (
 // @contact.email  mmishin2107@gmail.com
 
 // @host      localhost:8000
-// @BasePath  /api/v1
 
 // @schemes http
 func main() {
