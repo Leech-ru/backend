@@ -22,7 +22,7 @@ import (
 // @Failure      400     {object}  dto.HTTPStatus "Validation or binding error"
 // @Failure      404     {object}  dto.HTTPStatus "Cosmetic not found"
 // @Failure      500     {object}  dto.HTTPStatus "Internal server error"
-// @Router       /cosmetics/{id} [patch]
+// @Router       /api/v1/cosmetics/{id} [patch]
 func (h *handler) Update(c echo.Context) error {
 	id := c.Param("id")
 	userID, err := uuid.Parse(id)

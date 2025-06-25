@@ -1,4 +1,3 @@
-basePath: /api/v1
 definitions:
   dto.Cosmetics:
     description: Contains product information such as category, title, description,
