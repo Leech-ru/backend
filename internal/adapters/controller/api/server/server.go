@@ -65,7 +65,7 @@ func addRouters(app *app.App) {
 
 	apiV1.GET("/swagger/*", echoSwagger.WrapHandler)
 	apiV1.GET("/swagger", func(c echo.Context) error {
-		return c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
+		return c.Redirect(http.StatusMovedPermanently, "/api/v1/swagger/index.html")
 	})
 
 	pingHandler := ping.NewHandler()

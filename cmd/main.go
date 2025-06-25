@@ -13,7 +13,7 @@ import (
 // @contact.name   API Support
 // @contact.email  mmishin2107@gmail.com
 
-// @host      localhost:8000
+// @host      пиявкипобеда.рф
 
 // @schemes http
 func main() {
