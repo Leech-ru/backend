@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-// GetAllByFilter реализует поиск пользователей с параметрами фильтрации.
+// GetAllByFilter Realizes the search for users with filtering parameters.
 func (s *userService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilterUsersRequest) (*dto.GetAllByFilterUsersResponse, error) {
 	limit := 10
 	if req.Limit != nil {

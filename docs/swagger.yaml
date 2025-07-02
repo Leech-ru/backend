@@ -9,16 +9,6 @@ definitions:
       category:
         allOf:
         - $ref: '#/definitions/types.Category'
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        - 8
         example: 3
       description:
         example: Suitable for daily use.
@@ -45,16 +35,6 @@ definitions:
       category:
         allOf:
         - $ref: '#/definitions/types.Category'
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        - 8
         example: 3
       description:
         example: Suitable for daily use.
@@ -62,9 +42,7 @@ definitions:
         minLength: 3
         type: string
       links:
-        allOf:
-        - $ref: '#/definitions/dto.Links'
-        x-go-name: Links
+        $ref: '#/definitions/dto.Links'
       title:
         example: Hair Shampoo
         maxLength: 100
@@ -89,16 +67,6 @@ definitions:
       category:
         allOf:
         - $ref: '#/definitions/types.Category'
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        - 8
         example: 3
       description:
         example: Suitable for daily use.
@@ -125,16 +93,6 @@ definitions:
       category:
         allOf:
         - $ref: '#/definitions/types.Category'
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        - 8
         example: 3
       description:
         example: Suitable for daily use.
@@ -151,12 +109,66 @@ definitions:
         example: 250
         type: integer
     type: object
+  dto.GetInfoResponse:
+    properties:
+      description:
+        example: We are a global leader in innovation and technology.
+        maxLength: 500
+        minLength: 10
+        type: string
+      fluid:
+        example: true
+        type: boolean
+      heading:
+        example: Welcome to our company
+        maxLength: 100
+        minLength: 3
+        type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.InfoLinks'
+        type: array
+      schedule:
+        items:
+          $ref: '#/definitions/dto.ScheduleEntry'
+        type: array
+    required:
+    - description
+    - heading
+    type: object
   dto.HTTPStatus:
     properties:
       code:
         type: integer
       message:
         type: string
+    type: object
+  dto.Hours:
+    properties:
+      close:
+        example: "18:00"
+        type: string
+      open:
+        example: "09:00"
+        type: string
+    required:
+    - close
+    - open
+    type: object
+  dto.InfoLinks:
+    properties:
+      href:
+        example: https://instagram.com/company
+        maxLength: 500
+        type: string
+      label:
+        example: Instagram
+        maxLength: 50
+        minLength: 2
+        type: string
+    required:
+    - href
+    - label
     type: object
   dto.Links:
     properties:
@@ -169,6 +181,19 @@ definitions:
         maxLength: 500
         type: string
     type: object
+  dto.ScheduleEntry:
+    properties:
+      hours:
+        $ref: '#/definitions/dto.Hours'
+      weekday:
+        allOf:
+        - $ref: '#/definitions/types.Weekday'
+        description: Monday
+        example: 1
+    required:
+    - hours
+    - weekday
+    type: object
   dto.UpdateCosmeticsRequest:
     properties:
       application_method:
@@ -179,16 +204,6 @@ definitions:
       category:
         allOf:
         - $ref: '#/definitions/types.Category'
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        - 8
         example: 4
       description:
         example: Updated product description.
@@ -199,9 +214,7 @@ definitions:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
       links:
-        allOf:
-        - $ref: '#/definitions/dto.Links'
-        x-go-name: Links
+        $ref: '#/definitions/dto.Links'
       title:
         example: New Hair Shampoo
         maxLength: 100
@@ -225,16 +238,6 @@ definitions:
       category:
         allOf:
         - $ref: '#/definitions/types.Category'
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        - 8
         example: 3
       description:
         example: Suitable for daily use.
@@ -250,6 +253,57 @@ definitions:
       volume:
         example: 250
         type: integer
+    type: object
+  dto.UpdateInfoRequest:
+    properties:
+      description:
+        example: Updated long description about the company.
+        maxLength: 500
+        minLength: 10
+        type: string
+      fluid:
+        example: false
+        type: boolean
+      heading:
+        example: Updated Heading
+        maxLength: 100
+        minLength: 3
+        type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.InfoLinks'
+        type: array
+      schedule:
+        items:
+          $ref: '#/definitions/dto.ScheduleEntry'
+        type: array
+    type: object
+  dto.UpdateInfoResponse:
+    properties:
+      description:
+        example: We are a global leader in innovation and technology.
+        maxLength: 500
+        minLength: 10
+        type: string
+      fluid:
+        example: true
+        type: boolean
+      heading:
+        example: Welcome to our company
+        maxLength: 100
+        minLength: 3
+        type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.InfoLinks'
+        type: array
+      schedule:
+        items:
+          $ref: '#/definitions/dto.ScheduleEntry'
+        type: array
+    required:
+    - description
+    - heading
     type: object
   types.Category:
     enum:
@@ -273,7 +327,25 @@ definitions:
     - CategoryExclusive
     - CategoryWholesale
     - CategoryLeech
-host: localhost:8000
+  types.Weekday:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    type: integer
+    x-enum-varnames:
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    - Sunday
+host: пиявкипобеда.рф
 info:
   contact:
     email: mmishin2107@gmail.com
@@ -477,6 +549,65 @@ paths:
       summary: Update cosmetic
       tags:
       - cosmetics
+  /info/corporation:
+    get:
+      consumes:
+      - application/json
+      description: 'Returns the current public corporation information: heading, description,
+        fluid status, schedule, and links.'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetInfoResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get corporation info
+      tags:
+      - info
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Updates the corporation info fields. Only accessible by authenticated moderators.
+        Requires authentication via cookies (access_token, refresh_token)
+      parameters:
+      - description: Updated corporation info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateInfoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateInfoResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Update corporation info
+      tags:
+      - info
 schemes:
 - http
 swagger: "2.0"

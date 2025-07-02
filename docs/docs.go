@@ -302,6 +302,91 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/info/corporation": {
+            "get": {
+                "description": "Returns the current public corporation information: heading, description, fluid status, schedule, and links.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "info"
+                ],
+                "summary": "Get corporation info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetInfoResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Updates the corporation info fields. Only accessible by authenticated moderators.\nRequires authentication via cookies (access_token, refresh_token)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "info"
+                ],
+                "summary": "Update corporation info",
+                "parameters": [
+                    {
+                        "description": "Updated corporation info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateInfoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateInfoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -314,17 +399,6 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8
-                    ],
                     "allOf": [
                         {
                             "$ref": "#/definitions/types.Category"
@@ -367,17 +441,6 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8
-                    ],
                     "allOf": [
                         {
                             "$ref": "#/definitions/types.Category"
@@ -392,12 +455,7 @@ const docTemplate = `{
                     "example": "Suitable for daily use."
                 },
                 "links": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/dto.Links"
-                        }
-                    ],
-                    "x-go-name": "Links"
+                    "$ref": "#/definitions/dto.Links"
                 },
                 "title": {
                     "type": "string",
@@ -422,17 +480,6 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8
-                    ],
                     "allOf": [
                         {
                             "$ref": "#/definitions/types.Category"
@@ -470,17 +517,6 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8
-                    ],
                     "allOf": [
                         {
                             "$ref": "#/definitions/types.Category"
@@ -509,6 +545,43 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.GetInfoResponse": {
+            "type": "object",
+            "required": [
+                "description",
+                "heading"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 10,
+                    "example": "We are a global leader in innovation and technology."
+                },
+                "fluid": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "heading": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Welcome to our company"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.InfoLinks"
+                    }
+                },
+                "schedule": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ScheduleEntry"
+                    }
+                }
+            }
+        },
         "dto.HTTPStatus": {
             "type": "object",
             "properties": {
@@ -517,6 +590,43 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.Hours": {
+            "type": "object",
+            "required": [
+                "close",
+                "open"
+            ],
+            "properties": {
+                "close": {
+                    "type": "string",
+                    "example": "18:00"
+                },
+                "open": {
+                    "type": "string",
+                    "example": "09:00"
+                }
+            }
+        },
+        "dto.InfoLinks": {
+            "type": "object",
+            "required": [
+                "href",
+                "label"
+            ],
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "example": "https://instagram.com/company"
+                },
+                "label": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2,
+                    "example": "Instagram"
                 }
             }
         },
@@ -535,6 +645,27 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ScheduleEntry": {
+            "type": "object",
+            "required": [
+                "hours",
+                "weekday"
+            ],
+            "properties": {
+                "hours": {
+                    "$ref": "#/definitions/dto.Hours"
+                },
+                "weekday": {
+                    "description": "Monday",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Weekday"
+                        }
+                    ],
+                    "example": 1
+                }
+            }
+        },
         "dto.UpdateCosmeticsRequest": {
             "type": "object",
             "required": [
@@ -548,17 +679,6 @@ const docTemplate = `{
                     "example": "Apply evenly and rinse well."
                 },
                 "category": {
-                    "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8
-                    ],
                     "allOf": [
                         {
                             "$ref": "#/definitions/types.Category"
@@ -577,12 +697,7 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "links": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/dto.Links"
-                        }
-                    ],
-                    "x-go-name": "Links"
+                    "$ref": "#/definitions/dto.Links"
                 },
                 "title": {
                     "type": "string",
@@ -607,17 +722,6 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8
-                    ],
                     "allOf": [
                         {
                             "$ref": "#/definitions/types.Category"
@@ -643,6 +747,76 @@ const docTemplate = `{
                 "volume": {
                     "type": "integer",
                     "example": 250
+                }
+            }
+        },
+        "dto.UpdateInfoRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 10,
+                    "example": "Updated long description about the company."
+                },
+                "fluid": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "heading": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Updated Heading"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.InfoLinks"
+                    }
+                },
+                "schedule": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ScheduleEntry"
+                    }
+                }
+            }
+        },
+        "dto.UpdateInfoResponse": {
+            "type": "object",
+            "required": [
+                "description",
+                "heading"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 10,
+                    "example": "We are a global leader in innovation and technology."
+                },
+                "fluid": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "heading": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Welcome to our company"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.InfoLinks"
+                    }
+                },
+                "schedule": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ScheduleEntry"
+                    }
                 }
             }
         },
@@ -670,6 +844,27 @@ const docTemplate = `{
                 "CategoryWholesale",
                 "CategoryLeech"
             ]
+        },
+        "types.Weekday": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "x-enum-varnames": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+            ]
         }
     }
 }`
@@ -677,7 +872,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8000",
+	Host:             "пиявкипобеда.рф",
 	BasePath:         "",
 	Schemes:          []string{"http"},
 	Title:            "Leech API",

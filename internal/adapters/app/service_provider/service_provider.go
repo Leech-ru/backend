@@ -10,12 +10,13 @@ import (
 )
 
 type ServiceProvider struct {
-	loggerConfig config.LoggerConfig
-	pgConfig     config.PGConfig
-	redisConfig  config.RedisConfig
-	httpConfig   config.ServerConfig
-	jwtConfig    config.JWTConfig
-	mailConfig   config.MailConfig
+	loggerConfig   config.LoggerConfig
+	pgConfig       config.PGConfig
+	redisConfig    config.RedisConfig
+	httpConfig     config.ServerConfig
+	jwtConfig      config.JWTConfig
+	jsonInfoConfig config.JsonInfoConfig
+	mailConfig     config.MailConfig
 
 	db    *ent.Client
 	redis *redis.Client
@@ -29,6 +30,7 @@ type ServiceProvider struct {
 	orderService     orderService
 	userService      userService
 	cosmeticsService cosmeticsService
+	infoService      infoService
 }
 
 func New() *ServiceProvider {

@@ -9,15 +9,13 @@ import (
 // @Description Contains product information such as category, title, description, and volume.
 type Cosmetics struct {
 	ID                uuid.UUID      `json:"id" example:"123e4567-e89b-12d3-a456-426614174000"`
-	Category          types.Category `json:"category" example:"3" enums:"0,1,2,3,4,5,6,7,8"`
+	Category          types.Category `json:"category" example:"3"`
 	Title             string         `json:"title" example:"Hair Shampoo"`
 	Description       *string        `json:"description,omitempty" example:"Suitable for daily use."`
 	ApplicationMethod *string        `json:"application_method,omitempty" example:"Apply to wet hair, lather, rinse."`
 	Volume            *int           `json:"volume,omitempty" example:"250"`
 	Links             *Links         `json:"links"`
 }
-
-//todo в сваге не видно эти ссылки
 
 // Links contains links information.
 type Links struct {
@@ -27,12 +25,12 @@ type Links struct {
 
 // CreateCosmeticsRequest represents a request to create a new cosmetic product.
 type CreateCosmeticsRequest struct {
-	Category          types.Category `json:"category" validate:"required,category" example:"3" enums:"0,1,2,3,4,5,6,7,8"`
+	Category          types.Category `json:"category" validate:"required,category" example:"3"`
 	Title             string         `json:"title" validate:"required,min=3,max=100" example:"Hair Shampoo"`
 	Description       *string        `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Suitable for daily use."`
 	ApplicationMethod *string        `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
 	Volume            *int           `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
-	Links             *Links         `json:"links,omitempty" validate:"omitempty" extensions:"x-go-name=Links"`
+	Links             *Links         `json:"links,omitempty" validate:"omitempty"`
 }
 
 // CreateCosmeticsResponse represents the response after creating a cosmetic product.
@@ -48,11 +46,10 @@ type GetCosmeticsResponse Cosmetics
 
 // GetAllByFilterCosmeticsRequest is used to filter and list cosmetic products.
 // TODO add volume from - volume to
-// TODO add have links ozon / wildberries
 type GetAllByFilterCosmeticsRequest struct {
 	Limit       *int            `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100" example:"10"`
 	Offset      *int            `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0" example:"0"`
-	Category    *types.Category `json:"category,omitempty" form:"category" validate:"omitempty,category" example:"2" enums:"0,1,2,3,4,5,6,7,8"`
+	Category    *types.Category `json:"category,omitempty" form:"category" validate:"omitempty,category" example:"2"`
 	TitlePrefix *string         `json:"title_prefix,omitempty" form:"titlePrefix" validate:"omitempty,min=1,max=100" example:"Hair"`
 	Volume      *int            `json:"volume,omitempty" form:"volume" validate:"omitempty,min=1,max=10000" example:"250"`
 }
@@ -63,12 +60,12 @@ type GetAllByFilterCosmeticsResponse []*Cosmetics
 // UpdateCosmeticsRequest represents an update request for a cosmetic product.
 type UpdateCosmeticsRequest struct {
 	ID                uuid.UUID       `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
-	Category          *types.Category `json:"category,omitempty" validate:"omitempty,category" example:"4" enums:"0,1,2,3,4,5,6,7,8"`
+	Category          *types.Category `json:"category,omitempty" validate:"omitempty,category" example:"4"`
 	Title             *string         `json:"title,omitempty" validate:"omitempty,min=3,max=100" example:"New Hair Shampoo"`
 	Description       *string         `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Updated product description."`
 	ApplicationMethod *string         `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply evenly and rinse well."`
 	Volume            *int            `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"500"`
-	Links             *Links          `json:"links,omitempty" validate:"omitempty" extensions:"x-go-name=Links"`
+	Links             *Links          `json:"links,omitempty" validate:"omitempty"`
 }
 
 // UpdateCosmeticsResponse returns the updated cosmetic product.

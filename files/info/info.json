@@ -1,0 +1,52 @@
+{
+  "heading": "Контактная информация",
+  "description": "Вы можете связаться с нами в рабочее время по телефону, почте или через форму обратной связи.",
+  "fluid": true,
+  "schedule": [
+    {
+      "weekday": "Понедельник",
+      "hours": {
+        "open": "09:00",
+        "close": "18:00"
+      }
+    },
+    {
+      "weekday": "Вторник",
+      "hours": {
+        "open": "09:00",
+        "close": "18:00"
+      }
+    },
+    {
+      "weekday": "Среда",
+      "hours": {
+        "open": "09:00",
+        "close": "18:00"
+      }
+    },
+    {
+      "weekday": "Четверг",
+      "hours": {
+        "open": "09:00",
+        "close": "18:00"
+      }
+    },
+    {
+      "weekday": "Пятница",
+      "hours": {
+        "open": "09:00",
+        "close": "18:00"
+      }
+    }
+  ],
+  "links": [
+    {
+      "label": "Форма обратной связи",
+      "href": "https://example.com/contact"
+    },
+    {
+      "label": "Ютуб канал разработчика",
+      "href": "https://www.youtube.com/@gram_rate"
+    }
+  ]
+}
