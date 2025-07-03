@@ -1,19 +1,27 @@
 package info
 
-import jsonInfo "Leech-ru/internal/adapters/repository/json/info"
+import (
+	jsonInfo "Leech-ru/internal/adapters/repository/json/info"
+)
 
 // Repository описывает поведение хранилища info.json
 type jsonInfoRepository interface {
 	Read() (*jsonInfo.Info, error)
-	Write(info *jsonInfo.Info) error
+	Write(info *jsonInfo.Info) (*jsonInfo.Info, error)
 }
 
 type infoService struct {
 	jsonInfoRepository jsonInfoRepository
+	jsonInfoConfig     jsonInfoConfig
 }
 
-func NewService(jsonInfoRepository jsonInfoRepository) *infoService {
+type jsonInfoConfig interface {
+	PathToJsonFile() string
+}
+
+func NewService(jsonInfoConfig jsonInfoConfig) *infoService {
 	return &infoService{
-		jsonInfoRepository: jsonInfoRepository,
+		jsonInfoRepository: jsonInfo.NewRepository(jsonInfoConfig.PathToJsonFile()),
+		jsonInfoConfig:     jsonInfoConfig,
 	}
 }

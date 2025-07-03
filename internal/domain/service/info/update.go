@@ -12,6 +12,7 @@ func (s infoService) Update(_ context.Context, req *dto.UpdateInfoRequest) (*dto
 		return nil, err
 	}
 
+	// Обновление полей, если они заданы
 	if req.Heading != nil {
 		current.Heading = *req.Heading
 	}
@@ -26,7 +27,10 @@ func (s infoService) Update(_ context.Context, req *dto.UpdateInfoRequest) (*dto
 		for _, s := range *req.Schedule {
 			newSchedule = append(newSchedule, jsonInfo.ScheduleEntry{
 				Weekday: s.Weekday,
-				Hours:   jsonInfo.Hours(s.Hours),
+				Hours: jsonInfo.Hours{
+					Open:  s.Hours.Open,
+					Close: s.Hours.Close,
+				},
 			})
 		}
 		current.Schedule = newSchedule
@@ -42,18 +46,19 @@ func (s infoService) Update(_ context.Context, req *dto.UpdateInfoRequest) (*dto
 		current.Links = newLinks
 	}
 
-	if err := s.jsonInfoRepository.Write(current); err != nil {
+	updated, err := s.jsonInfoRepository.Write(current)
+	if err != nil {
 		return nil, err
 	}
 
 	resp := &dto.UpdateInfoResponse{
-		Heading:     current.Heading,
-		Description: current.Description,
-		Fluid:       &current.Fluid,
+		Heading:     updated.Heading,
+		Description: updated.Description,
+		Fluid:       &updated.Fluid,
 	}
 
-	if len(current.Schedule) > 0 {
-		for _, s := range current.Schedule {
+	if len(updated.Schedule) > 0 {
+		for _, s := range updated.Schedule {
 			resp.Schedule = append(resp.Schedule, dto.ScheduleEntry{
 				Weekday: s.Weekday,
 				Hours: dto.Hours{
@@ -64,9 +69,8 @@ func (s infoService) Update(_ context.Context, req *dto.UpdateInfoRequest) (*dto
 		}
 	}
 
-	// Конвертация ссылок
-	if len(current.Links) > 0 {
-		for _, l := range current.Links {
+	if len(updated.Links) > 0 {
+		for _, l := range updated.Links {
 			resp.Links = append(resp.Links, dto.InfoLinks{
 				Label: l.Label,
 				Href:  l.Href,

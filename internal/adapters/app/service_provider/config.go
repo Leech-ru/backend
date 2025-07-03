@@ -78,3 +78,16 @@ func (s *ServiceProvider) JWTConfig() config.JWTConfig {
 
 	return s.jwtConfig
 }
+
+func (s *ServiceProvider) JsonInfoConfig() config.JsonInfoConfig {
+	if s.jsonInfoConfig == nil {
+		cfg, err := config.NewJsonInfoConfig()
+		if err != nil {
+			panic(fmt.Errorf("failed to get JSON info config: %w", err))
+		}
+
+		s.jsonInfoConfig = cfg
+	}
+
+	return s.jsonInfoConfig
+}

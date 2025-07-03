@@ -39,5 +39,5 @@ func NewHandler(
 
 func (h *handler) Setup(router *echo.Group) {
 	router.GET("/info/corporation", h.GetInfo)
-	router.PATCH("/info/corporation", h.GetInfo, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	router.PATCH("/info/corporation", h.UpdateInfo, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 }
