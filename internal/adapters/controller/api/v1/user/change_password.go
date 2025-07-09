@@ -10,6 +10,20 @@ import (
 	"net/http"
 )
 
+// ChangePassword Change user password
+//
+// @Summary Change user password
+// @Tags user
+// @Accept json
+// @Produce json
+// @Security CookieAuth
+// @Param request body dto.ChangePasswordRequest true "Password change data"
+// @Success 204
+// @Header 204 {string} Set-Cookie "user_auth_access_token=token; Path=/; HttpOnly; Secure; SameSite=Strict"
+// @Header 204 {string} Set-Cookie "user_auth_refresh_token=token; Path=/; HttpOnly; Secure; SameSite=Strict"
+// @Failure 400 {object} dto.HTTPStatus
+// @Failure 403 {object} dto.HTTPStatus
+// @Router /api/v1/user/password [post]
 func (h *handler) ChangePassword(c echo.Context) error {
 	var req dto.ChangePasswordRequest
 	userID, _ := c.Get("user_id").(uuid.UUID)

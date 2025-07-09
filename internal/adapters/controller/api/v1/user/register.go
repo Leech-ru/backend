@@ -9,6 +9,19 @@ import (
 	"net/http"
 )
 
+// Register new user
+//
+// @Summary Register new user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param request body dto.RegisterUserRequest true "Registration data"
+// @Success 201 {object} dto.RegisterUserResponse
+// @Header 201 {string} Set-Cookie "user_auth_access_token=token; Path=/; HttpOnly; Secure; SameSite=Strict"
+// @Header 201 {string} Set-Cookie "user_auth_refresh_token=token; Path=/; HttpOnly; Secure; SameSite=Strict"
+// @Failure 400 {object} dto.HTTPStatus
+// @Failure 409 {object} dto.HTTPStatus
+// @Router /api/v1/user/register [post]
 func (h *handler) Register(c echo.Context) error {
 	var req dto.RegisterUserRequest
 	if err := c.Bind(&req); err != nil {

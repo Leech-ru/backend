@@ -8,14 +8,38 @@ import (
 
 // @title           Leech API
 // @version         1.0
-// @description     Backend service for Leech-ru platform.
+// @description     Backend service for Leech-ru platform. Uses cookie-based authentication with HttpOnly tokens.
 
-// @contact.name   API Support
-// @contact.email  mmishin2107@gmail.com
+// @contact.name    API Support
+// @contact.email   mmishin2107@gmail.com
 
-// @host      пиявкипобеда.рф
+// @host            пиявкипобеда.рф
+// @BasePath        /api/v1
+// @schemes         http https
 
-// @schemes http
+// @securityDefinitions.apikey  CookieAuth
+// @in                          cookie
+// @name                        user_auth_access_token
+// @description                 Authentication via HttpOnly cookies. System uses two cookies:\n- `user_auth_access_token` (short-lived)\n- `user_auth_refresh_token` (long-lived)\n\nAll protected endpoints require valid cookies to be automatically sent by browser.
+
+// @tag.name        ping
+// @tag.description The main check of server performance
+
+// @tag.name        order
+// @tag.description Leech order operations
+
+// @tag.name        user
+// @tag.description User authentication and management
+
+// @tag.name        auth
+// @tag.description Work with authorization
+
+// @tag.name        cosmetics
+// @tag.description Cosmetics view and management
+
+// @tag.name        info
+// @tag.description Information about the center and partners
+
 func main() {
 	mainApp, err := app.New()
 	if err != nil {

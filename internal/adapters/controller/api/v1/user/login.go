@@ -9,6 +9,19 @@ import (
 	"net/http"
 )
 
+// Login User login
+//
+// @Summary Authenticate user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param request body dto.LoginUserRequest true "Login credentials"
+// @Success 200 {object} dto.LoginUserResponse
+// @Header 200 {string} Set-Cookie "user_auth_access_token=token; Path=/; HttpOnly; Secure; SameSite=Strict"
+// @Header 200 {string} Set-Cookie "user_auth_refresh_token=token; Path=/; HttpOnly; Secure; SameSite=Strict"
+// @Failure 400 {object} dto.HTTPStatus
+// @Failure 401 {object} dto.HTTPStatus
+// @Router /api/v1/user/login [post]
 func (h *handler) Login(c echo.Context) error {
 	var req dto.LoginUserRequest
 	if err := c.Bind(&req); err != nil {

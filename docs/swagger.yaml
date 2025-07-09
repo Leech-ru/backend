@@ -1,4 +1,22 @@
+basePath: /api/v1
 definitions:
+  dto.ChangePasswordRequest:
+    properties:
+      id:
+        type: string
+      new_password:
+        maxLength: 100
+        minLength: 8
+        type: string
+      old_password:
+        maxLength: 100
+        minLength: 8
+        type: string
+    required:
+    - id
+    - new_password
+    - old_password
+    type: object
   dto.Cosmetics:
     description: Contains product information such as category, title, description,
       and volume.
@@ -184,6 +202,19 @@ definitions:
     - description
     - heading
     type: object
+  dto.GetUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      role:
+        $ref: '#/definitions/types.Role'
+      surname:
+        type: string
+    type: object
   dto.HTTPStatus:
     properties:
       code:
@@ -229,6 +260,33 @@ definitions:
         maxLength: 500
         type: string
     type: object
+  dto.LoginUserRequest:
+    properties:
+      email:
+        maxLength: 254
+        minLength: 6
+        type: string
+      password:
+        maxLength: 100
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.LoginUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      role:
+        $ref: '#/definitions/types.Role'
+      surname:
+        type: string
+    type: object
   dto.OrderDetails:
     properties:
       leech_size_1:
@@ -255,6 +313,46 @@ definitions:
   dto.PingResponse:
     properties:
       message:
+        example: ok
+        type: string
+    type: object
+  dto.RegisterUserRequest:
+    properties:
+      email:
+        maxLength: 254
+        minLength: 6
+        type: string
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      password:
+        maxLength: 100
+        minLength: 8
+        type: string
+      role:
+        $ref: '#/definitions/types.Role'
+      surname:
+        maxLength: 100
+        minLength: 2
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - surname
+    type: object
+  dto.RegisterUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      role:
+        $ref: '#/definitions/types.Role'
+      surname:
         type: string
     type: object
   dto.ScheduleEntry:
@@ -264,7 +362,6 @@ definitions:
       weekday:
         allOf:
         - $ref: '#/definitions/types.Weekday'
-        description: Monday
         example: 1
     required:
     - hours
@@ -389,6 +486,34 @@ definitions:
     - description
     - heading
     type: object
+  dto.UpdateUserRequest:
+    properties:
+      id:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      surname:
+        maxLength: 100
+        minLength: 2
+        type: string
+    required:
+    - id
+    type: object
+  dto.UpdateUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      role:
+        $ref: '#/definitions/types.Role'
+      surname:
+        type: string
+    type: object
   types.Category:
     enum:
     - 0
@@ -411,6 +536,16 @@ definitions:
     - CategoryExclusive
     - CategoryWholesale
     - CategoryLeech
+  types.Role:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - RoleUser
+    - RoleModerator
+    - RoleAdmin
   types.Weekday:
     enum:
     - 0
@@ -434,7 +569,8 @@ info:
   contact:
     email: mmishin2107@gmail.com
     name: API Support
-  description: Backend service for Leech-ru platform.
+  description: Backend service for Leech-ru platform. Uses cookie-based authentication
+    with HttpOnly tokens.
   title: Leech API
   version: "1.0"
 paths:
@@ -741,6 +877,207 @@ paths:
       summary: Checking the server performance
       tags:
       - ping
+  /api/v1/user:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Get current user info
+      tags:
+      - user
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Update user information
+      tags:
+      - user
+  /api/v1/user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            Set-Cookie:
+              description: user_auth_refresh_token=token; Path=/; HttpOnly; Secure;
+                SameSite=Strict
+              type: string
+          schema:
+            $ref: '#/definitions/dto.LoginUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Authenticate user
+      tags:
+      - user
+  /api/v1/user/logout:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          headers:
+            Set-Cookie:
+              description: user_auth_refresh_token=; expires=Thu, 01 Jan 1970 00:00:00
+                GMT; Path=/; HttpOnly
+              type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Logout user
+      tags:
+      - user
+  /api/v1/user/password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Password change data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          headers:
+            Set-Cookie:
+              description: user_auth_refresh_token=token; Path=/; HttpOnly; Secure;
+                SameSite=Strict
+              type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Change user password
+      tags:
+      - user
+  /api/v1/user/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Registration data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          headers:
+            Set-Cookie:
+              description: user_auth_refresh_token=token; Path=/; HttpOnly; Secure;
+                SameSite=Strict
+              type: string
+          schema:
+            $ref: '#/definitions/dto.RegisterUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Register new user
+      tags:
+      - user
 schemes:
 - http
+- https
+securityDefinitions:
+  CookieAuth:
+    description: Authentication via HttpOnly cookies. System uses two cookies:\n-
+      `user_auth_access_token` (short-lived)\n- `user_auth_refresh_token` (long-lived)\n\nAll
+      protected endpoints require valid cookies to be automatically sent by browser.
+    in: cookie
+    name: user_auth_access_token
+    type: apiKey
 swagger: "2.0"
+tags:
+- description: The main check of server performance
+  name: ping
+- description: Leech order operations
+  name: order
+- description: User authentication and management
+  name: user
+- description: Work with authorization
+  name: auth
+- description: Cosmetics view and management
+  name: cosmetics
+- description: Information about the center and partners
+  name: info

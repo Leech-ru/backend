@@ -9,6 +9,18 @@ import (
 	"net/http"
 )
 
+// Update user
+//
+// @Summary Update user information
+// @Tags user
+// @Accept json
+// @Produce json
+// @Security CookieAuth
+// @Param request body dto.UpdateUserRequest true "User data"
+// @Success 200 {object} dto.UpdateUserResponse
+// @Failure 400 {object} dto.HTTPStatus
+// @Failure 401 {object} dto.HTTPStatus
+// @Router /api/v1/user [patch]
 func (h *handler) Update(c echo.Context) error {
 	var req dto.UpdateUserRequest
 	userID, _ := c.Get("user_id").(uuid.UUID)

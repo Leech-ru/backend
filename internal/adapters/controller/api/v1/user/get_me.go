@@ -9,6 +9,17 @@ import (
 	"net/http"
 )
 
+// GetMe Get current user
+//
+// @Summary Get current user info
+// @Tags user
+// @Accept json
+// @Produce json
+// @Security CookieAuth
+// @Success 200 {object} dto.GetUserResponse
+// @Failure 400 {object} dto.HTTPStatus
+// @Failure 401 {object} dto.HTTPStatus
+// @Router /api/v1/user [get]
 func (h *handler) GetMe(c echo.Context) error {
 	var req dto.GetUserRequest
 	userID, _ := c.Get("user_id").(uuid.UUID)
