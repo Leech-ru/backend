@@ -43,6 +43,7 @@ func NewHandler(
 	}
 }
 
+// TODO включить тут secure + добавить что требуется роль модератор
 func (h *handler) Setup(router *echo.Group) {
 	router.GET("/cosmetics/search", h.GetAllByFilter)
 	router.GET("/cosmetics/:id", h.GetById)

@@ -432,35 +432,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/ping": {
-            "get": {
-                "description": "Checking the server performance.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ping"
-                ],
-                "summary": "Checking the server performance",
-                "responses": {
-                    "200": {
-                        "description": "Successful check",
-                        "schema": {
-                            "$ref": "#/definitions/dto.PingResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/user": {
             "get": {
                 "security": [
@@ -505,6 +476,7 @@ const docTemplate = `{
                         "CookieAuth": []
                     }
                 ],
+                "description": "Information updating the current user under which the input is executed",
                 "consumes": [
                     "application/json"
                 ],
@@ -738,21 +710,45 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/ping": {
+            "get": {
+                "description": "Checking the server performance.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "Checking the server performance",
+                "responses": {
+                    "200": {
+                        "description": "Successful check",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PingResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "dto.ChangePasswordRequest": {
             "type": "object",
             "required": [
-                "id",
                 "new_password",
                 "old_password"
             ],
             "properties": {
-                "id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
                 "new_password": {
                     "type": "string",
                     "format": "password",
@@ -1238,14 +1234,6 @@ const docTemplate = `{
                     "minLength": 8,
                     "example": "SecurePass123!"
                 },
-                "role": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Role"
-                        }
-                    ],
-                    "example": 0
-                },
                 "surname": {
                     "type": "string",
                     "maxLength": 100,
@@ -1467,14 +1455,7 @@ const docTemplate = `{
         },
         "dto.UpdateUserRequest": {
             "type": "object",
-            "required": [
-                "id"
-            ],
             "properties": {
-                "id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
                 "name": {
                     "type": "string",
                     "maxLength": 100,
@@ -1618,8 +1599,8 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "пиявкипобеда.рф",
-	BasePath:         "/api/v1",
-	Schemes:          []string{"http", "https"},
+	BasePath:         "",
+	Schemes:          []string{"http"},
 	Title:            "Leech API",
 	Description:      "Backend service for Leech-ru platform. Uses cookie-based authentication with HttpOnly tokens.",
 	InfoInstanceName: "swagger",

@@ -70,7 +70,7 @@ func addRouters(app *app.App) {
 	})
 
 	pingHandler := ping.NewHandler()
-	pingHandler.Setup(apiV1)
+	pingHandler.Setup(server.Group(""))
 
 	refreshTokenHandler := token.NewHandler(serviceProvider.TokenService(), serviceProvider.JWTConfig(), serviceProvider.ServerConfig(), serviceProvider.Validator(), serviceProvider.Decoder())
 	refreshTokenHandler.Setup(apiV1)

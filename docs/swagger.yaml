@@ -1,10 +1,6 @@
-basePath: /api/v1
 definitions:
   dto.ChangePasswordRequest:
     properties:
-      id:
-        example: 550e8400-e29b-41d4-a716-446655440000
-        type: string
       new_password:
         example: NewPass456!
         format: password
@@ -18,7 +14,6 @@ definitions:
         minLength: 8
         type: string
     required:
-    - id
     - new_password
     - old_password
     type: object
@@ -354,10 +349,6 @@ definitions:
         maxLength: 100
         minLength: 8
         type: string
-      role:
-        allOf:
-        - $ref: '#/definitions/types.Role'
-        example: 0
       surname:
         example: Ivanov
         maxLength: 100
@@ -521,9 +512,6 @@ definitions:
     type: object
   dto.UpdateUserRequest:
     properties:
-      id:
-        example: 550e8400-e29b-41d4-a716-446655440000
-        type: string
       name:
         example: Ivan
         maxLength: 100
@@ -534,8 +522,6 @@ definitions:
         maxLength: 100
         minLength: 2
         type: string
-    required:
-    - id
     type: object
   dto.UpdateUserResponse:
     properties:
@@ -900,25 +886,6 @@ paths:
       summary: Update corporation info
       tags:
       - info
-  /api/v1/ping:
-    get:
-      consumes:
-      - application/json
-      description: Checking the server performance.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful check
-          schema:
-            $ref: '#/definitions/dto.PingResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/dto.HTTPStatus'
-      summary: Checking the server performance
-      tags:
-      - ping
   /api/v1/user:
     get:
       consumes:
@@ -946,6 +913,8 @@ paths:
     patch:
       consumes:
       - application/json
+      description: Information updating the current user under which the input is
+        executed
       parameters:
       - description: User data
         in: body
@@ -1098,9 +1067,27 @@ paths:
       summary: Register new user
       tags:
       - user
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: Checking the server performance.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful check
+          schema:
+            $ref: '#/definitions/dto.PingResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Checking the server performance
+      tags:
+      - ping
 schemes:
 - http
-- https
 securityDefinitions:
   CookieAuth:
     description: Authentication via HttpOnly cookies. System uses two cookies:\n-

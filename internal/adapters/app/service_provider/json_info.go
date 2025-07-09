@@ -2,7 +2,7 @@ package service_provider
 
 import (
 	"Leech-ru/internal/domain/dto"
-	"Leech-ru/internal/domain/service/info"
+	"Leech-ru/internal/domain/service/json_info"
 	"context"
 )
 
@@ -13,7 +13,7 @@ type infoService interface {
 
 func (s *ServiceProvider) InfoService() infoService {
 	if s.infoService == nil {
-		s.infoService = info.NewService(s.JsonInfoConfig())
+		s.infoService = json_info.NewService(s.JsonInfoConfig())
 	}
 
 	return s.infoService

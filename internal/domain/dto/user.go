@@ -18,7 +18,7 @@ type RegisterUserRequest struct {
 	Password string      `json:"password" validate:"required,min=8,max=100" example:"SecurePass123!" format:"password"`
 	Name     string      `json:"name" validate:"required,min=2,max=100" example:"Ivan"`
 	Surname  string      `json:"surname" validate:"required,min=2,max=100" example:"Ivanov"`
-	Role     *types.Role `json:"role,omitempty" validate:"omitempty,role" example:"0"`
+	Role     *types.Role `json:"role,omitempty" validate:"omitempty,role" swaggerignore:"true"`
 }
 
 type RegisterUserResponse struct {
@@ -59,11 +59,11 @@ type LoginUserResponse struct {
 }
 
 type LogoutRequest struct {
-	ID uuid.UUID `json:"id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
+	ID uuid.UUID `json:"id" validate:"required,uuid" swaggerignore:"true"`
 }
 
 type UpdateUserRequest struct {
-	ID      uuid.UUID `json:"id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
+	ID      uuid.UUID `json:"id" validate:"required,uuid" swaggerignore:"true"`
 	Name    *string   `json:"name,omitempty" validate:"omitempty,min=2,max=100" example:"Ivan"`
 	Surname *string   `json:"surname,omitempty" validate:"omitempty,min=2,max=100" example:"Petrov"`
 }
@@ -71,7 +71,7 @@ type UpdateUserRequest struct {
 type UpdateUserResponse User
 
 type ChangePasswordRequest struct {
-	ID          uuid.UUID `json:"id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
+	ID          uuid.UUID `json:"id" validate:"required,uuid" swaggerignore:"true"`
 	OldPassword string    `json:"old_password" validate:"required,min=8,max=100" example:"OldPass123!" format:"password"`
 	NewPassword string    `json:"new_password" validate:"required,min=8,max=100" example:"NewPass456!" format:"password"`
 }
@@ -81,5 +81,5 @@ type ChangePasswordResponse struct {
 }
 
 type DeleteUserRequest struct {
-	ID uuid.UUID `json:"id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
+	ID uuid.UUID `json:"id" validate:"required,uuid" swaggerignore:"true"`
 }

@@ -1,4 +1,4 @@
-package info
+package json_info
 
 import (
 	jsonInfo "Leech-ru/internal/adapters/repository/json/info"

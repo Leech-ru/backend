@@ -1,4 +1,4 @@
-package info
+package json_info
 
 import (
 	"Leech-ru/internal/domain/dto"
