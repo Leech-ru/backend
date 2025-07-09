@@ -252,6 +252,11 @@ definitions:
     required:
     - package_type
     type: object
+  dto.PingResponse:
+    properties:
+      message:
+        type: string
+    type: object
   dto.ScheduleEntry:
     properties:
       hours:
@@ -683,6 +688,25 @@ paths:
       summary: Update corporation info
       tags:
       - info
+  /api/v1/ping:
+    get:
+      consumes:
+      - application/json
+      description: Checking the server performance.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful check
+          schema:
+            $ref: '#/definitions/dto.PingResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Checking the server performance
+      tags:
+      - ping
 schemes:
 - http
 swagger: "2.0"

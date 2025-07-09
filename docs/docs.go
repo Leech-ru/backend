@@ -381,6 +381,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/ping": {
+            "get": {
+                "description": "Checking the server performance.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "Checking the server performance",
+                "responses": {
+                    "200": {
+                        "description": "Successful check",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PingResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -733,6 +762,14 @@ const docTemplate = `{
                         2,
                         3
                     ]
+                }
+            }
+        },
+        "dto.PingResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         },
