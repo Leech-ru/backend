@@ -83,6 +83,50 @@ definitions:
         example: 250
         type: integer
     type: object
+  dto.CreateOrderRequest:
+    properties:
+      customer_info:
+        $ref: '#/definitions/dto.CustomerInfo'
+      order_details:
+        $ref: '#/definitions/dto.OrderDetails'
+    required:
+    - customer_info
+    - order_details
+    type: object
+  dto.CreateOrderResponse:
+    properties:
+      customer_info:
+        $ref: '#/definitions/dto.CustomerInfo'
+      order_details:
+        $ref: '#/definitions/dto.OrderDetails'
+      total_price:
+        type: number
+    type: object
+  dto.CustomerInfo:
+    properties:
+      address:
+        maxLength: 200
+        minLength: 5
+        type: string
+      comment:
+        maxLength: 500
+        type: string
+      email:
+        maxLength: 254
+        minLength: 6
+        type: string
+      fio:
+        maxLength: 100
+        minLength: 2
+        type: string
+      phone_number:
+        type: string
+    required:
+    - address
+    - email
+    - fio
+    - phone_number
+    type: object
   dto.GetCosmeticsResponse:
     description: Contains product information such as category, title, description,
       and volume.
@@ -127,10 +171,14 @@ definitions:
       links:
         items:
           $ref: '#/definitions/dto.InfoLinks'
+        maxItems: 10
+        minItems: 0
         type: array
       schedule:
         items:
           $ref: '#/definitions/dto.ScheduleEntry'
+        maxItems: 7
+        minItems: 1
         type: array
     required:
     - description
@@ -180,6 +228,29 @@ definitions:
         example: https://www.wildberries.ru/catalog/344283033/detail.aspx
         maxLength: 500
         type: string
+    type: object
+  dto.OrderDetails:
+    properties:
+      leech_size_1:
+        maximum: 500
+        minimum: 0
+        type: integer
+      leech_size_2:
+        maximum: 500
+        minimum: 0
+        type: integer
+      leech_size_3:
+        maximum: 500
+        minimum: 0
+        type: integer
+      package_type:
+        enum:
+        - 1
+        - 2
+        - 3
+        type: integer
+    required:
+    - package_type
     type: object
   dto.ScheduleEntry:
     properties:
@@ -272,10 +343,14 @@ definitions:
       links:
         items:
           $ref: '#/definitions/dto.InfoLinks'
+        maxItems: 10
+        minItems: 0
         type: array
       schedule:
         items:
           $ref: '#/definitions/dto.ScheduleEntry'
+        maxItems: 7
+        minItems: 1
         type: array
     type: object
   dto.UpdateInfoResponse:
@@ -296,10 +371,14 @@ definitions:
       links:
         items:
           $ref: '#/definitions/dto.InfoLinks'
+        maxItems: 10
+        minItems: 0
         type: array
       schedule:
         items:
           $ref: '#/definitions/dto.ScheduleEntry'
+        maxItems: 7
+        minItems: 1
         type: array
     required:
     - description
@@ -419,36 +498,32 @@ paths:
     post:
       consumes:
       - application/json
-      description: Creates a new cosmetic product with provided details.
+      description: Creates a new leech order and send it to email.
       parameters:
-      - description: Cosmetic product data
+      - description: Leech order data
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateCosmeticsRequest'
+          $ref: '#/definitions/dto.CreateOrderRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.CreateCosmeticsResponse'
+            $ref: '#/definitions/dto.CreateOrderResponse'
         "400":
           description: Invalid request body or validation error
-          schema:
-            $ref: '#/definitions/dto.HTTPStatus'
-        "409":
-          description: 'Conflict: invalid cosmetics format'
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
         "500":
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
-      summary: Create a new cosmetic product
+      summary: Create a new leech order
       tags:
-      - cosmetics
+      - order
   /api/v1/cosmetics/{id}:
     delete:
       description: Deletes the cosmetic product with the given UUID.
@@ -549,7 +624,7 @@ paths:
       summary: Update cosmetic
       tags:
       - cosmetics
-  /info/corporation:
+  /api/v1/info/corporation:
     get:
       consumes:
       - application/json

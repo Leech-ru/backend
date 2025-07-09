@@ -15,7 +15,7 @@ import (
 // @Produce      json
 // @Success      200  {object}  dto.GetInfoResponse
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
-// @Router       /info/corporation [get]
+// @Router       /api/v1/info/corporation [get]
 func (h *handler) GetInfo(c echo.Context) error {
 	resp, err := h.infoService.Get(c.Request().Context())
 	if err != nil {

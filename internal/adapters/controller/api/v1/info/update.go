@@ -20,7 +20,7 @@ import (
 // @Failure      401   {object}  dto.HTTPStatus "Unauthorized"
 // @Failure      403   {object}  dto.HTTPStatus "Forbidden"
 // @Failure      500   {object}  dto.HTTPStatus "Internal server error"
-// @Router       /info/corporation [patch]
+// @Router       /api/v1/info/corporation [patch]
 func (h *handler) UpdateInfo(c echo.Context) error {
 	var req dto.UpdateInfoRequest
 	if err := c.Bind(&req); err != nil {

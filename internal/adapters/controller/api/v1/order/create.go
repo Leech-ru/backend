@@ -8,6 +8,18 @@ import (
 	"net/http"
 )
 
+// CreateOrder create order and send it to email.
+//
+// @Summary      Create a new leech order
+// @Description  Creates a new leech order and send it to email.
+// @Tags         order
+// @Accept       json
+// @Produce      json
+// @Param        request  body      dto.CreateOrderRequest  true  "Leech order data"
+// @Success      201      {object}  dto.CreateOrderResponse
+// @Failure      400      {object}  dto.HTTPStatus "Invalid request body or validation error"
+// @Failure      500      {object}  dto.HTTPStatus "Internal server error"
+// @Router       /api/v1/cosmetics [post]
 func (h *handler) CreateOrder(c echo.Context) error {
 	var req dto.CreateOrderRequest
 	if err := c.Bind(&req); err != nil {

@@ -104,7 +104,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Creates a new cosmetic product with provided details.",
+                "description": "Creates a new leech order and send it to email.",
                 "consumes": [
                     "application/json"
                 ],
@@ -112,17 +112,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "cosmetics"
+                    "order"
                 ],
-                "summary": "Create a new cosmetic product",
+                "summary": "Create a new leech order",
                 "parameters": [
                     {
-                        "description": "Cosmetic product data",
+                        "description": "Leech order data",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateCosmeticsRequest"
+                            "$ref": "#/definitions/dto.CreateOrderRequest"
                         }
                     }
                 ],
@@ -130,17 +130,11 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateCosmeticsResponse"
+                            "$ref": "#/definitions/dto.CreateOrderResponse"
                         }
                     },
                     "400": {
                         "description": "Invalid request body or validation error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict: invalid cosmetics format",
                         "schema": {
                             "$ref": "#/definitions/dto.HTTPStatus"
                         }
@@ -303,7 +297,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/info/corporation": {
+        "/api/v1/info/corporation": {
             "get": {
                 "description": "Returns the current public corporation information: heading, description, fluid status, schedule, and links.",
                 "consumes": [
@@ -508,6 +502,68 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateOrderRequest": {
+            "type": "object",
+            "required": [
+                "customer_info",
+                "order_details"
+            ],
+            "properties": {
+                "customer_info": {
+                    "$ref": "#/definitions/dto.CustomerInfo"
+                },
+                "order_details": {
+                    "$ref": "#/definitions/dto.OrderDetails"
+                }
+            }
+        },
+        "dto.CreateOrderResponse": {
+            "type": "object",
+            "properties": {
+                "customer_info": {
+                    "$ref": "#/definitions/dto.CustomerInfo"
+                },
+                "order_details": {
+                    "$ref": "#/definitions/dto.OrderDetails"
+                },
+                "total_price": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.CustomerInfo": {
+            "type": "object",
+            "required": [
+                "address",
+                "email",
+                "fio",
+                "phone_number"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "minLength": 5
+                },
+                "comment": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "email": {
+                    "type": "string",
+                    "maxLength": 254,
+                    "minLength": 6
+                },
+                "fio": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2
+                },
+                "phone_number": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.GetCosmeticsResponse": {
             "description": "Contains product information such as category, title, description, and volume.",
             "type": "object",
@@ -570,12 +626,16 @@ const docTemplate = `{
                 },
                 "links": {
                     "type": "array",
+                    "maxItems": 10,
+                    "minItems": 0,
                     "items": {
                         "$ref": "#/definitions/dto.InfoLinks"
                     }
                 },
                 "schedule": {
                     "type": "array",
+                    "maxItems": 7,
+                    "minItems": 1,
                     "items": {
                         "$ref": "#/definitions/dto.ScheduleEntry"
                     }
@@ -642,6 +702,37 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 500,
                     "example": "https://www.wildberries.ru/catalog/344283033/detail.aspx"
+                }
+            }
+        },
+        "dto.OrderDetails": {
+            "type": "object",
+            "required": [
+                "package_type"
+            ],
+            "properties": {
+                "leech_size_1": {
+                    "type": "integer",
+                    "maximum": 500,
+                    "minimum": 0
+                },
+                "leech_size_2": {
+                    "type": "integer",
+                    "maximum": 500,
+                    "minimum": 0
+                },
+                "leech_size_3": {
+                    "type": "integer",
+                    "maximum": 500,
+                    "minimum": 0
+                },
+                "package_type": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ]
                 }
             }
         },
@@ -771,12 +862,16 @@ const docTemplate = `{
                 },
                 "links": {
                     "type": "array",
+                    "maxItems": 10,
+                    "minItems": 0,
                     "items": {
                         "$ref": "#/definitions/dto.InfoLinks"
                     }
                 },
                 "schedule": {
                     "type": "array",
+                    "maxItems": 7,
+                    "minItems": 1,
                     "items": {
                         "$ref": "#/definitions/dto.ScheduleEntry"
                     }
@@ -808,12 +903,16 @@ const docTemplate = `{
                 },
                 "links": {
                     "type": "array",
+                    "maxItems": 10,
+                    "minItems": 0,
                     "items": {
                         "$ref": "#/definitions/dto.InfoLinks"
                     }
                 },
                 "schedule": {
                     "type": "array",
+                    "maxItems": 7,
+                    "minItems": 1,
                     "items": {
                         "$ref": "#/definitions/dto.ScheduleEntry"
                     }
