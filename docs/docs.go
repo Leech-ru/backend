@@ -154,7 +154,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Creates a new leech order and send it to email.",
+                "description": "Creates a new cosmetic product with provided details.",
                 "consumes": [
                     "application/json"
                 ],
@@ -162,17 +162,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "order"
+                    "cosmetics"
                 ],
-                "summary": "Create a new leech order",
+                "summary": "Create a new cosmetic product",
                 "parameters": [
                     {
-                        "description": "Leech order data",
+                        "description": "Cosmetic product data",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateOrderRequest"
+                            "$ref": "#/definitions/dto.CreateCosmeticsRequest"
                         }
                     }
                 ],
@@ -180,11 +180,17 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateOrderResponse"
+                            "$ref": "#/definitions/dto.CreateCosmeticsResponse"
                         }
                     },
                     "400": {
                         "description": "Invalid request body or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict: invalid cosmetics format",
                         "schema": {
                             "$ref": "#/definitions/dto.HTTPStatus"
                         }
@@ -419,6 +425,52 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/order": {
+            "post": {
+                "description": "Creates a new leech order and send it to email.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Create a new leech order",
+                "parameters": [
+                    {
+                        "description": "Leech order data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateOrderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or validation error",
                         "schema": {
                             "$ref": "#/definitions/dto.HTTPStatus"
                         }

@@ -701,32 +701,36 @@ paths:
     post:
       consumes:
       - application/json
-      description: Creates a new leech order and send it to email.
+      description: Creates a new cosmetic product with provided details.
       parameters:
-      - description: Leech order data
+      - description: Cosmetic product data
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateOrderRequest'
+          $ref: '#/definitions/dto.CreateCosmeticsRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.CreateOrderResponse'
+            $ref: '#/definitions/dto.CreateCosmeticsResponse'
         "400":
           description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "409":
+          description: 'Conflict: invalid cosmetics format'
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
         "500":
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
-      summary: Create a new leech order
+      summary: Create a new cosmetic product
       tags:
-      - order
+      - cosmetics
   /api/v1/cosmetics/{id}:
     delete:
       description: Deletes the cosmetic product with the given UUID.
@@ -886,6 +890,36 @@ paths:
       summary: Update corporation info
       tags:
       - info
+  /api/v1/order:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new leech order and send it to email.
+      parameters:
+      - description: Leech order data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateOrderResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Create a new leech order
+      tags:
+      - order
   /api/v1/user:
     get:
       consumes:

@@ -19,7 +19,7 @@ import (
 // @Success      201      {object}  dto.CreateOrderResponse
 // @Failure      400      {object}  dto.HTTPStatus "Invalid request body or validation error"
 // @Failure      500      {object}  dto.HTTPStatus "Internal server error"
-// @Router       /api/v1/cosmetics [post]
+// @Router       /api/v1/order [post]
 func (h *handler) CreateOrder(c echo.Context) error {
 	var req dto.CreateOrderRequest
 	if err := c.Bind(&req); err != nil {
