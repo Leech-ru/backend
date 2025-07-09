@@ -750,17 +750,22 @@ const docTemplate = `{
             ],
             "properties": {
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "new_password": {
                     "type": "string",
+                    "format": "password",
                     "maxLength": 100,
-                    "minLength": 8
+                    "minLength": 8,
+                    "example": "NewPass456!"
                 },
                 "old_password": {
                     "type": "string",
+                    "format": "password",
                     "maxLength": 100,
-                    "minLength": 8
+                    "minLength": 8,
+                    "example": "OldPass123!"
                 }
             }
         },
@@ -1026,19 +1031,28 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@example.com"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivan"
                 },
                 "role": {
-                    "$ref": "#/definitions/types.Role"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Role"
+                        }
+                    ],
+                    "example": 0
                 },
                 "surname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivanov"
                 }
             }
         },
@@ -1115,12 +1129,15 @@ const docTemplate = `{
                 "email": {
                     "type": "string",
                     "maxLength": 254,
-                    "minLength": 6
+                    "minLength": 6,
+                    "example": "user@example.com"
                 },
                 "password": {
                     "type": "string",
+                    "format": "password",
                     "maxLength": 100,
-                    "minLength": 8
+                    "minLength": 8,
+                    "example": "SecurePass123!"
                 }
             }
         },
@@ -1128,19 +1145,28 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@example.com"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivan"
                 },
                 "role": {
-                    "$ref": "#/definitions/types.Role"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Role"
+                        }
+                    ],
+                    "example": 0
                 },
                 "surname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivanov"
                 }
             }
         },
@@ -1196,25 +1222,35 @@ const docTemplate = `{
                 "email": {
                     "type": "string",
                     "maxLength": 254,
-                    "minLength": 6
+                    "minLength": 6,
+                    "example": "user@example.com"
                 },
                 "name": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Ivan"
                 },
                 "password": {
                     "type": "string",
+                    "format": "password",
                     "maxLength": 100,
-                    "minLength": 8
+                    "minLength": 8,
+                    "example": "SecurePass123!"
                 },
                 "role": {
-                    "$ref": "#/definitions/types.Role"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Role"
+                        }
+                    ],
+                    "example": 0
                 },
                 "surname": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Ivanov"
                 }
             }
         },
@@ -1222,19 +1258,28 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@example.com"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivan"
                 },
                 "role": {
-                    "$ref": "#/definitions/types.Role"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Role"
+                        }
+                    ],
+                    "example": 0
                 },
                 "surname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivanov"
                 }
             }
         },
@@ -1427,17 +1472,20 @@ const docTemplate = `{
             ],
             "properties": {
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "name": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Ivan"
                 },
                 "surname": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Petrov"
                 }
             }
         },
@@ -1445,19 +1493,28 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@example.com"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivan"
                 },
                 "role": {
-                    "$ref": "#/definitions/types.Role"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Role"
+                        }
+                    ],
+                    "example": 0
                 },
                 "surname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivanov"
                 }
             }
         },

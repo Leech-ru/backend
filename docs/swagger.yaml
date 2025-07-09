@@ -3,12 +3,17 @@ definitions:
   dto.ChangePasswordRequest:
     properties:
       id:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
       new_password:
+        example: NewPass456!
+        format: password
         maxLength: 100
         minLength: 8
         type: string
       old_password:
+        example: OldPass123!
+        format: password
         maxLength: 100
         minLength: 8
         type: string
@@ -205,14 +210,20 @@ definitions:
   dto.GetUserResponse:
     properties:
       email:
+        example: user@example.com
         type: string
       id:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
       name:
+        example: Ivan
         type: string
       role:
-        $ref: '#/definitions/types.Role'
+        allOf:
+        - $ref: '#/definitions/types.Role'
+        example: 0
       surname:
+        example: Ivanov
         type: string
     type: object
   dto.HTTPStatus:
@@ -263,10 +274,13 @@ definitions:
   dto.LoginUserRequest:
     properties:
       email:
+        example: user@example.com
         maxLength: 254
         minLength: 6
         type: string
       password:
+        example: SecurePass123!
+        format: password
         maxLength: 100
         minLength: 8
         type: string
@@ -277,14 +291,20 @@ definitions:
   dto.LoginUserResponse:
     properties:
       email:
+        example: user@example.com
         type: string
       id:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
       name:
+        example: Ivan
         type: string
       role:
-        $ref: '#/definitions/types.Role'
+        allOf:
+        - $ref: '#/definitions/types.Role'
+        example: 0
       surname:
+        example: Ivanov
         type: string
     type: object
   dto.OrderDetails:
@@ -319,20 +339,27 @@ definitions:
   dto.RegisterUserRequest:
     properties:
       email:
+        example: user@example.com
         maxLength: 254
         minLength: 6
         type: string
       name:
+        example: Ivan
         maxLength: 100
         minLength: 2
         type: string
       password:
+        example: SecurePass123!
+        format: password
         maxLength: 100
         minLength: 8
         type: string
       role:
-        $ref: '#/definitions/types.Role'
+        allOf:
+        - $ref: '#/definitions/types.Role'
+        example: 0
       surname:
+        example: Ivanov
         maxLength: 100
         minLength: 2
         type: string
@@ -345,14 +372,20 @@ definitions:
   dto.RegisterUserResponse:
     properties:
       email:
+        example: user@example.com
         type: string
       id:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
       name:
+        example: Ivan
         type: string
       role:
-        $ref: '#/definitions/types.Role'
+        allOf:
+        - $ref: '#/definitions/types.Role'
+        example: 0
       surname:
+        example: Ivanov
         type: string
     type: object
   dto.ScheduleEntry:
@@ -489,12 +522,15 @@ definitions:
   dto.UpdateUserRequest:
     properties:
       id:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
       name:
+        example: Ivan
         maxLength: 100
         minLength: 2
         type: string
       surname:
+        example: Petrov
         maxLength: 100
         minLength: 2
         type: string
@@ -504,14 +540,20 @@ definitions:
   dto.UpdateUserResponse:
     properties:
       email:
+        example: user@example.com
         type: string
       id:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
       name:
+        example: Ivan
         type: string
       role:
-        $ref: '#/definitions/types.Role'
+        allOf:
+        - $ref: '#/definitions/types.Role'
+        example: 0
       surname:
+        example: Ivanov
         type: string
     type: object
   types.Category:
