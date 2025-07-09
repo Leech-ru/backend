@@ -18,6 +18,56 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth/refresh": {
+            "post": {
+                "description": "Refreshes access and refresh tokens using valid refresh token from cookies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh tokens",
+                "parameters": [
+                    {
+                        "enum": [
+                            "true"
+                        ],
+                        "type": "string",
+                        "description": "Must be 'true'",
+                        "name": "goyda",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful updated"
+                    },
+                    "400": {
+                        "description": "Invalid request or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid/missing refresh token",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/cosmetics": {
             "get": {
                 "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc.",

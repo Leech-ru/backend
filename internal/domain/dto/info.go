@@ -13,7 +13,7 @@ type Info struct {
 
 // ScheduleEntry defines a working day and its hours.
 type ScheduleEntry struct {
-	Weekday types.Weekday `json:"weekday" validate:"required,weekday" example:"1"` // Monday
+	Weekday types.Weekday `json:"weekday" validate:"required,weekday" example:"1"`
 	Hours   Hours         `json:"hours" validate:"required"`
 }
 

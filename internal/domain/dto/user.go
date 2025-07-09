@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// TODO examples
 type User struct {
 	ID      uuid.UUID  `json:"id"`
 	Email   string     `json:"email"`
