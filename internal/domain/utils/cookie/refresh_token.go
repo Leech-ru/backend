@@ -21,15 +21,12 @@ func SetRefreshTokenCookie(c echo.Context, token string, ttl time.Duration, devM
 		Path:     "/",
 		Expires:  time.Now().Add(ttl),
 		MaxAge:   int(ttl.Seconds()),
-		Secure:   !devMode,
+		Secure:   false,
 		SameSite: http.SameSiteStrictMode,
 	}
-	if devMode {
-		//cookie.SameSite = http.SameSiteNoneMode
-	} else {
-		cookie.SameSite = http.SameSiteStrictMode
+	if !devMode {
 		cookie.HttpOnly = true
-
+		cookie.Secure = true
 	}
 
 	c.SetCookie(cookie)
@@ -57,14 +54,12 @@ func ClearRefreshTokenCookie(c echo.Context, devMode bool) {
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
-		Secure:   !devMode,
+		Secure:   false,
 		SameSite: http.SameSiteStrictMode,
 	}
-	if devMode {
-		//cookie.SameSite = http.SameSiteNoneMode
-	} else {
-		cookie.SameSite = http.SameSiteStrictMode
+	if !devMode {
 		cookie.HttpOnly = true
+		cookie.Secure = true
 
 	}
 

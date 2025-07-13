@@ -20,14 +20,12 @@ func SetAccessTokenCookie(c echo.Context, token string, ttl time.Duration, devMo
 		Path:     "/",
 		Expires:  time.Now().Add(ttl),
 		MaxAge:   int(ttl.Seconds()),
-		Secure:   !devMode,
+		Secure:   false,
 		SameSite: http.SameSiteStrictMode,
 	}
-	if devMode {
-		//cookie.SameSite = http.SameSiteNoneMode
-	} else {
-		cookie.SameSite = http.SameSiteStrictMode
+	if !devMode {
 		cookie.HttpOnly = true
+		cookie.Secure = true
 
 	}
 
@@ -54,14 +52,12 @@ func ClearAccessTokenCookie(c echo.Context, devMode bool) {
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
-		Secure:   !devMode,
+		Secure:   false,
 		SameSite: http.SameSiteStrictMode,
 	}
-	if devMode {
-		//cookie.SameSite = http.SameSiteNoneMode
-	} else {
-		cookie.SameSite = http.SameSiteStrictMode
+	if !devMode {
 		cookie.HttpOnly = true
+		cookie.Secure = true
 
 	}
 
