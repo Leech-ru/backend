@@ -16,15 +16,16 @@ const (
 // It supports development mode by relaxing SameSite and Secure policies.
 func SetRefreshTokenCookie(c echo.Context, token string, ttl time.Duration, devMode bool) {
 	cookie := &http.Cookie{
-		Name:    refreshCookieName,
-		Value:   token,
-		Path:    "/",
-		Expires: time.Now().Add(ttl),
-		MaxAge:  int(ttl.Seconds()),
-		Secure:  !devMode,
+		Name:     refreshCookieName,
+		Value:    token,
+		Path:     "/",
+		Expires:  time.Now().Add(ttl),
+		MaxAge:   int(ttl.Seconds()),
+		Secure:   !devMode,
+		SameSite: http.SameSiteStrictMode,
 	}
 	if devMode {
-		cookie.SameSite = http.SameSiteNoneMode
+		//cookie.SameSite = http.SameSiteNoneMode
 	} else {
 		cookie.SameSite = http.SameSiteStrictMode
 		cookie.HttpOnly = true
@@ -51,15 +52,16 @@ func ReadRefreshTokenCookie(r *http.Request) (string, error) {
 // it with an expired timestamp and MaxAge=-1, forcing client removal.
 func ClearRefreshTokenCookie(c echo.Context, devMode bool) {
 	cookie := &http.Cookie{
-		Name:    refreshCookieName,
-		Value:   "",
-		Path:    "/",
-		Expires: time.Unix(0, 0),
-		MaxAge:  -1,
-		Secure:  !devMode,
+		Name:     refreshCookieName,
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		MaxAge:   -1,
+		Secure:   !devMode,
+		SameSite: http.SameSiteStrictMode,
 	}
 	if devMode {
-		cookie.SameSite = http.SameSiteNoneMode
+		//cookie.SameSite = http.SameSiteNoneMode
 	} else {
 		cookie.SameSite = http.SameSiteStrictMode
 		cookie.HttpOnly = true

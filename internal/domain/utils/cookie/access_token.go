@@ -15,15 +15,16 @@ const (
 // SetAccessTokenCookie creates and immediately sets Access-Token Cookie in response.
 func SetAccessTokenCookie(c echo.Context, token string, ttl time.Duration, devMode bool) {
 	cookie := &http.Cookie{
-		Name:    accessCookieName,
-		Value:   token,
-		Path:    "/",
-		Expires: time.Now().Add(ttl),
-		MaxAge:  int(ttl.Seconds()),
-		Secure:  !devMode,
+		Name:     accessCookieName,
+		Value:    token,
+		Path:     "/",
+		Expires:  time.Now().Add(ttl),
+		MaxAge:   int(ttl.Seconds()),
+		Secure:   !devMode,
+		SameSite: http.SameSiteStrictMode,
 	}
 	if devMode {
-		cookie.SameSite = http.SameSiteNoneMode
+		//cookie.SameSite = http.SameSiteNoneMode
 	} else {
 		cookie.SameSite = http.SameSiteStrictMode
 		cookie.HttpOnly = true
@@ -48,15 +49,16 @@ func ReadAccessTokenCookie(r *http.Request) (string, error) {
 // ClearAccessTokenCookie sets an empty access-token Cook with an expired validity period.
 func ClearAccessTokenCookie(c echo.Context, devMode bool) {
 	cookie := &http.Cookie{
-		Name:    accessCookieName,
-		Value:   "",
-		Path:    "/",
-		Expires: time.Unix(0, 0),
-		MaxAge:  -1,
-		Secure:  !devMode,
+		Name:     accessCookieName,
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		MaxAge:   -1,
+		Secure:   !devMode,
+		SameSite: http.SameSiteStrictMode,
 	}
 	if devMode {
-		cookie.SameSite = http.SameSiteNoneMode
+		//cookie.SameSite = http.SameSiteNoneMode
 	} else {
 		cookie.SameSite = http.SameSiteStrictMode
 		cookie.HttpOnly = true
