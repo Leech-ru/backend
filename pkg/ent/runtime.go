@@ -6,6 +6,7 @@ import (
 	"Leech-ru/internal/domain/schema"
 	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/cosmetics"
+	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 
@@ -50,6 +51,36 @@ func init() {
 	cosmeticsDescID := cosmeticsFields[0].Descriptor()
 	// cosmetics.DefaultID holds the default value on creation for the id field.
 	cosmetics.DefaultID = cosmeticsDescID.Default.(func() uuid.UUID)
+	partnerFields := schema.Partner{}.Fields()
+	_ = partnerFields
+	// partnerDescName is the schema descriptor for name field.
+	partnerDescName := partnerFields[1].Descriptor()
+	// partner.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	partner.NameValidator = func() func(string) error {
+		validators := partnerDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// partnerDescDescription is the schema descriptor for description field.
+	partnerDescDescription := partnerFields[2].Descriptor()
+	// partner.DefaultDescription holds the default value on creation for the description field.
+	partner.DefaultDescription = partnerDescDescription.Default.(string)
+	// partner.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	partner.DescriptionValidator = partnerDescDescription.Validators[0].(func(string) error)
+	// partnerDescID is the schema descriptor for id field.
+	partnerDescID := partnerFields[0].Descriptor()
+	// partner.DefaultID holds the default value on creation for the id field.
+	partner.DefaultID = partnerDescID.Default.(func() uuid.UUID)
 	refreshtokenFields := schema.RefreshToken{}.Fields()
 	_ = refreshtokenFields
 	// refreshtokenDescJti is the schema descriptor for jti field.

@@ -25,6 +25,18 @@ var (
 		Columns:    CosmeticsColumns,
 		PrimaryKey: []*schema.Column{CosmeticsColumns[0]},
 	}
+	// PartnersColumns holds the columns for the "partners" table.
+	PartnersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "name", Type: field.TypeString, Size: 100},
+		{Name: "description", Type: field.TypeString, Nullable: true, Size: 500, Default: ""},
+	}
+	// PartnersTable holds the schema information for the "partners" table.
+	PartnersTable = &schema.Table{
+		Name:       "partners",
+		Columns:    PartnersColumns,
+		PrimaryKey: []*schema.Column{PartnersColumns[0]},
+	}
 	// RefreshTokensColumns holds the columns for the "refresh_tokens" table.
 	RefreshTokensColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -63,6 +75,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		CosmeticsTable,
+		PartnersTable,
 		RefreshTokensTable,
 		UsersTable,
 	}

@@ -32,7 +32,7 @@ type serverConfig interface {
 	DevMode() bool
 }
 
-// TODO users search
+// TODO forgot password
 type userService struct {
 	userRepo     userRepo
 	tokenService tokenService
