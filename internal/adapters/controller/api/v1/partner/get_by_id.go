@@ -1,4 +1,4 @@
-package cosmetics
+package partner
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
@@ -9,19 +9,19 @@ import (
 	"net/http"
 )
 
-// GetById returns a cosmetic product by its ID.
+// GetById returns a partner product by its ID.
 //
-// @Summary      Get cosmetic by ID
-// @Description  Retrieves a cosmetic product using its UUID.
-// @Tags         cosmetics
+// @Summary      Get partner by ID
+// @Description  Retrieves a partner product using its UUID.
+// @Tags         partner
 // @Accept       json
 // @Produce      json
-// @Param        id   path      string  true  "Cosmetic ID (UUID)"  Format(uuid)
-// @Success      200  {object}  dto.GetByIdCosmeticsResponse
+// @Param        id   path      string  true  "Partner ID (UUID)"  Format(uuid)
+// @Success      200  {object}  dto.GetByIdPartnerResponse
 // @Failure      400  {object}  dto.HTTPStatus "Validation error"
-// @Failure      404  {object}  dto.HTTPStatus "Cosmetic not found"
+// @Failure      404  {object}  dto.HTTPStatus "Partner not found"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
-// @Router       /api/v1/cosmetics/{id} [get]
+// @Router       /api/v1/partner/{id} [get]
 func (h *handler) GetById(c echo.Context) error {
 	id := c.Param("id")
 	userID, err := uuid.Parse(id)
@@ -31,7 +31,7 @@ func (h *handler) GetById(c echo.Context) error {
 			Message: errorz.CosmeticsNotFound.Error(),
 		})
 	}
-	var req dto.GetByIdCosmeticsRequest
+	var req dto.GetByIdPartnerRequest
 	req.ID = userID
 
 	if err := h.validator.ValidateData(req); err != nil {
@@ -41,9 +41,9 @@ func (h *handler) GetById(c echo.Context) error {
 		})
 	}
 
-	resp, err := h.cosmeticsService.GetByID(c.Request().Context(), &req)
+	resp, err := h.partnerService.GetByID(c.Request().Context(), &req)
 	switch {
-	case errors.Is(err, errorz.CosmeticsNotFound):
+	case errors.Is(err, errorz.PartnerNotFound):
 		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
 			Code:    http.StatusNotFound,
 			Message: err.Error(),

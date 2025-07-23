@@ -36,13 +36,13 @@ type CreateCosmeticsRequest struct {
 // CreateCosmeticsResponse represents the response after creating a cosmetic product.
 type CreateCosmeticsResponse Cosmetics
 
-// GetCosmeticsRequest represents a request to get a cosmetic product by ID.
-type GetCosmeticsRequest struct {
-	ID uuid.UUID `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+// GetByIdCosmeticsRequest represents a request to get a cosmetic product by ID.
+type GetByIdCosmeticsRequest struct {
+	ID uuid.UUID `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000" swaggerignore:"true"`
 }
 
-// GetCosmeticsResponse returns a cosmetic product by ID.
-type GetCosmeticsResponse Cosmetics
+// GetByIdCosmeticsResponse returns a cosmetic product by ID.
+type GetByIdCosmeticsResponse Cosmetics
 
 // GetAllByFilterCosmeticsRequest is used to filter and list cosmetic products.
 // TODO add volume from - volume to
@@ -59,7 +59,7 @@ type GetAllByFilterCosmeticsResponse []*Cosmetics
 
 // UpdateCosmeticsRequest represents an update request for a cosmetic product.
 type UpdateCosmeticsRequest struct {
-	ID                uuid.UUID       `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	ID                uuid.UUID       `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000" swaggerignore:"true"`
 	Category          *types.Category `json:"category,omitempty" validate:"omitempty,category" example:"4"`
 	Title             *string         `json:"title,omitempty" validate:"omitempty,min=3,max=100" example:"New Hair Shampoo"`
 	Description       *string         `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Updated product description."`
@@ -73,5 +73,5 @@ type UpdateCosmeticsResponse Cosmetics
 
 // DeleteCosmeticsRequest represents a request to delete a cosmetic product by ID.
 type DeleteCosmeticsRequest struct {
-	ID uuid.UUID `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	ID uuid.UUID `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000" swaggerignore:"true"`
 }

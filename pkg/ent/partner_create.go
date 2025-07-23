@@ -89,10 +89,6 @@ func (pc *PartnerCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (pc *PartnerCreate) defaults() {
-	if _, ok := pc.mutation.Description(); !ok {
-		v := partner.DefaultDescription
-		pc.mutation.SetDescription(v)
-	}
 	if _, ok := pc.mutation.ID(); !ok {
 		v := partner.DefaultID()
 		pc.mutation.SetID(v)

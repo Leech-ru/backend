@@ -227,7 +227,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.GetCosmeticsResponse"
+                            "$ref": "#/definitions/dto.GetByIdCosmeticsResponse"
                         }
                     },
                     "400": {
@@ -467,6 +467,260 @@
                     },
                     "400": {
                         "description": "Invalid request body or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/partner": {
+            "get": {
+                "description": "Retrieves a list of partners with pagination.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "partner"
+                ],
+                "summary": "Get partners with pagination",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Max number of items",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.Partner"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new cosmetic product with provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "partner"
+                ],
+                "summary": "Create a new cosmetic product",
+                "parameters": [
+                    {
+                        "description": "Partner product data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreatePartnerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreatePartnerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict: invalid partner format",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/partner/{id}": {
+            "get": {
+                "description": "Retrieves a partner product using its UUID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "partner"
+                ],
+                "summary": "Get partner by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Partner ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetByIdPartnerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Partner not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes the partner with the given UUID.",
+                "tags": [
+                    "partner"
+                ],
+                "summary": "Delete partner by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Partner ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successfully deleted"
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Partner not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Updates partner product fields by given ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "partner"
+                ],
+                "summary": "Update partner",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Partner ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated partner fields",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdatePartnerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdatePartnerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation or binding error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Partner not found",
                         "schema": {
                             "$ref": "#/definitions/dto.HTTPStatus"
                         }
@@ -960,6 +1214,42 @@
                 }
             }
         },
+        "dto.CreatePartnerRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "example": "Leading supplier of industrial equipment"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "example": "Backend's department"
+                }
+            }
+        },
+        "dto.CreatePartnerResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Leading supplier of industrial equipment"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Backend's department"
+                }
+            }
+        },
         "dto.CustomerInfo": {
             "type": "object",
             "required": [
@@ -993,7 +1283,7 @@
                 }
             }
         },
-        "dto.GetCosmeticsResponse": {
+        "dto.GetByIdCosmeticsResponse": {
             "description": "Contains product information such as category, title, description, and volume.",
             "type": "object",
             "properties": {
@@ -1027,6 +1317,23 @@
                 "volume": {
                     "type": "integer",
                     "example": 250
+                }
+            }
+        },
+        "dto.GetByIdPartnerResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Leading supplier of industrial equipment"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Backend's department"
                 }
             }
         },
@@ -1245,6 +1552,23 @@
                 }
             }
         },
+        "dto.Partner": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Leading supplier of industrial equipment"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Backend's department"
+                }
+            }
+        },
         "dto.PingResponse": {
             "type": "object",
             "properties": {
@@ -1341,9 +1665,6 @@
         },
         "dto.UpdateCosmeticsRequest": {
             "type": "object",
-            "required": [
-                "id"
-            ],
             "properties": {
                 "application_method": {
                     "type": "string",
@@ -1364,10 +1685,6 @@
                     "maxLength": 3000,
                     "minLength": 3,
                     "example": "Updated product description."
-                },
-                "id": {
-                    "type": "string",
-                    "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "links": {
                     "$ref": "#/definitions/dto.Links"
@@ -1498,6 +1815,39 @@
                     "items": {
                         "$ref": "#/definitions/dto.ScheduleEntry"
                     }
+                }
+            }
+        },
+        "dto.UpdatePartnerRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "example": "Updated description of the partner"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "example": "New Name"
+                }
+            }
+        },
+        "dto.UpdatePartnerResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Leading supplier of industrial equipment"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Backend's department"
                 }
             }
         },
@@ -1637,8 +1987,12 @@
             "name": "cosmetics"
         },
         {
-            "description": "Information about the center and partners",
+            "description": "Information about the center",
             "name": "info"
+        },
+        {
+            "description": "Information about center's partners",
+            "name": "partner"
         }
     ]
 }

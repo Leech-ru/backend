@@ -7,7 +7,7 @@ import (
 )
 
 type partnerService interface {
-	Create(ctx context.Context, req *dto.CreatePartnerRequest) (*dto.CreatePartnerRequest, error)
+	Create(ctx context.Context, req *dto.CreatePartnerRequest) (*dto.CreatePartnerResponse, error)
 	GetByID(ctx context.Context, req *dto.GetByIdPartnerRequest) (*dto.GetByIdPartnerResponse, error)
 	GetAll(ctx context.Context, req *dto.GetAllPartnerRequest) (*dto.GetAllPartnerResponse, error)
 	Update(ctx context.Context, req *dto.UpdatePartnerRequest) (*dto.UpdatePartnerResponse, error)

@@ -120,6 +120,32 @@ definitions:
       total_price:
         type: number
     type: object
+  dto.CreatePartnerRequest:
+    properties:
+      description:
+        example: Leading supplier of industrial equipment
+        maxLength: 500
+        type: string
+      name:
+        example: Backend's department
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - name
+    type: object
+  dto.CreatePartnerResponse:
+    properties:
+      description:
+        example: Leading supplier of industrial equipment
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      name:
+        example: Backend's department
+        type: string
+    type: object
   dto.CustomerInfo:
     properties:
       address:
@@ -145,7 +171,7 @@ definitions:
     - fio
     - phone_number
     type: object
-  dto.GetCosmeticsResponse:
+  dto.GetByIdCosmeticsResponse:
     description: Contains product information such as category, title, description,
       and volume.
     properties:
@@ -170,6 +196,18 @@ definitions:
       volume:
         example: 250
         type: integer
+    type: object
+  dto.GetByIdPartnerResponse:
+    properties:
+      description:
+        example: Leading supplier of industrial equipment
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      name:
+        example: Backend's department
+        type: string
     type: object
   dto.GetInfoResponse:
     properties:
@@ -325,6 +363,18 @@ definitions:
     required:
     - package_type
     type: object
+  dto.Partner:
+    properties:
+      description:
+        example: Leading supplier of industrial equipment
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      name:
+        example: Backend's department
+        type: string
+    type: object
   dto.PingResponse:
     properties:
       message:
@@ -407,9 +457,6 @@ definitions:
         maxLength: 3000
         minLength: 3
         type: string
-      id:
-        example: 123e4567-e89b-12d3-a456-426614174000
-        type: string
       links:
         $ref: '#/definitions/dto.Links'
       title:
@@ -422,8 +469,6 @@ definitions:
         maximum: 10000
         minimum: 1
         type: integer
-    required:
-    - id
     type: object
   dto.UpdateCosmeticsResponse:
     description: Contains product information such as category, title, description,
@@ -509,6 +554,30 @@ definitions:
     required:
     - description
     - heading
+    type: object
+  dto.UpdatePartnerRequest:
+    properties:
+      description:
+        example: Updated description of the partner
+        maxLength: 500
+        type: string
+      name:
+        example: New Name
+        maxLength: 100
+        minLength: 1
+        type: string
+    type: object
+  dto.UpdatePartnerResponse:
+    properties:
+      description:
+        example: Leading supplier of industrial equipment
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      name:
+        example: Backend's department
+        type: string
     type: object
   dto.UpdateUserRequest:
     properties:
@@ -776,7 +845,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.GetCosmeticsResponse'
+            $ref: '#/definitions/dto.GetByIdCosmeticsResponse'
         "400":
           description: Validation error
           schema:
@@ -920,6 +989,176 @@ paths:
       summary: Create a new leech order
       tags:
       - order
+  /api/v1/partner:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of partners with pagination.
+      parameters:
+      - description: Max number of items
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.Partner'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get partners with pagination
+      tags:
+      - partner
+    post:
+      consumes:
+      - application/json
+      description: Creates a new cosmetic product with provided details.
+      parameters:
+      - description: Partner product data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePartnerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreatePartnerResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "409":
+          description: 'Conflict: invalid partner format'
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Create a new cosmetic product
+      tags:
+      - partner
+  /api/v1/partner/{id}:
+    delete:
+      description: Deletes the partner with the given UUID.
+      parameters:
+      - description: Partner ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Successfully deleted
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Partner not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Delete partner by ID
+      tags:
+      - partner
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a partner product using its UUID.
+      parameters:
+      - description: Partner ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetByIdPartnerResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Partner not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get partner by ID
+      tags:
+      - partner
+    patch:
+      consumes:
+      - application/json
+      description: Updates partner product fields by given ID.
+      parameters:
+      - description: Partner ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated partner fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdatePartnerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdatePartnerResponse'
+        "400":
+          description: Validation or binding error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Partner not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Update partner
+      tags:
+      - partner
   /api/v1/user:
     get:
       consumes:
@@ -1142,5 +1381,7 @@ tags:
   name: auth
 - description: Cosmetics view and management
   name: cosmetics
-- description: Information about the center and partners
+- description: Information about the center
   name: info
+- description: Information about center's partners
+  name: partner

@@ -29,7 +29,7 @@ var (
 	PartnersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "name", Type: field.TypeString, Size: 100},
-		{Name: "description", Type: field.TypeString, Nullable: true, Size: 500, Default: ""},
+		{Name: "description", Type: field.TypeString, Nullable: true, Size: 500},
 	}
 	// PartnersTable holds the schema information for the "partners" table.
 	PartnersTable = &schema.Table{

@@ -1,4 +1,4 @@
-package cosmetics
+package partner
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
@@ -9,20 +9,18 @@ import (
 	"net/http"
 )
 
-// GetById returns a cosmetic product by its ID.
+// Delete deletes a partner product by ID.
 //
-// @Summary      Get cosmetic by ID
-// @Description  Retrieves a cosmetic product using its UUID.
-// @Tags         cosmetics
-// @Accept       json
-// @Produce      json
-// @Param        id   path      string  true  "Cosmetic ID (UUID)"  Format(uuid)
-// @Success      200  {object}  dto.GetByIdCosmeticsResponse
+// @Summary      Delete partner by ID
+// @Description  Deletes the partner with the given UUID.
+// @Tags         partner
+// @Param        id   path      string  true  "Partner ID (UUID)"  Format(uuid)
+// @Success      204  "Successfully deleted"
 // @Failure      400  {object}  dto.HTTPStatus "Validation error"
-// @Failure      404  {object}  dto.HTTPStatus "Cosmetic not found"
+// @Failure      404  {object}  dto.HTTPStatus "Partner not found"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
-// @Router       /api/v1/cosmetics/{id} [get]
-func (h *handler) GetById(c echo.Context) error {
+// @Router       /api/v1/partner/{id} [delete]
+func (h *handler) Delete(c echo.Context) error {
 	id := c.Param("id")
 	userID, err := uuid.Parse(id)
 	if err != nil {
@@ -31,7 +29,7 @@ func (h *handler) GetById(c echo.Context) error {
 			Message: errorz.CosmeticsNotFound.Error(),
 		})
 	}
-	var req dto.GetByIdCosmeticsRequest
+	var req dto.DeletePartnerRequest
 	req.ID = userID
 
 	if err := h.validator.ValidateData(req); err != nil {
@@ -41,9 +39,9 @@ func (h *handler) GetById(c echo.Context) error {
 		})
 	}
 
-	resp, err := h.cosmeticsService.GetByID(c.Request().Context(), &req)
+	err = h.partnerService.Delete(c.Request().Context(), &req)
 	switch {
-	case errors.Is(err, errorz.CosmeticsNotFound):
+	case errors.Is(err, errorz.PartnerNotFound):
 		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
 			Code:    http.StatusNotFound,
 			Message: err.Error(),
@@ -56,5 +54,5 @@ func (h *handler) GetById(c echo.Context) error {
 
 	}
 
-	return c.JSON(http.StatusOK, resp)
+	return c.NoContent(http.StatusNoContent)
 }

@@ -12,7 +12,7 @@ import (
 
 type cosmeticsService interface {
 	Create(ctx context.Context, req *dto.CreateCosmeticsRequest) (*dto.CreateCosmeticsResponse, error)
-	GetByID(ctx context.Context, req *dto.GetCosmeticsRequest) (*dto.GetCosmeticsResponse, error)
+	GetByID(ctx context.Context, req *dto.GetByIdCosmeticsRequest) (*dto.GetByIdCosmeticsResponse, error)
 	GetAllByFilter(ctx context.Context, req *dto.GetAllByFilterCosmeticsRequest) (*dto.GetAllByFilterCosmeticsResponse, error)
 	Update(ctx context.Context, req *dto.UpdateCosmeticsRequest) (*dto.UpdateCosmeticsResponse, error)
 	Delete(ctx context.Context, req *dto.DeleteCosmeticsRequest) error

@@ -6,10 +6,11 @@ import (
 	"Leech-ru/pkg/ent"
 	"context"
 	"errors"
+	"fmt"
 )
 
 // Create partner and returns it.
-func (s *partnerService) Create(ctx context.Context, req *dto.CreatePartnerRequest) (*dto.CreatePartnerRequest, error) {
+func (s *partnerService) Create(ctx context.Context, req *dto.CreatePartnerRequest) (*dto.CreatePartnerResponse, error) {
 	partner := &ent.Partner{
 		Name:        req.Name,
 		Description: req.Description,
@@ -21,7 +22,10 @@ func (s *partnerService) Create(ctx context.Context, req *dto.CreatePartnerReque
 	case err != nil:
 		return nil, err
 	}
-	return &dto.CreatePartnerRequest{
+	fmt.Println(partner)
+	fmt.Println(partner.Description)
+	return &dto.CreatePartnerResponse{
+		ID:          partner.ID,
 		Name:        partner.Name,
 		Description: partner.Description,
 	}, nil

@@ -37,7 +37,10 @@ import (
 // @tag.description Cosmetics view and management
 
 // @tag.name        info
-// @tag.description Information about the center and partners
+// @tag.description Information about the center
+
+// @tag.name        partner
+// @tag.description Information about center's partners
 
 func main() {
 	mainApp, err := app.New()

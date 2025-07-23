@@ -25,8 +25,7 @@ func (Partner) Fields() []ent.Field {
 
 		field.String("description").
 			MaxLen(500).
-			Optional().Nillable().
-			Default(""),
+			Optional().Nillable(),
 	}
 }
 

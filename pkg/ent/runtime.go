@@ -73,8 +73,6 @@ func init() {
 	}()
 	// partnerDescDescription is the schema descriptor for description field.
 	partnerDescDescription := partnerFields[2].Descriptor()
-	// partner.DefaultDescription holds the default value on creation for the description field.
-	partner.DefaultDescription = partnerDescDescription.Default.(string)
 	// partner.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
 	partner.DescriptionValidator = partnerDescDescription.Validators[0].(func(string) error)
 	// partnerDescID is the schema descriptor for id field.
