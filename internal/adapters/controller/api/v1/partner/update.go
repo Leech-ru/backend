@@ -14,6 +14,7 @@ import (
 // @Summary      Update partner
 // @Description  Updates partner product fields by given ID.
 // @Tags         partner
+// @Security     CookieAuth
 // @Accept       json
 // @Produce      json
 // @Param        id      path      string                    true  "Partner ID (UUID)"  Format(uuid)

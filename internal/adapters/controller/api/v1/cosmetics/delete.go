@@ -14,6 +14,7 @@ import (
 // @Summary      Delete cosmetic by ID
 // @Description  Deletes the cosmetic product with the given UUID.
 // @Tags         cosmetics
+// @Security CookieAuth
 // @Param        id   path      string  true  "Cosmetic ID (UUID)"  Format(uuid)
 // @Success      204  "Successfully deleted"
 // @Failure      400  {object}  dto.HTTPStatus "Validation error"

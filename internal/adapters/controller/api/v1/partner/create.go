@@ -13,6 +13,7 @@ import (
 // @Summary      Create a new cosmetic product
 // @Description  Creates a new cosmetic product with provided details.
 // @Tags         partner
+// @Security     CookieAuth
 // @Accept       json
 // @Produce      json
 // @Param        request  body      dto.CreatePartnerRequest  true  "Partner product data"

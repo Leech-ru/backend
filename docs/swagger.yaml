@@ -797,6 +797,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
       summary: Create a new cosmetic product
       tags:
       - cosmetics
@@ -825,6 +827,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
       summary: Delete cosmetic by ID
       tags:
       - cosmetics
@@ -897,6 +901,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
       summary: Update cosmetic
       tags:
       - cosmetics
@@ -956,6 +962,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
       summary: Update corporation info
       tags:
       - info
@@ -1056,6 +1064,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
       summary: Create a new cosmetic product
       tags:
       - partner
@@ -1084,6 +1094,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
       summary: Delete partner by ID
       tags:
       - partner
@@ -1156,6 +1168,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
       summary: Update partner
       tags:
       - partner

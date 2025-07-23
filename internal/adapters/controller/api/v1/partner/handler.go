@@ -5,6 +5,7 @@ import (
 	"Leech-ru/internal/adapters/controller/api/middleware/role"
 	"Leech-ru/internal/adapters/controller/api/validator"
 	"Leech-ru/internal/domain/dto"
+	"Leech-ru/internal/domain/types"
 	"context"
 	"github.com/go-playground/form"
 	"github.com/labstack/echo/v4"
@@ -46,8 +47,8 @@ func NewHandler(
 func (h *handler) Setup(router *echo.Group) {
 	router.GET("/partner", h.GetAll)
 	router.GET("/partner/:id", h.GetById)
-	router.POST("/partner", h.Create)
-	router.PATCH("/partner/:id", h.Update)
-	router.DELETE("/partner/:id", h.Delete)
+	router.POST("/partner", h.Create, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	router.PATCH("/partner/:id", h.Update, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	router.DELETE("/partner/:id", h.Delete, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 
 }

@@ -154,6 +154,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
                 "description": "Creates a new cosmetic product with provided details.",
                 "consumes": [
                     "application/json"
@@ -255,6 +260,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
                 "description": "Deletes the cosmetic product with the given UUID.",
                 "tags": [
                     "cosmetics"
@@ -295,6 +305,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
                 "description": "Updates cosmetic product fields by given ID.",
                 "consumes": [
                     "application/json"
@@ -382,6 +397,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
                 "description": "Updates the corporation info fields. Only accessible by authenticated moderators.\nRequires authentication via cookies (access_token, refresh_token)",
                 "consumes": [
                     "application/json"
@@ -539,6 +559,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
                 "description": "Creates a new cosmetic product with provided details.",
                 "consumes": [
                     "application/json"
@@ -640,6 +665,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
                 "description": "Deletes the partner with the given UUID.",
                 "tags": [
                     "partner"
@@ -680,6 +710,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
                 "description": "Updates partner product fields by given ID.",
                 "consumes": [
                     "application/json"

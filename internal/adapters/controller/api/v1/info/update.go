@@ -12,6 +12,7 @@ import (
 // @Description  Updates the corporation info fields. Only accessible by authenticated moderators.
 // @Description  Requires authentication via cookies (access_token, refresh_token)
 // @Tags         info
+// @Security CookieAuth
 // @Accept       json
 // @Produce      json
 // @Param        request   body  dto.UpdateInfoRequest  true  "Updated corporation info"

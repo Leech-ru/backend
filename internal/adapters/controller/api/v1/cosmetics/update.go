@@ -14,6 +14,7 @@ import (
 // @Summary      Update cosmetic
 // @Description  Updates cosmetic product fields by given ID.
 // @Tags         cosmetics
+// @Security CookieAuth
 // @Accept       json
 // @Produce      json
 // @Param        id      path      string                    true  "Cosmetic ID (UUID)"  Format(uuid)

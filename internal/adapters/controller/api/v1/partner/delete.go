@@ -14,6 +14,7 @@ import (
 // @Summary      Delete partner by ID
 // @Description  Deletes the partner with the given UUID.
 // @Tags         partner
+// @Security     CookieAuth
 // @Param        id   path      string  true  "Partner ID (UUID)"  Format(uuid)
 // @Success      204  "Successfully deleted"
 // @Failure      400  {object}  dto.HTTPStatus "Validation error"
