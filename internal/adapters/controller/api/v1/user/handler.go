@@ -17,6 +17,7 @@ type userService interface {
 	Login(ctx context.Context, req *dto.LoginUserRequest) (*dto.LoginUserResponse, error)
 	ChangePassword(ctx context.Context, req *dto.ChangePasswordRequest) (*dto.ChangePasswordResponse, error)
 	GetByID(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error)
+	GetAllByFilter(ctx context.Context, req *dto.GetAllByFilterUsersRequest) (*dto.GetAllByFilterUsersResponse, error)
 	UpdateCurrent(ctx context.Context, req *dto.UpdateCurrentUserRequest) (*dto.UpdateCurrentUserResponse, error)
 	UpdateEach(ctx context.Context, req *dto.UpdateEachUserRequest) (*dto.UpdateEachUserResponse, error)
 	Logout(ctx context.Context, req *dto.LogoutRequest) error
@@ -66,6 +67,8 @@ func (h *handler) Setup(router *echo.Group) {
 	router.POST("/user/login", h.Login)
 	router.POST("/user/password", h.ChangePassword, h.authMiddleware.RequireAuth)
 	router.GET("/user", h.GetMe, h.authMiddleware.RequireAuth)
+	router.GET("/user/:id", h.GetById, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleAdmin))
+	router.GET("/user/all", h.GetAllByFilter, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleAdmin))
 	router.PATCH("/user", h.UpdateCurrent, h.authMiddleware.RequireAuth)
 	router.PATCH("/user/:id", h.UpdateEach, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleAdmin))
 	router.POST("/user/logout", h.Logout, h.authMiddleware.RequireAuth)

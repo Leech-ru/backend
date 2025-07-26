@@ -27,7 +27,7 @@ type RegisterUserResponse struct {
 }
 
 type GetUserRequest struct {
-	ID uuid.UUID `json:"id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440000" swaggerignore:"true"`
+	ID uuid.UUID `json:"-" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440000" swaggerignore:"true"`
 }
 
 type GetUserResponse User

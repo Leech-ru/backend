@@ -355,11 +355,7 @@ definitions:
         minimum: 0
         type: integer
       package_type:
-        enum:
-        - 1
-        - 2
-        - 3
-        type: integer
+        $ref: '#/definitions/types.Package'
     required:
     - package_type
     type: object
@@ -654,6 +650,25 @@ definitions:
         example: Backend's department
         type: string
     type: object
+  dto.User:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
+        example: Ivan
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/types.Role'
+        example: 0
+      surname:
+        example: Ivanov
+        type: string
+    type: object
   types.Category:
     enum:
     - 0
@@ -676,6 +691,18 @@ definitions:
     - CategoryExclusive
     - CategoryWholesale
     - CategoryLeech
+  types.Package:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      PackagePeat: Торф
+    x-enum-varnames:
+    - PackageWater
+    - PackageGel
+    - PackagePeat
   types.Role:
     enum:
     - 0
@@ -1275,6 +1302,36 @@ paths:
       tags:
       - user
   /api/v1/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get each user by id. Only for admins
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Get current user info
+      tags:
+      - user
     patch:
       consumes:
       - application/json
@@ -1310,6 +1367,72 @@ paths:
       security:
       - CookieAuth: []
       summary: Update each user information
+      tags:
+      - user
+  /api/v1/user/all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of users filtered by role, name, surname, email,
+        etc. Only for admins
+      parameters:
+      - description: Max number of users to return
+        example: 10
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Pagination offset
+        example: 0
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - description: Role enum (0–2)
+        enum:
+        - 0
+        - 1
+        - 2
+        example: 0
+        in: query
+        name: role
+        type: integer
+      - description: Filter by name prefix
+        example: '"Iv"'
+        in: query
+        name: name_prefix
+        type: string
+      - description: Filter by surname prefix
+        example: '"Ivan"'
+        in: query
+        name: surname_prefix
+        type: string
+      - description: Filter by email prefix
+        example: '"user@"'
+        in: query
+        name: email_prefix
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.User'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Get users by filters
       tags:
       - user
   /api/v1/user/login:
@@ -1457,7 +1580,7 @@ paths:
       tags:
       - ping
 schemes:
-- http,https
+- https
 securityDefinitions:
   CookieAuth:
     description: Authentication via HttpOnly cookies. System uses two cookies:\n-

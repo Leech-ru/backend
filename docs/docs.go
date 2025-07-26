@@ -861,6 +861,101 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/user/all": {
+            "get": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
+                "description": "Retrieves a list of users filtered by role, name, surname, email, etc. Only for admins",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get users by filters",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Max number of users to return",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "example": 0,
+                        "description": "Pagination offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "integer",
+                        "example": 0,
+                        "description": "Role enum (0–2)",
+                        "name": "role",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"Iv\"",
+                        "description": "Filter by name prefix",
+                        "name": "name_prefix",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"Ivan\"",
+                        "description": "Filter by surname prefix",
+                        "name": "surname_prefix",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"user@\"",
+                        "description": "Filter by email prefix",
+                        "name": "email_prefix",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.User"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/user/login": {
             "post": {
                 "consumes": [
@@ -1053,6 +1148,53 @@ const docTemplate = `{
             }
         },
         "/api/v1/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
+                "description": "Get each user by id. Only for admins",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get current user info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "security": [
                     {
@@ -1640,12 +1782,7 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "package_type": {
-                    "type": "integer",
-                    "enum": [
-                        1,
-                        2,
-                        3
-                    ]
+                    "$ref": "#/definitions/types.Package"
                 }
             }
         },
@@ -2053,6 +2190,35 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.User": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Ivan"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Role"
+                        }
+                    ],
+                    "example": 0
+                },
+                "surname": {
+                    "type": "string",
+                    "example": "Ivanov"
+                }
+            }
+        },
         "types.Category": {
             "type": "integer",
             "enum": [
@@ -2076,6 +2242,22 @@ const docTemplate = `{
                 "CategoryExclusive",
                 "CategoryWholesale",
                 "CategoryLeech"
+            ]
+        },
+        "types.Package": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "PackagePeat": "Торф"
+            },
+            "x-enum-varnames": [
+                "PackageWater",
+                "PackageGel",
+                "PackagePeat"
             ]
         },
         "types.Role": {
@@ -2160,7 +2342,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "пиявкипобеда.рф",
 	BasePath:         "",
-	Schemes:          []string{"http,https"},
+	Schemes:          []string{"https"},
 	Title:            "Leech API",
 	Description:      "Backend service for Leech-ru platform. Uses cookie-based authentication with HttpOnly tokens.",
 	InfoInstanceName: "swagger",
