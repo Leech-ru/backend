@@ -320,7 +320,7 @@ const docTemplate = `{
                 "tags": [
                     "cosmetics"
                 ],
-                "summary": "UpdateCurrent cosmetic",
+                "summary": "Update cosmetic",
                 "parameters": [
                     {
                         "type": "string",
@@ -725,7 +725,7 @@ const docTemplate = `{
                 "tags": [
                     "partner"
                 ],
-                "summary": "UpdateCurrent partner",
+                "summary": "Update partner",
                 "parameters": [
                     {
                         "type": "string",
@@ -835,7 +835,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UpdateUserRequest"
+                            "$ref": "#/definitions/dto.UpdateCurrentUserRequest"
                         }
                     }
                 ],
@@ -843,7 +843,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.UpdateUserResponse"
+                            "$ref": "#/definitions/dto.UpdateCurrentUserResponse"
                         }
                     },
                     "400": {
@@ -1045,6 +1045,64 @@ const docTemplate = `{
                     },
                     "409": {
                         "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
+                "description": "Information updating the current user under which the input is executed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "UpdateEach user information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateEachUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateEachUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/dto.HTTPStatus"
                         }
@@ -1779,6 +1837,111 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.UpdateCurrentUserRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Ivan"
+                },
+                "surname": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Petrov"
+                }
+            }
+        },
+        "dto.UpdateCurrentUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Ivan"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Role"
+                        }
+                    ],
+                    "example": 0
+                },
+                "surname": {
+                    "type": "string",
+                    "example": "Ivanov"
+                }
+            }
+        },
+        "dto.UpdateEachUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "maxLength": 254,
+                    "minLength": 6,
+                    "example": "user@example.com"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Ivan"
+                },
+                "password": {
+                    "type": "string",
+                    "format": "password",
+                    "maxLength": 100,
+                    "minLength": 8,
+                    "example": "SecurePass123!"
+                },
+                "surname": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Ivanov"
+                }
+            }
+        },
+        "dto.UpdateEachUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Ivan"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Role"
+                        }
+                    ],
+                    "example": 0
+                },
+                "surname": {
+                    "type": "string",
+                    "example": "Ivanov"
+                }
+            }
+        },
         "dto.UpdateInfoRequest": {
             "type": "object",
             "properties": {
@@ -1890,52 +2053,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UpdateUserRequest": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 2,
-                    "example": "Ivan"
-                },
-                "surname": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 2,
-                    "example": "Petrov"
-                }
-            }
-        },
-        "dto.UpdateUserResponse": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "user@example.com"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Ivan"
-                },
-                "role": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Role"
-                        }
-                    ],
-                    "example": 0
-                },
-                "surname": {
-                    "type": "string",
-                    "example": "Ivanov"
-                }
-            }
-        },
         "types.Category": {
             "type": "integer",
             "enum": [
@@ -1966,12 +2083,14 @@ const docTemplate = `{
             "enum": [
                 0,
                 1,
-                2
+                2,
+                3
             ],
             "x-enum-varnames": [
                 "RoleUser",
                 "RoleModerator",
-                "RoleAdmin"
+                "RoleAdmin",
+                "RoleSuperAdmin"
             ]
         },
         "types.Weekday": {

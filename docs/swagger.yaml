@@ -496,6 +496,81 @@ definitions:
         example: 250
         type: integer
     type: object
+  dto.UpdateCurrentUserRequest:
+    properties:
+      name:
+        example: Ivan
+        maxLength: 100
+        minLength: 2
+        type: string
+      surname:
+        example: Petrov
+        maxLength: 100
+        minLength: 2
+        type: string
+    type: object
+  dto.UpdateCurrentUserResponse:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
+        example: Ivan
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/types.Role'
+        example: 0
+      surname:
+        example: Ivanov
+        type: string
+    type: object
+  dto.UpdateEachUserRequest:
+    properties:
+      email:
+        example: user@example.com
+        maxLength: 254
+        minLength: 6
+        type: string
+      name:
+        example: Ivan
+        maxLength: 100
+        minLength: 2
+        type: string
+      password:
+        example: SecurePass123!
+        format: password
+        maxLength: 100
+        minLength: 8
+        type: string
+      surname:
+        example: Ivanov
+        maxLength: 100
+        minLength: 2
+        type: string
+    type: object
+  dto.UpdateEachUserResponse:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
+        example: Ivan
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/types.Role'
+        example: 0
+      surname:
+        example: Ivanov
+        type: string
+    type: object
   dto.UpdateInfoRequest:
     properties:
       description:
@@ -579,38 +654,6 @@ definitions:
         example: Backend's department
         type: string
     type: object
-  dto.UpdateUserRequest:
-    properties:
-      name:
-        example: Ivan
-        maxLength: 100
-        minLength: 2
-        type: string
-      surname:
-        example: Petrov
-        maxLength: 100
-        minLength: 2
-        type: string
-    type: object
-  dto.UpdateUserResponse:
-    properties:
-      email:
-        example: user@example.com
-        type: string
-      id:
-        example: 550e8400-e29b-41d4-a716-446655440000
-        type: string
-      name:
-        example: Ivan
-        type: string
-      role:
-        allOf:
-        - $ref: '#/definitions/types.Role'
-        example: 0
-      surname:
-        example: Ivanov
-        type: string
-    type: object
   types.Category:
     enum:
     - 0
@@ -638,11 +681,13 @@ definitions:
     - 0
     - 1
     - 2
+    - 3
     type: integer
     x-enum-varnames:
     - RoleUser
     - RoleModerator
     - RoleAdmin
+    - RoleSuperAdmin
   types.Weekday:
     enum:
     - 0
@@ -964,7 +1009,7 @@ paths:
             $ref: '#/definitions/dto.HTTPStatus'
       security:
       - CookieAuth: []
-      summary: Update corporation info
+      summary: UpdateCurrent corporation info
       tags:
       - info
   /api/v1/order:
@@ -1208,14 +1253,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.UpdateUserRequest'
+          $ref: '#/definitions/dto.UpdateCurrentUserRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.UpdateUserResponse'
+            $ref: '#/definitions/dto.UpdateCurrentUserResponse'
         "400":
           description: Bad Request
           schema:
@@ -1226,7 +1271,45 @@ paths:
             $ref: '#/definitions/dto.HTTPStatus'
       security:
       - CookieAuth: []
-      summary: Update user information
+      summary: UpdateCurrent user information
+      tags:
+      - user
+  /api/v1/user/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Information updating the current user under which the input is
+        executed
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateEachUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateEachUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: UpdateEach user information
       tags:
       - user
   /api/v1/user/login:
