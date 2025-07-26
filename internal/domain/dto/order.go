@@ -1,5 +1,7 @@
 package dto
 
+import "Leech-ru/internal/domain/types"
+
 type CustomerInfo struct {
 	FIO         string  `json:"fio" validate:"required,min=2,max=100"`
 	PhoneNumber string  `json:"phone_number" validate:"required"`
@@ -9,10 +11,10 @@ type CustomerInfo struct {
 }
 
 type OrderDetails struct {
-	LeechSize1  *int `json:"leech_size_1" validate:"omitempty,min=0,max=500"`
-	LeechSize2  *int `json:"leech_size_2" validate:"omitempty,min=0,max=500"`
-	LeechSize3  *int `json:"leech_size_3" validate:"omitempty,min=0,max=500"`
-	PackageType int  `json:"package_type" validate:"required,oneof=1 2 3"`
+	LeechSize1  *int          `json:"leech_size_1" validate:"omitempty,min=0,max=500"`
+	LeechSize2  *int          `json:"leech_size_2" validate:"omitempty,min=0,max=500"`
+	LeechSize3  *int          `json:"leech_size_3" validate:"omitempty,min=0,max=500"`
+	PackageType types.Package `json:"package_type" validate:"required,package"`
 }
 
 type CreateOrderRequest struct {
