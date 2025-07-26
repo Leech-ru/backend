@@ -14,7 +14,7 @@ import (
 // @contact.email   mmishin2107@gmail.com
 
 // @host            пиявкипобеда.рф
-// @schemes         http
+// @schemes         https
 
 // @securityDefinitions.apikey  CookieAuth
 // @in                          cookie

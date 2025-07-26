@@ -2160,7 +2160,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "пиявкипобеда.рф",
 	BasePath:         "",
-	Schemes:          []string{"http"},
+	Schemes:          []string{"http,https"},
 	Title:            "Leech API",
 	Description:      "Backend service for Leech-ru platform. Uses cookie-based authentication with HttpOnly tokens.",
 	InfoInstanceName: "swagger",

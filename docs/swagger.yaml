@@ -1457,7 +1457,7 @@ paths:
       tags:
       - ping
 schemes:
-- http
+- http,https
 securityDefinitions:
   CookieAuth:
     description: Authentication via HttpOnly cookies. System uses two cookies:\n-
