@@ -25,6 +25,9 @@ func Setup(app *app.App) {
 	app.Server.Debug = false
 
 	//app.Server.Use(middleware.Recover())
+
+	app.Server.Use(middleware.CORS())
+
 	app.Server.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:      true,
 		LogStatus:   true,
