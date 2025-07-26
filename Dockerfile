@@ -2,11 +2,15 @@ FROM golang:1.24.0-alpine AS builder
 
 RUN apk update && apk add ca-certificates git gcc g++ libc-dev binutils tzdata
 
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
 WORKDIR /opt
 
 COPY . .
 
 RUN go mod download && go mod verify
+
+RUN /go/bin/swag init -g cmd/main.go
 
 RUN go build -o bin/application ./cmd
 
