@@ -12,7 +12,7 @@ import (
 
 // UpdateEach user
 //
-// @Summary UpdateEach user information
+// @Summary Update each user information
 // @Description Information updating the current user under which the input is executed
 // @Tags user
 // @Accept json
