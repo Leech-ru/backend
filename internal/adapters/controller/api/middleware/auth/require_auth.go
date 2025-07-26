@@ -26,6 +26,7 @@ func (m *Middleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		case err != nil:
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
+
 		c.Set("user_id", userID)
 
 		return next(c)

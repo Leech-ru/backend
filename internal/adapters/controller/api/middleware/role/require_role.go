@@ -30,6 +30,8 @@ func (m *Middleware) RequireRole(minRole types.Role) echo.MiddlewareFunc {
 				return echo.NewHTTPError(http.StatusForbidden, errorz.PermissionDenied)
 			}
 
+			c.Set("user_role", role)
+
 			return next(c)
 		}
 	}

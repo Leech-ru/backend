@@ -320,7 +320,7 @@ const docTemplate = `{
                 "tags": [
                     "cosmetics"
                 ],
-                "summary": "Update cosmetic",
+                "summary": "UpdateCurrent cosmetic",
                 "parameters": [
                     {
                         "type": "string",
@@ -412,7 +412,7 @@ const docTemplate = `{
                 "tags": [
                     "info"
                 ],
-                "summary": "Update corporation info",
+                "summary": "UpdateCurrent corporation info",
                 "parameters": [
                     {
                         "description": "Updated corporation info",
@@ -725,7 +725,7 @@ const docTemplate = `{
                 "tags": [
                     "partner"
                 ],
-                "summary": "Update partner",
+                "summary": "UpdateCurrent partner",
                 "parameters": [
                     {
                         "type": "string",
@@ -827,7 +827,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Update user information",
+                "summary": "UpdateCurrent user information",
                 "parameters": [
                     {
                         "description": "User data",

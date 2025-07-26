@@ -26,7 +26,7 @@ import (
 // @Router       /api/v1/cosmetics/{id} [patch]
 func (h *handler) Update(c echo.Context) error {
 	id := c.Param("id")
-	userID, err := uuid.Parse(id)
+	cosmeticID, err := uuid.Parse(id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
 			Code:    http.StatusNotFound,
@@ -34,7 +34,7 @@ func (h *handler) Update(c echo.Context) error {
 		})
 	}
 	var req dto.UpdateCosmeticsRequest
-	req.ID = userID
+	req.ID = cosmeticID
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{

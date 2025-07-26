@@ -7,8 +7,8 @@ import (
 	"errors"
 )
 
-// Update updates user by ID.
-func (s *userService) Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error) {
+// UpdateCurrent updates current user by ID.
+func (s *userService) UpdateCurrent(ctx context.Context, req *dto.UpdateCurrentUserRequest) (*dto.UpdateCurrentUserResponse, error) {
 	userToUpdate, err := s.userRepo.GetById(ctx, req.ID)
 	switch {
 	case errors.Is(err, errorz.UserNotFound):
@@ -31,7 +31,7 @@ func (s *userService) Update(ctx context.Context, req *dto.UpdateUserRequest) (*
 		return nil, err
 	}
 
-	return &dto.UpdateUserResponse{
+	return &dto.UpdateCurrentUserResponse{
 		ID:      updatedUser.ID,
 		Email:   updatedUser.Email,
 		Name:    updatedUser.Name,

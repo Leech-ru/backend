@@ -6,6 +6,7 @@ const (
 	RoleUser Role = iota
 	RoleModerator
 	RoleAdmin
+	RoleSuperAdmin
 )
 
 func (r Role) String() string {
@@ -16,6 +17,8 @@ func (r Role) String() string {
 		return "Moderator"
 	case RoleAdmin:
 		return "Admin"
+	case RoleSuperAdmin:
+		return "SuperAdmin"
 	default:
 		return "unknown"
 	}

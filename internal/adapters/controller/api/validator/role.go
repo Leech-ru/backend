@@ -7,7 +7,7 @@ import (
 func validateRole(fl validator.FieldLevel) bool {
 	role := fl.Field().Int()
 	switch role {
-	case 0, 1, 2:
+	case 0, 1, 2, 3:
 		return true
 	default:
 		return false

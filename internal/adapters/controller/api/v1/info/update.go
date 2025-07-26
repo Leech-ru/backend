@@ -8,7 +8,7 @@ import (
 
 // UpdateInfo обновляет информацию о корпорации.
 //
-// @Summary      Update corporation info
+// @Summary      UpdateCurrent corporation info
 // @Description  Updates the corporation info fields. Only accessible by authenticated moderators.
 // @Description  Requires authentication via cookies (access_token, refresh_token)
 // @Tags         info

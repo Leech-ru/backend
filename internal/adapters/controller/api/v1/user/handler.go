@@ -5,6 +5,7 @@ import (
 	"Leech-ru/internal/adapters/controller/api/middleware/role"
 	"Leech-ru/internal/adapters/controller/api/validator"
 	"Leech-ru/internal/domain/dto"
+	"Leech-ru/internal/domain/types"
 	"context"
 	"github.com/go-playground/form"
 	"github.com/labstack/echo/v4"
@@ -16,7 +17,8 @@ type userService interface {
 	Login(ctx context.Context, req *dto.LoginUserRequest) (*dto.LoginUserResponse, error)
 	ChangePassword(ctx context.Context, req *dto.ChangePasswordRequest) (*dto.ChangePasswordResponse, error)
 	GetByID(ctx context.Context, req *dto.GetUserRequest) (*dto.GetUserResponse, error)
-	Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
+	UpdateCurrent(ctx context.Context, req *dto.UpdateCurrentUserRequest) (*dto.UpdateCurrentUserResponse, error)
+	UpdateEach(ctx context.Context, req *dto.UpdateEachUserRequest) (*dto.UpdateEachUserResponse, error)
 	Logout(ctx context.Context, req *dto.LogoutRequest) error
 }
 
@@ -64,6 +66,7 @@ func (h *handler) Setup(router *echo.Group) {
 	router.POST("/user/login", h.Login)
 	router.POST("/user/password", h.ChangePassword, h.authMiddleware.RequireAuth)
 	router.GET("/user", h.GetMe, h.authMiddleware.RequireAuth)
-	router.PATCH("/user", h.Update, h.authMiddleware.RequireAuth)
+	router.PATCH("/user", h.UpdateCurrent, h.authMiddleware.RequireAuth)
+	router.PATCH("/user/:id", h.UpdateEach, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleAdmin))
 	router.POST("/user/logout", h.Logout, h.authMiddleware.RequireAuth)
 }

@@ -62,13 +62,25 @@ type LogoutRequest struct {
 	ID uuid.UUID `json:"id" validate:"required,uuid" swaggerignore:"true"`
 }
 
-type UpdateUserRequest struct {
-	ID      uuid.UUID `json:"id" validate:"required,uuid" swaggerignore:"true"`
+type UpdateCurrentUserRequest struct {
+	ID      uuid.UUID `json:"-" validate:"required,uuid" swaggerignore:"true"`
 	Name    *string   `json:"name,omitempty" validate:"omitempty,min=2,max=100" example:"Ivan"`
 	Surname *string   `json:"surname,omitempty" validate:"omitempty,min=2,max=100" example:"Petrov"`
 }
 
-type UpdateUserResponse User
+type UpdateCurrentUserResponse User
+
+type UpdateEachUserRequest struct {
+	ID            uuid.UUID   `json:"-" validate:"required,uuid" swaggerignore:"true"`
+	RequesterRole types.Role  `json:"-" validate:"required,role" swaggerignore:"true"`
+	Email         *string     `json:"email,omitempty" validate:"omitempty,email,min=6,max=254" example:"user@example.com"`
+	Password      *string     `json:"password,omitempty" validate:"omitempty,min=8,max=100" example:"SecurePass123!" format:"password"`
+	Name          *string     `json:"name,omitempty" validate:"omitempty,min=2,max=100" example:"Ivan"`
+	Surname       *string     `json:"surname,omitempty" validate:"omitempty,min=2,max=100" example:"Ivanov"`
+	Role          *types.Role `json:"role,omitempty" validate:"omitempty,role" swaggerignore:"true"`
+}
+
+type UpdateEachUserResponse User
 
 type ChangePasswordRequest struct {
 	ID          uuid.UUID `json:"id" validate:"required,uuid" swaggerignore:"true"`

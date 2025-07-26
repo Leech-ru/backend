@@ -24,7 +24,7 @@ import (
 // @Router       /api/v1/cosmetics/{id} [get]
 func (h *handler) GetById(c echo.Context) error {
 	id := c.Param("id")
-	userID, err := uuid.Parse(id)
+	cosmeticID, err := uuid.Parse(id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
 			Code:    http.StatusNotFound,
@@ -32,7 +32,7 @@ func (h *handler) GetById(c echo.Context) error {
 		})
 	}
 	var req dto.GetByIdCosmeticsRequest
-	req.ID = userID
+	req.ID = cosmeticID
 
 	if err := h.validator.ValidateData(req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
