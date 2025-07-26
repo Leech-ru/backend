@@ -827,7 +827,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "UpdateCurrent user information",
+                "summary": "Update current user information",
                 "parameters": [
                     {
                         "description": "User data",
@@ -1069,7 +1069,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "UpdateEach user information",
+                "summary": "Update each user information",
                 "parameters": [
                     {
                         "type": "string",

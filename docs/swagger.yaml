@@ -1271,7 +1271,7 @@ paths:
             $ref: '#/definitions/dto.HTTPStatus'
       security:
       - CookieAuth: []
-      summary: UpdateCurrent user information
+      summary: Update current user information
       tags:
       - user
   /api/v1/user/{id}:
@@ -1309,7 +1309,7 @@ paths:
             $ref: '#/definitions/dto.HTTPStatus'
       security:
       - CookieAuth: []
-      summary: UpdateEach user information
+      summary: Update each user information
       tags:
       - user
   /api/v1/user/login:
