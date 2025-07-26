@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
 	"Leech-ru/internal/domain/types"
+	"Leech-ru/internal/domain/utils/password"
 	"context"
 	"errors"
 )
@@ -43,7 +44,11 @@ func (s *userService) UpdateEach(ctx context.Context, req *dto.UpdateEachUserReq
 		userToUpdate.Email = *req.Email
 	}
 	if req.Password != nil {
-		userToUpdate.Password = *req.Password
+		passwordHash, err := password.PasswordHash(*req.Password)
+		if err != nil {
+			return nil, err
+		}
+		userToUpdate.Password = passwordHash
 	}
 	if req.Role != nil {
 		userToUpdate.Role = *req.Role
