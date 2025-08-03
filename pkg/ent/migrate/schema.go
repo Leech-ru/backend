@@ -45,6 +45,27 @@ var (
 		Columns:    PartnersColumns,
 		PrimaryKey: []*schema.Column{PartnersColumns[0]},
 	}
+	// PartnerLinksColumns holds the columns for the "partner_links" table.
+	PartnerLinksColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "label", Type: field.TypeString},
+		{Name: "href", Type: field.TypeString},
+		{Name: "partner_links", Type: field.TypeUUID},
+	}
+	// PartnerLinksTable holds the schema information for the "partner_links" table.
+	PartnerLinksTable = &schema.Table{
+		Name:       "partner_links",
+		Columns:    PartnerLinksColumns,
+		PrimaryKey: []*schema.Column{PartnerLinksColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "partner_links_partners_links",
+				Columns:    []*schema.Column{PartnerLinksColumns[3]},
+				RefColumns: []*schema.Column{PartnersColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// RefreshTokensColumns holds the columns for the "refresh_tokens" table.
 	RefreshTokensColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -61,7 +82,7 @@ var (
 				Symbol:     "refresh_tokens_users_refresh_tokens",
 				Columns:    []*schema.Column{RefreshTokensColumns[2]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -84,11 +105,13 @@ var (
 	Tables = []*schema.Table{
 		CosmeticsTable,
 		PartnersTable,
+		PartnerLinksTable,
 		RefreshTokensTable,
 		UsersTable,
 	}
 )
 
 func init() {
+	PartnerLinksTable.ForeignKeys[0].RefTable = PartnersTable
 	RefreshTokensTable.ForeignKeys[0].RefTable = UsersTable
 }

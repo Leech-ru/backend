@@ -32,6 +32,18 @@ func (f PartnerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PartnerMutation", m)
 }
 
+// The PartnerLinkFunc type is an adapter to allow the use of ordinary
+// function as PartnerLink mutator.
+type PartnerLinkFunc func(context.Context, *ent.PartnerLinkMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PartnerLinkFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PartnerLinkMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PartnerLinkMutation", m)
+}
+
 // The RefreshTokenFunc type is an adapter to allow the use of ordinary
 // function as RefreshToken mutator.
 type RefreshTokenFunc func(context.Context, *ent.RefreshTokenMutation) (ent.Value, error)

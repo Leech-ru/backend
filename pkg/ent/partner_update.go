@@ -4,6 +4,7 @@ package ent
 
 import (
 	"Leech-ru/pkg/ent/partner"
+	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/predicate"
 	"context"
 	"errors"
@@ -61,9 +62,45 @@ func (pu *PartnerUpdate) ClearDescription() *PartnerUpdate {
 	return pu
 }
 
+// AddLinkIDs adds the "links" edge to the PartnerLink entity by IDs.
+func (pu *PartnerUpdate) AddLinkIDs(ids ...int) *PartnerUpdate {
+	pu.mutation.AddLinkIDs(ids...)
+	return pu
+}
+
+// AddLinks adds the "links" edges to the PartnerLink entity.
+func (pu *PartnerUpdate) AddLinks(p ...*PartnerLink) *PartnerUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return pu.AddLinkIDs(ids...)
+}
+
 // Mutation returns the PartnerMutation object of the builder.
 func (pu *PartnerUpdate) Mutation() *PartnerMutation {
 	return pu.mutation
+}
+
+// ClearLinks clears all "links" edges to the PartnerLink entity.
+func (pu *PartnerUpdate) ClearLinks() *PartnerUpdate {
+	pu.mutation.ClearLinks()
+	return pu
+}
+
+// RemoveLinkIDs removes the "links" edge to PartnerLink entities by IDs.
+func (pu *PartnerUpdate) RemoveLinkIDs(ids ...int) *PartnerUpdate {
+	pu.mutation.RemoveLinkIDs(ids...)
+	return pu
+}
+
+// RemoveLinks removes "links" edges to PartnerLink entities.
+func (pu *PartnerUpdate) RemoveLinks(p ...*PartnerLink) *PartnerUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return pu.RemoveLinkIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -129,6 +166,51 @@ func (pu *PartnerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if pu.mutation.DescriptionCleared() {
 		_spec.ClearField(partner.FieldDescription, field.TypeString)
 	}
+	if pu.mutation.LinksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   partner.LinksTable,
+			Columns: []string{partner.LinksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(partnerlink.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RemovedLinksIDs(); len(nodes) > 0 && !pu.mutation.LinksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   partner.LinksTable,
+			Columns: []string{partner.LinksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(partnerlink.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.LinksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   partner.LinksTable,
+			Columns: []string{partner.LinksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(partnerlink.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{partner.Label}
@@ -183,9 +265,45 @@ func (puo *PartnerUpdateOne) ClearDescription() *PartnerUpdateOne {
 	return puo
 }
 
+// AddLinkIDs adds the "links" edge to the PartnerLink entity by IDs.
+func (puo *PartnerUpdateOne) AddLinkIDs(ids ...int) *PartnerUpdateOne {
+	puo.mutation.AddLinkIDs(ids...)
+	return puo
+}
+
+// AddLinks adds the "links" edges to the PartnerLink entity.
+func (puo *PartnerUpdateOne) AddLinks(p ...*PartnerLink) *PartnerUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return puo.AddLinkIDs(ids...)
+}
+
 // Mutation returns the PartnerMutation object of the builder.
 func (puo *PartnerUpdateOne) Mutation() *PartnerMutation {
 	return puo.mutation
+}
+
+// ClearLinks clears all "links" edges to the PartnerLink entity.
+func (puo *PartnerUpdateOne) ClearLinks() *PartnerUpdateOne {
+	puo.mutation.ClearLinks()
+	return puo
+}
+
+// RemoveLinkIDs removes the "links" edge to PartnerLink entities by IDs.
+func (puo *PartnerUpdateOne) RemoveLinkIDs(ids ...int) *PartnerUpdateOne {
+	puo.mutation.RemoveLinkIDs(ids...)
+	return puo
+}
+
+// RemoveLinks removes "links" edges to PartnerLink entities.
+func (puo *PartnerUpdateOne) RemoveLinks(p ...*PartnerLink) *PartnerUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return puo.RemoveLinkIDs(ids...)
 }
 
 // Where appends a list predicates to the PartnerUpdate builder.
@@ -280,6 +398,51 @@ func (puo *PartnerUpdateOne) sqlSave(ctx context.Context) (_node *Partner, err e
 	}
 	if puo.mutation.DescriptionCleared() {
 		_spec.ClearField(partner.FieldDescription, field.TypeString)
+	}
+	if puo.mutation.LinksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   partner.LinksTable,
+			Columns: []string{partner.LinksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(partnerlink.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RemovedLinksIDs(); len(nodes) > 0 && !puo.mutation.LinksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   partner.LinksTable,
+			Columns: []string{partner.LinksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(partnerlink.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.LinksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   partner.LinksTable,
+			Columns: []string{partner.LinksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(partnerlink.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Partner{config: puo.config}
 	_spec.Assign = _node.assignValues

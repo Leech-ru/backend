@@ -2,16 +2,16 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 )
 
-// Partner holds the schema definition for the Partner entity.
 type Partner struct {
 	ent.Schema
 }
 
-// Fields of the Partner.
 func (Partner) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).
@@ -29,7 +29,9 @@ func (Partner) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Partner.
 func (Partner) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("links", PartnerLink.Type).
+			Annotations(entsql.OnDelete(entsql.Cascade)),
+	}
 }

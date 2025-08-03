@@ -12,6 +12,9 @@ type Cosmetics func(*sql.Selector)
 // Partner is the predicate function for partner builders.
 type Partner func(*sql.Selector)
 
+// PartnerLink is the predicate function for partnerlink builders.
+type PartnerLink func(*sql.Selector)
+
 // RefreshToken is the predicate function for refreshtoken builders.
 type RefreshToken func(*sql.Selector)
 

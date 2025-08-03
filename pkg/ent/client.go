@@ -13,6 +13,7 @@ import (
 
 	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/partner"
+	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 
@@ -32,6 +33,8 @@ type Client struct {
 	Cosmetics *CosmeticsClient
 	// Partner is the client for interacting with the Partner builders.
 	Partner *PartnerClient
+	// PartnerLink is the client for interacting with the PartnerLink builders.
+	PartnerLink *PartnerLinkClient
 	// RefreshToken is the client for interacting with the RefreshToken builders.
 	RefreshToken *RefreshTokenClient
 	// User is the client for interacting with the User builders.
@@ -49,6 +52,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Cosmetics = NewCosmeticsClient(c.config)
 	c.Partner = NewPartnerClient(c.config)
+	c.PartnerLink = NewPartnerLinkClient(c.config)
 	c.RefreshToken = NewRefreshTokenClient(c.config)
 	c.User = NewUserClient(c.config)
 }
@@ -145,6 +149,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:       cfg,
 		Cosmetics:    NewCosmeticsClient(cfg),
 		Partner:      NewPartnerClient(cfg),
+		PartnerLink:  NewPartnerLinkClient(cfg),
 		RefreshToken: NewRefreshTokenClient(cfg),
 		User:         NewUserClient(cfg),
 	}, nil
@@ -168,6 +173,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:       cfg,
 		Cosmetics:    NewCosmeticsClient(cfg),
 		Partner:      NewPartnerClient(cfg),
+		PartnerLink:  NewPartnerLinkClient(cfg),
 		RefreshToken: NewRefreshTokenClient(cfg),
 		User:         NewUserClient(cfg),
 	}, nil
@@ -200,6 +206,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.Cosmetics.Use(hooks...)
 	c.Partner.Use(hooks...)
+	c.PartnerLink.Use(hooks...)
 	c.RefreshToken.Use(hooks...)
 	c.User.Use(hooks...)
 }
@@ -209,6 +216,7 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Cosmetics.Intercept(interceptors...)
 	c.Partner.Intercept(interceptors...)
+	c.PartnerLink.Intercept(interceptors...)
 	c.RefreshToken.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
 }
@@ -220,6 +228,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Cosmetics.mutate(ctx, m)
 	case *PartnerMutation:
 		return c.Partner.mutate(ctx, m)
+	case *PartnerLinkMutation:
+		return c.PartnerLink.mutate(ctx, m)
 	case *RefreshTokenMutation:
 		return c.RefreshToken.mutate(ctx, m)
 	case *UserMutation:
@@ -470,6 +480,22 @@ func (c *PartnerClient) GetX(ctx context.Context, id uuid.UUID) *Partner {
 	return obj
 }
 
+// QueryLinks queries the links edge of a Partner.
+func (c *PartnerClient) QueryLinks(pa *Partner) *PartnerLinkQuery {
+	query := (&PartnerLinkClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pa.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(partner.Table, partner.FieldID, id),
+			sqlgraph.To(partnerlink.Table, partnerlink.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, partner.LinksTable, partner.LinksColumn),
+		)
+		fromV = sqlgraph.Neighbors(pa.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *PartnerClient) Hooks() []Hook {
 	return c.hooks.Partner
@@ -492,6 +518,155 @@ func (c *PartnerClient) mutate(ctx context.Context, m *PartnerMutation) (Value, 
 		return (&PartnerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Partner mutation op: %q", m.Op())
+	}
+}
+
+// PartnerLinkClient is a client for the PartnerLink schema.
+type PartnerLinkClient struct {
+	config
+}
+
+// NewPartnerLinkClient returns a client for the PartnerLink from the given config.
+func NewPartnerLinkClient(c config) *PartnerLinkClient {
+	return &PartnerLinkClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `partnerlink.Hooks(f(g(h())))`.
+func (c *PartnerLinkClient) Use(hooks ...Hook) {
+	c.hooks.PartnerLink = append(c.hooks.PartnerLink, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `partnerlink.Intercept(f(g(h())))`.
+func (c *PartnerLinkClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PartnerLink = append(c.inters.PartnerLink, interceptors...)
+}
+
+// Create returns a builder for creating a PartnerLink entity.
+func (c *PartnerLinkClient) Create() *PartnerLinkCreate {
+	mutation := newPartnerLinkMutation(c.config, OpCreate)
+	return &PartnerLinkCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PartnerLink entities.
+func (c *PartnerLinkClient) CreateBulk(builders ...*PartnerLinkCreate) *PartnerLinkCreateBulk {
+	return &PartnerLinkCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PartnerLinkClient) MapCreateBulk(slice any, setFunc func(*PartnerLinkCreate, int)) *PartnerLinkCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PartnerLinkCreateBulk{err: fmt.Errorf("calling to PartnerLinkClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PartnerLinkCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PartnerLinkCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PartnerLink.
+func (c *PartnerLinkClient) Update() *PartnerLinkUpdate {
+	mutation := newPartnerLinkMutation(c.config, OpUpdate)
+	return &PartnerLinkUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PartnerLinkClient) UpdateOne(pl *PartnerLink) *PartnerLinkUpdateOne {
+	mutation := newPartnerLinkMutation(c.config, OpUpdateOne, withPartnerLink(pl))
+	return &PartnerLinkUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PartnerLinkClient) UpdateOneID(id int) *PartnerLinkUpdateOne {
+	mutation := newPartnerLinkMutation(c.config, OpUpdateOne, withPartnerLinkID(id))
+	return &PartnerLinkUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PartnerLink.
+func (c *PartnerLinkClient) Delete() *PartnerLinkDelete {
+	mutation := newPartnerLinkMutation(c.config, OpDelete)
+	return &PartnerLinkDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PartnerLinkClient) DeleteOne(pl *PartnerLink) *PartnerLinkDeleteOne {
+	return c.DeleteOneID(pl.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PartnerLinkClient) DeleteOneID(id int) *PartnerLinkDeleteOne {
+	builder := c.Delete().Where(partnerlink.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PartnerLinkDeleteOne{builder}
+}
+
+// Query returns a query builder for PartnerLink.
+func (c *PartnerLinkClient) Query() *PartnerLinkQuery {
+	return &PartnerLinkQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePartnerLink},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PartnerLink entity by its id.
+func (c *PartnerLinkClient) Get(ctx context.Context, id int) (*PartnerLink, error) {
+	return c.Query().Where(partnerlink.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PartnerLinkClient) GetX(ctx context.Context, id int) *PartnerLink {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryPartner queries the partner edge of a PartnerLink.
+func (c *PartnerLinkClient) QueryPartner(pl *PartnerLink) *PartnerQuery {
+	query := (&PartnerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pl.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(partnerlink.Table, partnerlink.FieldID, id),
+			sqlgraph.To(partner.Table, partner.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, partnerlink.PartnerTable, partnerlink.PartnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(pl.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *PartnerLinkClient) Hooks() []Hook {
+	return c.hooks.PartnerLink
+}
+
+// Interceptors returns the client interceptors.
+func (c *PartnerLinkClient) Interceptors() []Interceptor {
+	return c.inters.PartnerLink
+}
+
+func (c *PartnerLinkClient) mutate(ctx context.Context, m *PartnerLinkMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PartnerLinkCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PartnerLinkUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PartnerLinkUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PartnerLinkDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PartnerLink mutation op: %q", m.Op())
 	}
 }
 
@@ -796,9 +971,9 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Cosmetics, Partner, RefreshToken, User []ent.Hook
+		Cosmetics, Partner, PartnerLink, RefreshToken, User []ent.Hook
 	}
 	inters struct {
-		Cosmetics, Partner, RefreshToken, User []ent.Interceptor
+		Cosmetics, Partner, PartnerLink, RefreshToken, User []ent.Interceptor
 	}
 )

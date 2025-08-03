@@ -7,6 +7,7 @@ import (
 	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/partner"
+	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 
@@ -71,6 +72,16 @@ func init() {
 	partnerDescID := partnerFields[0].Descriptor()
 	// partner.DefaultID holds the default value on creation for the id field.
 	partner.DefaultID = partnerDescID.Default.(func() uuid.UUID)
+	partnerlinkFields := schema.PartnerLink{}.Fields()
+	_ = partnerlinkFields
+	// partnerlinkDescLabel is the schema descriptor for label field.
+	partnerlinkDescLabel := partnerlinkFields[0].Descriptor()
+	// partnerlink.LabelValidator is a validator for the "label" field. It is called by the builders before save.
+	partnerlink.LabelValidator = partnerlinkDescLabel.Validators[0].(func(string) error)
+	// partnerlinkDescHref is the schema descriptor for href field.
+	partnerlinkDescHref := partnerlinkFields[1].Descriptor()
+	// partnerlink.HrefValidator is a validator for the "href" field. It is called by the builders before save.
+	partnerlink.HrefValidator = partnerlinkDescHref.Validators[0].(func(string) error)
 	refreshtokenFields := schema.RefreshToken{}.Fields()
 	_ = refreshtokenFields
 	// refreshtokenDescJti is the schema descriptor for jti field.

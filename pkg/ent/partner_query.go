@@ -4,8 +4,10 @@ package ent
 
 import (
 	"Leech-ru/pkg/ent/partner"
+	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/predicate"
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -23,6 +25,7 @@ type PartnerQuery struct {
 	order      []partner.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Partner
+	withLinks  *PartnerLinkQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -57,6 +60,28 @@ func (pq *PartnerQuery) Unique(unique bool) *PartnerQuery {
 func (pq *PartnerQuery) Order(o ...partner.OrderOption) *PartnerQuery {
 	pq.order = append(pq.order, o...)
 	return pq
+}
+
+// QueryLinks chains the current query on the "links" edge.
+func (pq *PartnerQuery) QueryLinks() *PartnerLinkQuery {
+	query := (&PartnerLinkClient{config: pq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(partner.Table, partner.FieldID, selector),
+			sqlgraph.To(partnerlink.Table, partnerlink.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, partner.LinksTable, partner.LinksColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Partner entity from the query.
@@ -251,10 +276,22 @@ func (pq *PartnerQuery) Clone() *PartnerQuery {
 		order:      append([]partner.OrderOption{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
 		predicates: append([]predicate.Partner{}, pq.predicates...),
+		withLinks:  pq.withLinks.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
 	}
+}
+
+// WithLinks tells the query-builder to eager-load the nodes that are connected to
+// the "links" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PartnerQuery) WithLinks(opts ...func(*PartnerLinkQuery)) *PartnerQuery {
+	query := (&PartnerLinkClient{config: pq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withLinks = query
+	return pq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -333,8 +370,11 @@ func (pq *PartnerQuery) prepareQuery(ctx context.Context) error {
 
 func (pq *PartnerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Partner, error) {
 	var (
-		nodes = []*Partner{}
-		_spec = pq.querySpec()
+		nodes       = []*Partner{}
+		_spec       = pq.querySpec()
+		loadedTypes = [1]bool{
+			pq.withLinks != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Partner).scanValues(nil, columns)
@@ -342,6 +382,7 @@ func (pq *PartnerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Part
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Partner{config: pq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -353,7 +394,46 @@ func (pq *PartnerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Part
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := pq.withLinks; query != nil {
+		if err := pq.loadLinks(ctx, query, nodes,
+			func(n *Partner) { n.Edges.Links = []*PartnerLink{} },
+			func(n *Partner, e *PartnerLink) { n.Edges.Links = append(n.Edges.Links, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (pq *PartnerQuery) loadLinks(ctx context.Context, query *PartnerLinkQuery, nodes []*Partner, init func(*Partner), assign func(*Partner, *PartnerLink)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Partner)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.PartnerLink(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(partner.LinksColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.partner_links
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "partner_links" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "partner_links" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (pq *PartnerQuery) sqlCount(ctx context.Context) (int, error) {

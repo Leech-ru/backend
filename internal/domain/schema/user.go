@@ -3,6 +3,7 @@ package schema
 import (
 	"Leech-ru/internal/domain/types"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
@@ -47,6 +48,7 @@ func (User) Fields() []ent.Field {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("refresh_tokens", RefreshToken.Type).
+			Annotations(entsql.OnDelete(entsql.Cascade)).
 			Unique(),
 	}
 }

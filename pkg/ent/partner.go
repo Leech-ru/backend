@@ -20,8 +20,29 @@ type Partner struct {
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
-	Description  *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the PartnerQuery when eager-loading is set.
+	Edges        PartnerEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// PartnerEdges holds the relations/edges for other nodes in the graph.
+type PartnerEdges struct {
+	// Links holds the value of the links edge.
+	Links []*PartnerLink `json:"links,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// LinksOrErr returns the Links value or an error if the edge
+// was not loaded in eager-loading.
+func (e PartnerEdges) LinksOrErr() ([]*PartnerLink, error) {
+	if e.loadedTypes[0] {
+		return e.Links, nil
+	}
+	return nil, &NotLoadedError{edge: "links"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -78,6 +99,11 @@ func (pa *Partner) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (pa *Partner) Value(name string) (ent.Value, error) {
 	return pa.selectValues.Get(name)
+}
+
+// QueryLinks queries the "links" edge of the Partner entity.
+func (pa *Partner) QueryLinks() *PartnerLinkQuery {
+	return NewPartnerClient(pa.config).QueryLinks(pa)
 }
 
 // Update returns a builder for updating this Partner.
