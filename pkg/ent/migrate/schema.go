@@ -16,14 +16,22 @@ var (
 		{Name: "description", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "application_method", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "volume", Type: field.TypeInt, Nullable: true},
-		{Name: "ozon_link", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "wildberries_link", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "ozon_link", Type: field.TypeString, Nullable: true},
+		{Name: "wildberries_link", Type: field.TypeString, Nullable: true},
+		{Name: "is_hidden", Type: field.TypeBool},
 	}
 	// CosmeticsTable holds the schema information for the "cosmetics" table.
 	CosmeticsTable = &schema.Table{
 		Name:       "cosmetics",
 		Columns:    CosmeticsColumns,
 		PrimaryKey: []*schema.Column{CosmeticsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "cosmetics_is_hidden",
+				Unique:  false,
+				Columns: []*schema.Column{CosmeticsColumns[8]},
+			},
+		},
 	}
 	// PartnersColumns holds the columns for the "partners" table.
 	PartnersColumns = []*schema.Column{

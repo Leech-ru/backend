@@ -15,6 +15,7 @@ type Cosmetics struct {
 	ApplicationMethod *string        `json:"application_method,omitempty" example:"Apply to wet hair, lather, rinse."`
 	Volume            *int           `json:"volume,omitempty" example:"250"`
 	Links             *Links         `json:"links"`
+	IsHidden          bool           `json:"is_hidden" example:"false"`
 }
 
 // Links contains links information.
@@ -31,6 +32,7 @@ type CreateCosmeticsRequest struct {
 	ApplicationMethod *string        `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
 	Volume            *int           `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
 	Links             *Links         `json:"links,omitempty" validate:"omitempty"`
+	IsHidden          *bool          `json:"is_hidden" validate:"required" example:"false"`
 }
 
 // CreateCosmeticsResponse represents the response after creating a cosmetic product.
@@ -52,6 +54,7 @@ type GetAllByFilterCosmeticsRequest struct {
 	Category    *types.Category `json:"category,omitempty" form:"category" validate:"omitempty,category" example:"2"`
 	TitlePrefix *string         `json:"title_prefix,omitempty" form:"titlePrefix" validate:"omitempty,min=1,max=100" example:"Hair"`
 	Volume      *int            `json:"volume,omitempty" form:"volume" validate:"omitempty,min=1,max=10000" example:"250"`
+	IsHidden    *bool           `json:"is_hidden" form:"is_hidden" validate:"required" example:"false"`
 }
 
 // GetAllByFilterCosmeticsResponse is the list of cosmetics returned by filters.
@@ -66,6 +69,7 @@ type UpdateCosmeticsRequest struct {
 	ApplicationMethod *string         `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply evenly and rinse well."`
 	Volume            *int            `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"500"`
 	Links             *Links          `json:"links,omitempty" validate:"omitempty"`
+	IsHidden          *bool           `json:"is_hidden" validate:"required" example:"false"`
 }
 
 // UpdateCosmeticsResponse returns the updated cosmetic product.

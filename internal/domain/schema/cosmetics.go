@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/types"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
 )
 
@@ -40,12 +41,12 @@ func (Cosmetics) Fields() []ent.Field {
 			Positive(),
 
 		field.String("ozon_link").
-			Optional().Nillable().
-			Default(""),
+			Optional().Nillable(),
 
 		field.String("wildberries_link").
-			Optional().Nillable().
-			Default(""),
+			Optional().Nillable(),
+
+		field.Bool("is_hidden"),
 	}
 
 }
@@ -53,4 +54,10 @@ func (Cosmetics) Fields() []ent.Field {
 // Edges of the Cosmetics.
 func (Cosmetics) Edges() []ent.Edge {
 	return nil
+}
+
+func (Cosmetics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("is_hidden"),
+	}
 }

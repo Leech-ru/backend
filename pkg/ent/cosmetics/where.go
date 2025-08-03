@@ -91,6 +91,11 @@ func WildberriesLink(v string) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldEQ(FieldWildberriesLink, v))
 }
 
+// IsHidden applies equality check predicate on the "is_hidden" field. It's identical to IsHiddenEQ.
+func IsHidden(v bool) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEQ(FieldIsHidden, v))
+}
+
 // CategoryEQ applies the EQ predicate on the "category" field.
 func CategoryEQ(v types.Category) predicate.Cosmetics {
 	vc := int(v)
@@ -558,6 +563,16 @@ func WildberriesLinkEqualFold(v string) predicate.Cosmetics {
 // WildberriesLinkContainsFold applies the ContainsFold predicate on the "wildberries_link" field.
 func WildberriesLinkContainsFold(v string) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldContainsFold(FieldWildberriesLink, v))
+}
+
+// IsHiddenEQ applies the EQ predicate on the "is_hidden" field.
+func IsHiddenEQ(v bool) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEQ(FieldIsHidden, v))
+}
+
+// IsHiddenNEQ applies the NEQ predicate on the "is_hidden" field.
+func IsHiddenNEQ(v bool) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNEQ(FieldIsHidden, v))
 }
 
 // And groups predicates with the AND operator between them.

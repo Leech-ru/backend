@@ -16,6 +16,7 @@ func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsR
 		Description:       req.Description,
 		ApplicationMethod: req.ApplicationMethod,
 		Volume:            req.Volume,
+		IsHidden:          *req.IsHidden,
 	}
 	if req.Links != nil {
 		cosmetics.OzonLink = req.Links.Ozon
@@ -39,5 +40,6 @@ func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsR
 			Ozon:        cosmetics.OzonLink,
 			Wildberries: cosmetics.WildberriesLink,
 		},
+		IsHidden: cosmetics.IsHidden,
 	}, nil
 }

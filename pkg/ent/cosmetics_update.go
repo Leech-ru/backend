@@ -170,6 +170,20 @@ func (cu *CosmeticsUpdate) ClearWildberriesLink() *CosmeticsUpdate {
 	return cu
 }
 
+// SetIsHidden sets the "is_hidden" field.
+func (cu *CosmeticsUpdate) SetIsHidden(b bool) *CosmeticsUpdate {
+	cu.mutation.SetIsHidden(b)
+	return cu
+}
+
+// SetNillableIsHidden sets the "is_hidden" field if the given value is not nil.
+func (cu *CosmeticsUpdate) SetNillableIsHidden(b *bool) *CosmeticsUpdate {
+	if b != nil {
+		cu.SetIsHidden(*b)
+	}
+	return cu
+}
+
 // Mutation returns the CosmeticsMutation object of the builder.
 func (cu *CosmeticsUpdate) Mutation() *CosmeticsMutation {
 	return cu.mutation
@@ -275,6 +289,9 @@ func (cu *CosmeticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if cu.mutation.WildberriesLinkCleared() {
 		_spec.ClearField(cosmetics.FieldWildberriesLink, field.TypeString)
+	}
+	if value, ok := cu.mutation.IsHidden(); ok {
+		_spec.SetField(cosmetics.FieldIsHidden, field.TypeBool, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -438,6 +455,20 @@ func (cuo *CosmeticsUpdateOne) ClearWildberriesLink() *CosmeticsUpdateOne {
 	return cuo
 }
 
+// SetIsHidden sets the "is_hidden" field.
+func (cuo *CosmeticsUpdateOne) SetIsHidden(b bool) *CosmeticsUpdateOne {
+	cuo.mutation.SetIsHidden(b)
+	return cuo
+}
+
+// SetNillableIsHidden sets the "is_hidden" field if the given value is not nil.
+func (cuo *CosmeticsUpdateOne) SetNillableIsHidden(b *bool) *CosmeticsUpdateOne {
+	if b != nil {
+		cuo.SetIsHidden(*b)
+	}
+	return cuo
+}
+
 // Mutation returns the CosmeticsMutation object of the builder.
 func (cuo *CosmeticsUpdateOne) Mutation() *CosmeticsMutation {
 	return cuo.mutation
@@ -573,6 +604,9 @@ func (cuo *CosmeticsUpdateOne) sqlSave(ctx context.Context) (_node *Cosmetics, e
 	}
 	if cuo.mutation.WildberriesLinkCleared() {
 		_spec.ClearField(cosmetics.FieldWildberriesLink, field.TypeString)
+	}
+	if value, ok := cuo.mutation.IsHidden(); ok {
+		_spec.SetField(cosmetics.FieldIsHidden, field.TypeBool, value)
 	}
 	_node = &Cosmetics{config: cuo.config}
 	_spec.Assign = _node.assignValues

@@ -26,6 +26,8 @@ const (
 	FieldOzonLink = "ozon_link"
 	// FieldWildberriesLink holds the string denoting the wildberries_link field in the database.
 	FieldWildberriesLink = "wildberries_link"
+	// FieldIsHidden holds the string denoting the is_hidden field in the database.
+	FieldIsHidden = "is_hidden"
 	// Table holds the table name of the cosmetics in the database.
 	Table = "cosmetics"
 )
@@ -40,6 +42,7 @@ var Columns = []string{
 	FieldVolume,
 	FieldOzonLink,
 	FieldWildberriesLink,
+	FieldIsHidden,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -63,10 +66,6 @@ var (
 	DefaultApplicationMethod string
 	// VolumeValidator is a validator for the "volume" field. It is called by the builders before save.
 	VolumeValidator func(int) error
-	// DefaultOzonLink holds the default value on creation for the "ozon_link" field.
-	DefaultOzonLink string
-	// DefaultWildberriesLink holds the default value on creation for the "wildberries_link" field.
-	DefaultWildberriesLink string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -112,4 +111,9 @@ func ByOzonLink(opts ...sql.OrderTermOption) OrderOption {
 // ByWildberriesLink orders the results by the wildberries_link field.
 func ByWildberriesLink(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldWildberriesLink, opts...).ToFunc()
+}
+
+// ByIsHidden orders the results by the is_hidden field.
+func ByIsHidden(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsHidden, opts...).ToFunc()
 }

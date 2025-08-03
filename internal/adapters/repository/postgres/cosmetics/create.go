@@ -17,6 +17,7 @@ func (s *cosmeticsRepo) Create(ctx context.Context, entity ent.Cosmetics) (*ent.
 		SetNillableVolume(entity.Volume).
 		SetNillableOzonLink(entity.OzonLink).
 		SetNillableWildberriesLink(entity.WildberriesLink).
+		SetIsHidden(entity.IsHidden).
 		Save(ctx)
 
 	switch {
