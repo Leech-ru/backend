@@ -6,7 +6,6 @@ import "Leech-ru/internal/domain/types"
 type Info struct {
 	Heading     string          `json:"heading" validate:"required,min=3,max=100" example:"Welcome to our company"`
 	Description string          `json:"description" validate:"required,min=10,max=500" example:"We are a global leader in innovation and technology."`
-	Fluid       *bool           `json:"fluid,omitempty" validate:"omitempty" example:"true"`
 	Schedule    []ScheduleEntry `json:"schedule,omitempty" validate:"omitempty,min=1,max=7,dive"`
 	Links       []InfoLinks     `json:"links,omitempty" validate:"omitempty,min=0,max=10,dive"`
 }
@@ -36,7 +35,6 @@ type GetInfoResponse Info
 type UpdateInfoRequest struct {
 	Heading     *string          `json:"heading,omitempty" validate:"omitempty,min=3,max=100" example:"Updated Heading"`
 	Description *string          `json:"description,omitempty" validate:"omitempty,min=10,max=500" example:"Updated long description about the company."`
-	Fluid       *bool            `json:"fluid,omitempty" validate:"omitempty" example:"false"`
 	Schedule    *[]ScheduleEntry `json:"schedule,omitempty" validate:"omitempty,min=1,max=7,dive"`
 	Links       *[]InfoLinks     `json:"links,omitempty" validate:"omitempty,min=0,max=10,dive"`
 }
