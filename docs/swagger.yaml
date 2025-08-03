@@ -34,6 +34,9 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      is_hidden:
+        example: false
+        type: boolean
       links:
         $ref: '#/definitions/dto.Links'
       title:
@@ -59,6 +62,9 @@ definitions:
         maxLength: 3000
         minLength: 3
         type: string
+      is_hidden:
+        example: false
+        type: boolean
       links:
         $ref: '#/definitions/dto.Links'
       title:
@@ -73,6 +79,7 @@ definitions:
         type: integer
     required:
     - category
+    - is_hidden
     - title
     type: object
   dto.CreateCosmeticsResponse:
@@ -92,6 +99,9 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      is_hidden:
+        example: false
+        type: boolean
       links:
         $ref: '#/definitions/dto.Links'
       title:
@@ -118,6 +128,7 @@ definitions:
       order_details:
         $ref: '#/definitions/dto.OrderDetails'
       total_price:
+        example: 3499.5
         type: number
     type: object
   dto.CreatePartnerRequest:
@@ -149,21 +160,26 @@ definitions:
   dto.CustomerInfo:
     properties:
       address:
+        example: г. Москва, ул. Ленина, д. 1, кв. 10
         maxLength: 200
         minLength: 5
         type: string
       comment:
+        example: Позвоните за час до доставки
         maxLength: 500
         type: string
       email:
+        example: ivanov@example.com
         maxLength: 254
         minLength: 6
         type: string
       fio:
+        example: Иванов Иван Иванович
         maxLength: 100
         minLength: 2
         type: string
       phone_number:
+        example: "+79991234567"
         type: string
     required:
     - address
@@ -188,6 +204,9 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      is_hidden:
+        example: false
+        type: boolean
       links:
         $ref: '#/definitions/dto.Links'
       title:
@@ -216,9 +235,6 @@ definitions:
         maxLength: 500
         minLength: 10
         type: string
-      fluid:
-        example: true
-        type: boolean
       heading:
         example: Welcome to our company
         maxLength: 100
@@ -343,19 +359,24 @@ definitions:
   dto.OrderDetails:
     properties:
       leech_size_1:
+        example: 100
         maximum: 500
         minimum: 0
         type: integer
       leech_size_2:
+        example: 200
         maximum: 500
         minimum: 0
         type: integer
       leech_size_3:
+        example: 150
         maximum: 500
         minimum: 0
         type: integer
       package_type:
-        $ref: '#/definitions/types.Package'
+        allOf:
+        - $ref: '#/definitions/types.Package'
+        example: 1
     required:
     - package_type
     type: object
@@ -453,6 +474,9 @@ definitions:
         maxLength: 3000
         minLength: 3
         type: string
+      is_hidden:
+        example: false
+        type: boolean
       links:
         $ref: '#/definitions/dto.Links'
       title:
@@ -465,6 +489,8 @@ definitions:
         maximum: 10000
         minimum: 1
         type: integer
+    required:
+    - is_hidden
     type: object
   dto.UpdateCosmeticsResponse:
     description: Contains product information such as category, title, description,
@@ -483,6 +509,9 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      is_hidden:
+        example: false
+        type: boolean
       links:
         $ref: '#/definitions/dto.Links'
       title:
@@ -574,9 +603,6 @@ definitions:
         maxLength: 500
         minLength: 10
         type: string
-      fluid:
-        example: false
-        type: boolean
       heading:
         example: Updated Heading
         maxLength: 100
@@ -602,9 +628,6 @@ definitions:
         maxLength: 500
         minLength: 10
         type: string
-      fluid:
-        example: true
-        type: boolean
       heading:
         example: Welcome to our company
         maxLength: 100
@@ -1039,37 +1062,7 @@ paths:
       summary: UpdateCurrent corporation info
       tags:
       - info
-  /api/v1/order:
-    post:
-      consumes:
-      - application/json
-      description: Creates a new leech order and send it to email.
-      parameters:
-      - description: Leech order data
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateOrderRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.CreateOrderResponse'
-        "400":
-          description: Invalid request body or validation error
-          schema:
-            $ref: '#/definitions/dto.HTTPStatus'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/dto.HTTPStatus'
-      summary: Create a new leech order
-      tags:
-      - order
-  /api/v1/partner:
+  /api/v1/info/partner:
     get:
       consumes:
       - application/json
@@ -1141,7 +1134,7 @@ paths:
       summary: Create a new cosmetic product
       tags:
       - partner
-  /api/v1/partner/{id}:
+  /api/v1/info/partner/{id}:
     delete:
       description: Deletes the partner with the given UUID.
       parameters:
@@ -1245,6 +1238,36 @@ paths:
       summary: Update partner
       tags:
       - partner
+  /api/v1/order:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new leech order and send it to email.
+      parameters:
+      - description: Leech order data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateOrderResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Create a new leech order
+      tags:
+      - order
   /api/v1/user:
     get:
       consumes:

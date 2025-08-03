@@ -458,53 +458,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/order": {
-            "post": {
-                "description": "Creates a new leech order and send it to email.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "order"
-                ],
-                "summary": "Create a new leech order",
-                "parameters": [
-                    {
-                        "description": "Leech order data",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateOrderRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateOrderResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body or validation error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/partner": {
+        "/api/v1/info/partner": {
             "get": {
                 "description": "Retrieves a list of partners with pagination.",
                 "consumes": [
@@ -614,7 +568,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/partner/{id}": {
+        "/api/v1/info/partner/{id}": {
             "get": {
                 "description": "Retrieves a partner product using its UUID.",
                 "consumes": [
@@ -760,6 +714,52 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Partner not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/order": {
+            "post": {
+                "description": "Creates a new leech order and send it to email.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Create a new leech order",
+                "parameters": [
+                    {
+                        "description": "Leech order data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateOrderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or validation error",
                         "schema": {
                             "$ref": "#/definitions/dto.HTTPStatus"
                         }
@@ -1330,6 +1330,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "is_hidden": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "links": {
                     "$ref": "#/definitions/dto.Links"
                 },
@@ -1347,6 +1351,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "category",
+                "is_hidden",
                 "title"
             ],
             "properties": {
@@ -1369,6 +1374,10 @@ const docTemplate = `{
                     "maxLength": 3000,
                     "minLength": 3,
                     "example": "Suitable for daily use."
+                },
+                "is_hidden": {
+                    "type": "boolean",
+                    "example": false
                 },
                 "links": {
                     "$ref": "#/definitions/dto.Links"
@@ -1411,6 +1420,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "is_hidden": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "links": {
                     "$ref": "#/definitions/dto.Links"
                 },
@@ -1449,7 +1462,8 @@ const docTemplate = `{
                     "$ref": "#/definitions/dto.OrderDetails"
                 },
                 "total_price": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 3499.5
                 }
             }
         },
@@ -1501,24 +1515,29 @@ const docTemplate = `{
                 "address": {
                     "type": "string",
                     "maxLength": 200,
-                    "minLength": 5
+                    "minLength": 5,
+                    "example": "г. Москва, ул. Ленина, д. 1, кв. 10"
                 },
                 "comment": {
                     "type": "string",
-                    "maxLength": 500
+                    "maxLength": 500,
+                    "example": "Позвоните за час до доставки"
                 },
                 "email": {
                     "type": "string",
                     "maxLength": 254,
-                    "minLength": 6
+                    "minLength": 6,
+                    "example": "ivanov@example.com"
                 },
                 "fio": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Иванов Иван Иванович"
                 },
                 "phone_number": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "+79991234567"
                 }
             }
         },
@@ -1545,6 +1564,10 @@ const docTemplate = `{
                 "id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "is_hidden": {
+                    "type": "boolean",
+                    "example": false
                 },
                 "links": {
                     "$ref": "#/definitions/dto.Links"
@@ -1588,10 +1611,6 @@ const docTemplate = `{
                     "maxLength": 500,
                     "minLength": 10,
                     "example": "We are a global leader in innovation and technology."
-                },
-                "fluid": {
-                    "type": "boolean",
-                    "example": true
                 },
                 "heading": {
                     "type": "string",
@@ -1769,20 +1788,28 @@ const docTemplate = `{
                 "leech_size_1": {
                     "type": "integer",
                     "maximum": 500,
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 100
                 },
                 "leech_size_2": {
                     "type": "integer",
                     "maximum": 500,
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 200
                 },
                 "leech_size_3": {
                     "type": "integer",
                     "maximum": 500,
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 150
                 },
                 "package_type": {
-                    "$ref": "#/definitions/types.Package"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Package"
+                        }
+                    ],
+                    "example": 1
                 }
             }
         },
@@ -1899,6 +1926,9 @@ const docTemplate = `{
         },
         "dto.UpdateCosmeticsRequest": {
             "type": "object",
+            "required": [
+                "is_hidden"
+            ],
             "properties": {
                 "application_method": {
                     "type": "string",
@@ -1919,6 +1949,10 @@ const docTemplate = `{
                     "maxLength": 3000,
                     "minLength": 3,
                     "example": "Updated product description."
+                },
+                "is_hidden": {
+                    "type": "boolean",
+                    "example": false
                 },
                 "links": {
                     "$ref": "#/definitions/dto.Links"
@@ -1960,6 +1994,10 @@ const docTemplate = `{
                 "id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "is_hidden": {
+                    "type": "boolean",
+                    "example": false
                 },
                 "links": {
                     "$ref": "#/definitions/dto.Links"
@@ -2088,10 +2126,6 @@ const docTemplate = `{
                     "minLength": 10,
                     "example": "Updated long description about the company."
                 },
-                "fluid": {
-                    "type": "boolean",
-                    "example": false
-                },
                 "heading": {
                     "type": "string",
                     "maxLength": 100,
@@ -2128,10 +2162,6 @@ const docTemplate = `{
                     "maxLength": 500,
                     "minLength": 10,
                     "example": "We are a global leader in innovation and technology."
-                },
-                "fluid": {
-                    "type": "boolean",
-                    "example": true
                 },
                 "heading": {
                     "type": "string",
