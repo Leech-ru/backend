@@ -30,7 +30,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateOrderRequest) (*dto
 		leechSize1,
 		leechSize2,
 		leechSize3,
-		int(req.OrderDetails.PackageType),
+		int(*req.OrderDetails.PackageType),
 	)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateOrderRequest) (*dto
 		SetLeechSize2(req.OrderDetails.LeechSize1).
 		SetLeechSize3(req.OrderDetails.LeechSize1).
 		SetTotalCount(leechSize1 + leechSize2 + leechSize3).
-		SetPackageType(int(req.OrderDetails.PackageType)).
+		SetPackageType(int(*req.OrderDetails.PackageType)).
 		SetTotalPrice(totalPrice).
 		Build()
 	if err != nil {

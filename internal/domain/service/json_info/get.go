@@ -14,7 +14,6 @@ func (s infoService) Get(_ context.Context) (*dto.GetInfoResponse, error) {
 	response := &dto.GetInfoResponse{
 		Heading:     info.Heading,
 		Description: info.Description,
-		Fluid:       &info.Fluid,
 	}
 
 	if len(info.Schedule) > 0 {

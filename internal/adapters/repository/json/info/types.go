@@ -5,7 +5,6 @@ import "Leech-ru/internal/domain/types"
 type Info struct {
 	Heading     string          `json:"heading"`
 	Description string          `json:"description"`
-	Fluid       bool            `json:"fluid"`
 	Schedule    []ScheduleEntry `json:"schedule"`
 	Links       []Link          `json:"links"`
 }

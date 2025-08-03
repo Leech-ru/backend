@@ -103,6 +103,12 @@ func (cc *CosmeticsCreate) SetNillableWildberriesLink(s *string) *CosmeticsCreat
 	return cc
 }
 
+// SetIsHidden sets the "is_hidden" field.
+func (cc *CosmeticsCreate) SetIsHidden(b bool) *CosmeticsCreate {
+	cc.mutation.SetIsHidden(b)
+	return cc
+}
+
 // SetID sets the "id" field.
 func (cc *CosmeticsCreate) SetID(u uuid.UUID) *CosmeticsCreate {
 	cc.mutation.SetID(u)
@@ -160,14 +166,6 @@ func (cc *CosmeticsCreate) defaults() {
 		v := cosmetics.DefaultApplicationMethod
 		cc.mutation.SetApplicationMethod(v)
 	}
-	if _, ok := cc.mutation.OzonLink(); !ok {
-		v := cosmetics.DefaultOzonLink
-		cc.mutation.SetOzonLink(v)
-	}
-	if _, ok := cc.mutation.WildberriesLink(); !ok {
-		v := cosmetics.DefaultWildberriesLink
-		cc.mutation.SetWildberriesLink(v)
-	}
 	if _, ok := cc.mutation.ID(); !ok {
 		v := cosmetics.DefaultID()
 		cc.mutation.SetID(v)
@@ -196,6 +194,9 @@ func (cc *CosmeticsCreate) check() error {
 		if err := cosmetics.VolumeValidator(v); err != nil {
 			return &ValidationError{Name: "volume", err: fmt.Errorf(`ent: validator failed for field "Cosmetics.volume": %w`, err)}
 		}
+	}
+	if _, ok := cc.mutation.IsHidden(); !ok {
+		return &ValidationError{Name: "is_hidden", err: errors.New(`ent: missing required field "Cosmetics.is_hidden"`)}
 	}
 	return nil
 }
@@ -259,6 +260,10 @@ func (cc *CosmeticsCreate) createSpec() (*Cosmetics, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.WildberriesLink(); ok {
 		_spec.SetField(cosmetics.FieldWildberriesLink, field.TypeString, value)
 		_node.WildberriesLink = &value
+	}
+	if value, ok := cc.mutation.IsHidden(); ok {
+		_spec.SetField(cosmetics.FieldIsHidden, field.TypeBool, value)
+		_node.IsHidden = value
 	}
 	return _node, _spec
 }

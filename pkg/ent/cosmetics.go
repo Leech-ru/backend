@@ -32,7 +32,9 @@ type Cosmetics struct {
 	OzonLink *string `json:"ozon_link,omitempty"`
 	// WildberriesLink holds the value of the "wildberries_link" field.
 	WildberriesLink *string `json:"wildberries_link,omitempty"`
-	selectValues    sql.SelectValues
+	// IsHidden holds the value of the "is_hidden" field.
+	IsHidden     bool `json:"is_hidden,omitempty"`
+	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -40,6 +42,8 @@ func (*Cosmetics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case cosmetics.FieldIsHidden:
+			values[i] = new(sql.NullBool)
 		case cosmetics.FieldCategory, cosmetics.FieldVolume:
 			values[i] = new(sql.NullInt64)
 		case cosmetics.FieldTitle, cosmetics.FieldDescription, cosmetics.FieldApplicationMethod, cosmetics.FieldOzonLink, cosmetics.FieldWildberriesLink:
@@ -114,6 +118,12 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 				c.WildberriesLink = new(string)
 				*c.WildberriesLink = value.String
 			}
+		case cosmetics.FieldIsHidden:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_hidden", values[i])
+			} else if value.Valid {
+				c.IsHidden = value.Bool
+			}
 		default:
 			c.selectValues.Set(columns[i], values[i])
 		}
@@ -180,6 +190,9 @@ func (c *Cosmetics) String() string {
 		builder.WriteString("wildberries_link=")
 		builder.WriteString(*v)
 	}
+	builder.WriteString(", ")
+	builder.WriteString("is_hidden=")
+	builder.WriteString(fmt.Sprintf("%v", c.IsHidden))
 	builder.WriteByte(')')
 	return builder.String()
 }

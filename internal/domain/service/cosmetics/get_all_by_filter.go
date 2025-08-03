@@ -15,7 +15,7 @@ func (s *cosmeticsService) GetAllByFilter(ctx context.Context, req *dto.GetAllBy
 	if req.Offset != nil {
 		offset = *req.Offset
 	}
-	allCosmetics, err := s.cosmeticsRepo.GetAllByFilter(ctx, limit, offset, req.Category, req.TitlePrefix, req.Volume)
+	allCosmetics, err := s.cosmeticsRepo.GetAllByFilter(ctx, limit, offset, req.Category, req.TitlePrefix, req.Volume, req.IsHidden)
 	if err != nil {
 		return nil, err
 	}
@@ -32,6 +32,7 @@ func (s *cosmeticsService) GetAllByFilter(ctx context.Context, req *dto.GetAllBy
 				Ozon:        cosmetics.OzonLink,
 				Wildberries: cosmetics.WildberriesLink,
 			},
+			IsHidden: cosmetics.IsHidden,
 		})
 	}
 	return &resp, nil

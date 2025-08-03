@@ -20,7 +20,7 @@ import (
 // @Failure      400  {object}  dto.HTTPStatus "Validation error"
 // @Failure      404  {object}  dto.HTTPStatus "Partner not found"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
-// @Router       /api/v1/partner/{id} [delete]
+// @Router       /api/v1/info/partner/{id} [delete]
 func (h *handler) Delete(c echo.Context) error {
 	id := c.Param("id")
 	userID, err := uuid.Parse(id)

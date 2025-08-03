@@ -49,6 +49,7 @@ type CosmeticsMutation struct {
 	addvolume         *int
 	ozon_link         *string
 	wildberries_link  *string
+	is_hidden         *bool
 	clearedFields     map[string]struct{}
 	done              bool
 	oldValue          func(context.Context) (*Cosmetics, error)
@@ -517,6 +518,42 @@ func (m *CosmeticsMutation) ResetWildberriesLink() {
 	delete(m.clearedFields, cosmetics.FieldWildberriesLink)
 }
 
+// SetIsHidden sets the "is_hidden" field.
+func (m *CosmeticsMutation) SetIsHidden(b bool) {
+	m.is_hidden = &b
+}
+
+// IsHidden returns the value of the "is_hidden" field in the mutation.
+func (m *CosmeticsMutation) IsHidden() (r bool, exists bool) {
+	v := m.is_hidden
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsHidden returns the old "is_hidden" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldIsHidden(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsHidden is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsHidden requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsHidden: %w", err)
+	}
+	return oldValue.IsHidden, nil
+}
+
+// ResetIsHidden resets all changes to the "is_hidden" field.
+func (m *CosmeticsMutation) ResetIsHidden() {
+	m.is_hidden = nil
+}
+
 // Where appends a list predicates to the CosmeticsMutation builder.
 func (m *CosmeticsMutation) Where(ps ...predicate.Cosmetics) {
 	m.predicates = append(m.predicates, ps...)
@@ -551,7 +588,7 @@ func (m *CosmeticsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CosmeticsMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.category != nil {
 		fields = append(fields, cosmetics.FieldCategory)
 	}
@@ -572,6 +609,9 @@ func (m *CosmeticsMutation) Fields() []string {
 	}
 	if m.wildberries_link != nil {
 		fields = append(fields, cosmetics.FieldWildberriesLink)
+	}
+	if m.is_hidden != nil {
+		fields = append(fields, cosmetics.FieldIsHidden)
 	}
 	return fields
 }
@@ -595,6 +635,8 @@ func (m *CosmeticsMutation) Field(name string) (ent.Value, bool) {
 		return m.OzonLink()
 	case cosmetics.FieldWildberriesLink:
 		return m.WildberriesLink()
+	case cosmetics.FieldIsHidden:
+		return m.IsHidden()
 	}
 	return nil, false
 }
@@ -618,6 +660,8 @@ func (m *CosmeticsMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldOzonLink(ctx)
 	case cosmetics.FieldWildberriesLink:
 		return m.OldWildberriesLink(ctx)
+	case cosmetics.FieldIsHidden:
+		return m.OldIsHidden(ctx)
 	}
 	return nil, fmt.Errorf("unknown Cosmetics field %s", name)
 }
@@ -675,6 +719,13 @@ func (m *CosmeticsMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetWildberriesLink(v)
+		return nil
+	case cosmetics.FieldIsHidden:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsHidden(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Cosmetics field %s", name)
@@ -805,6 +856,9 @@ func (m *CosmeticsMutation) ResetField(name string) error {
 		return nil
 	case cosmetics.FieldWildberriesLink:
 		m.ResetWildberriesLink()
+		return nil
+	case cosmetics.FieldIsHidden:
+		m.ResetIsHidden()
 		return nil
 	}
 	return fmt.Errorf("unknown Cosmetics field %s", name)

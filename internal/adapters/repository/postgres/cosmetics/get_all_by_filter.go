@@ -8,7 +8,7 @@ import (
 )
 
 // GetAllByFilter retrieves all cosmetics with optional pagination and filter.
-func (s *cosmeticsRepo) GetAllByFilter(ctx context.Context, limit, offset int, category *types.Category, titlePrefix *string, volume *int) ([]*ent.Cosmetics, error) {
+func (s *cosmeticsRepo) GetAllByFilter(ctx context.Context, limit, offset int, category *types.Category, titlePrefix *string, volume *int, isHidden *bool) ([]*ent.Cosmetics, error) {
 	query := s.client.Cosmetics.Query()
 
 	if category != nil {
@@ -19,6 +19,9 @@ func (s *cosmeticsRepo) GetAllByFilter(ctx context.Context, limit, offset int, c
 	}
 	if volume != nil {
 		query = query.Where(cosmetics.VolumeEQ(*volume))
+	}
+	if isHidden != nil {
+		query = query.Where(cosmetics.IsHiddenEQ(*isHidden))
 	}
 
 	cosmetics, err := query.

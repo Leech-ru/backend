@@ -19,9 +19,6 @@ func (s infoService) Update(_ context.Context, req *dto.UpdateInfoRequest) (*dto
 	if req.Description != nil {
 		current.Description = *req.Description
 	}
-	if req.Fluid != nil {
-		current.Fluid = *req.Fluid
-	}
 	if req.Schedule != nil {
 		var newSchedule []jsonInfo.ScheduleEntry
 		for _, s := range *req.Schedule {
@@ -54,7 +51,6 @@ func (s infoService) Update(_ context.Context, req *dto.UpdateInfoRequest) (*dto
 	resp := &dto.UpdateInfoResponse{
 		Heading:     updated.Heading,
 		Description: updated.Description,
-		Fluid:       &updated.Fluid,
 	}
 
 	if len(updated.Schedule) > 0 {

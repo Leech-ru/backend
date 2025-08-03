@@ -24,6 +24,9 @@ service:
     refresh-token-expires: "720h"
     access-token-expires: "15m"
 
+   info: # информация о корпорации
+    path-to-json-file: "files/info/info.json"
+
 backend:
   host: "0.0.0.0"
   port: 8000

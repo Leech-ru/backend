@@ -31,6 +31,9 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 	if req.Volume != nil {
 		cosmeticToUpdate.Volume = req.Volume
 	}
+	if req.IsHidden != nil {
+		cosmeticToUpdate.IsHidden = *req.IsHidden
+	}
 	if req.Links != nil {
 		if req.Links.Ozon != nil {
 			cosmeticToUpdate.OzonLink = req.Links.Ozon
@@ -61,5 +64,6 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 			Ozon:        updatedCosmetic.OzonLink,
 			Wildberries: updatedCosmetic.WildberriesLink,
 		},
+		IsHidden: updatedCosmetic.IsHidden,
 	}, nil
 }

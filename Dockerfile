@@ -25,6 +25,7 @@ WORKDIR /opt
 COPY --from=builder /opt/docs /opt/docs
 COPY --from=builder /opt/keys /opt/keys
 COPY --from=builder /opt/files /opt/files
+COPY --from=builder /opt/pkg /opt/pkg
 COPY config.yaml /opt
 COPY --from=builder /opt/bin/application ./
 
