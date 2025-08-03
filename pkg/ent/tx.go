@@ -16,6 +16,8 @@ type Tx struct {
 	Cosmetics *CosmeticsClient
 	// Partner is the client for interacting with the Partner builders.
 	Partner *PartnerClient
+	// PartnerLink is the client for interacting with the PartnerLink builders.
+	PartnerLink *PartnerLinkClient
 	// RefreshToken is the client for interacting with the RefreshToken builders.
 	RefreshToken *RefreshTokenClient
 	// User is the client for interacting with the User builders.
@@ -153,6 +155,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Cosmetics = NewCosmeticsClient(tx.config)
 	tx.Partner = NewPartnerClient(tx.config)
+	tx.PartnerLink = NewPartnerLinkClient(tx.config)
 	tx.RefreshToken = NewRefreshTokenClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }

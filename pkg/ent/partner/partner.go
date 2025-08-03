@@ -4,6 +4,7 @@ package partner
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -16,8 +17,17 @@ const (
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
+	// EdgeLinks holds the string denoting the links edge name in mutations.
+	EdgeLinks = "links"
 	// Table holds the table name of the partner in the database.
 	Table = "partners"
+	// LinksTable is the table that holds the links relation/edge.
+	LinksTable = "partner_links"
+	// LinksInverseTable is the table name for the PartnerLink entity.
+	// It exists in this package in order to avoid circular dependency with the "partnerlink" package.
+	LinksInverseTable = "partner_links"
+	// LinksColumn is the table column denoting the links relation/edge.
+	LinksColumn = "partner_links"
 )
 
 // Columns holds all SQL columns for partner fields.
@@ -62,4 +72,25 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByDescription orders the results by the description field.
 func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByLinksCount orders the results by links count.
+func ByLinksCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newLinksStep(), opts...)
+	}
+}
+
+// ByLinks orders the results by links terms.
+func ByLinks(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newLinksStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newLinksStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(LinksInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, LinksTable, LinksColumn),
+	)
 }

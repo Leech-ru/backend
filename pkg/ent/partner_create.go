@@ -4,6 +4,7 @@ package ent
 
 import (
 	"Leech-ru/pkg/ent/partner"
+	"Leech-ru/pkg/ent/partnerlink"
 	"context"
 	"errors"
 	"fmt"
@@ -52,6 +53,21 @@ func (pc *PartnerCreate) SetNillableID(u *uuid.UUID) *PartnerCreate {
 		pc.SetID(*u)
 	}
 	return pc
+}
+
+// AddLinkIDs adds the "links" edge to the PartnerLink entity by IDs.
+func (pc *PartnerCreate) AddLinkIDs(ids ...int) *PartnerCreate {
+	pc.mutation.AddLinkIDs(ids...)
+	return pc
+}
+
+// AddLinks adds the "links" edges to the PartnerLink entity.
+func (pc *PartnerCreate) AddLinks(p ...*PartnerLink) *PartnerCreate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return pc.AddLinkIDs(ids...)
 }
 
 // Mutation returns the PartnerMutation object of the builder.
@@ -152,6 +168,22 @@ func (pc *PartnerCreate) createSpec() (*Partner, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.Description(); ok {
 		_spec.SetField(partner.FieldDescription, field.TypeString, value)
 		_node.Description = &value
+	}
+	if nodes := pc.mutation.LinksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   partner.LinksTable,
+			Columns: []string{partner.LinksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(partnerlink.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

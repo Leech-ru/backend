@@ -7,34 +7,43 @@ import (
 	"errors"
 )
 
-// Update change cosmetics data.
+// Update changes partner data.
 func (s *partnerService) Update(ctx context.Context, req *dto.UpdatePartnerRequest) (*dto.UpdatePartnerResponse, error) {
 	partnerToUpdate, err := s.partnerRepo.GetById(ctx, req.ID)
-	switch {
-	case errors.Is(err, errorz.PartnerNotFound):
-		return nil, errorz.PartnerNotFound
-	case err != nil:
+	if err != nil {
+		if errors.Is(err, errorz.PartnerNotFound) {
+			return nil, errorz.PartnerNotFound
+		}
 		return nil, err
 	}
+
 	if req.Name != nil {
 		partnerToUpdate.Name = *req.Name
 	}
 	if req.Description != nil {
 		partnerToUpdate.Description = req.Description
 	}
+
+	if req.Links != nil {
+		partnerToUpdate.Edges.Links = convertDtoLinksToEnt(req.Links)
+	}
+
 	updatedPartner, err := s.partnerRepo.Update(ctx, *partnerToUpdate)
-	switch {
-	case errors.Is(err, errorz.PartnerNotFound):
-		return nil, errorz.PartnerNotFound
-	case errors.Is(err, errorz.InvalidPartnerFormat):
-		return nil, errorz.InvalidPartnerFormat
-	case err != nil:
-		return nil, err
+	if err != nil {
+		switch {
+		case errors.Is(err, errorz.PartnerNotFound):
+			return nil, errorz.PartnerNotFound
+		case errors.Is(err, errorz.InvalidPartnerFormat):
+			return nil, errorz.InvalidPartnerFormat
+		default:
+			return nil, err
+		}
 	}
 
 	return &dto.UpdatePartnerResponse{
 		ID:          updatedPartner.ID,
 		Name:        updatedPartner.Name,
 		Description: updatedPartner.Description,
+		Links:       convertLinksToDto(updatedPartner.Edges.Links),
 	}, nil
 }

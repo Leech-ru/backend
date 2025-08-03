@@ -21,5 +21,6 @@ func (s *partnerService) GetByID(ctx context.Context, req *dto.GetByIdPartnerReq
 		ID:          partner.ID,
 		Name:        partner.Name,
 		Description: partner.Description,
+		Links:       convertLinksToDto(partner.Edges.Links),
 	}, nil
 }

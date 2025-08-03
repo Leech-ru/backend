@@ -12,6 +12,7 @@ import (
 func (s *partnersRepo) GetById(ctx context.Context, id uuid.UUID) (*ent.Partner, error) {
 	p, err := s.client.Partner.
 		Query().
+		WithLinks().
 		Where(partner.ID(id)).
 		Only(ctx)
 

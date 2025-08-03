@@ -6,6 +6,7 @@ import (
 	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/partner"
+	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/predicate"
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
@@ -30,6 +31,7 @@ const (
 	// Node types.
 	TypeCosmetics    = "Cosmetics"
 	TypePartner      = "Partner"
+	TypePartnerLink  = "PartnerLink"
 	TypeRefreshToken = "RefreshToken"
 	TypeUser         = "User"
 )
@@ -921,6 +923,9 @@ type PartnerMutation struct {
 	name          *string
 	description   *string
 	clearedFields map[string]struct{}
+	links         map[int]struct{}
+	removedlinks  map[int]struct{}
+	clearedlinks  bool
 	done          bool
 	oldValue      func(context.Context) (*Partner, error)
 	predicates    []predicate.Partner
@@ -1115,6 +1120,60 @@ func (m *PartnerMutation) ResetDescription() {
 	delete(m.clearedFields, partner.FieldDescription)
 }
 
+// AddLinkIDs adds the "links" edge to the PartnerLink entity by ids.
+func (m *PartnerMutation) AddLinkIDs(ids ...int) {
+	if m.links == nil {
+		m.links = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.links[ids[i]] = struct{}{}
+	}
+}
+
+// ClearLinks clears the "links" edge to the PartnerLink entity.
+func (m *PartnerMutation) ClearLinks() {
+	m.clearedlinks = true
+}
+
+// LinksCleared reports if the "links" edge to the PartnerLink entity was cleared.
+func (m *PartnerMutation) LinksCleared() bool {
+	return m.clearedlinks
+}
+
+// RemoveLinkIDs removes the "links" edge to the PartnerLink entity by IDs.
+func (m *PartnerMutation) RemoveLinkIDs(ids ...int) {
+	if m.removedlinks == nil {
+		m.removedlinks = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.links, ids[i])
+		m.removedlinks[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedLinks returns the removed IDs of the "links" edge to the PartnerLink entity.
+func (m *PartnerMutation) RemovedLinksIDs() (ids []int) {
+	for id := range m.removedlinks {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// LinksIDs returns the "links" edge IDs in the mutation.
+func (m *PartnerMutation) LinksIDs() (ids []int) {
+	for id := range m.links {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetLinks resets all changes to the "links" edge.
+func (m *PartnerMutation) ResetLinks() {
+	m.links = nil
+	m.clearedlinks = false
+	m.removedlinks = nil
+}
+
 // Where appends a list predicates to the PartnerMutation builder.
 func (m *PartnerMutation) Where(ps ...predicate.Partner) {
 	m.predicates = append(m.predicates, ps...)
@@ -1274,50 +1333,533 @@ func (m *PartnerMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *PartnerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.links != nil {
+		edges = append(edges, partner.EdgeLinks)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *PartnerMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case partner.EdgeLinks:
+		ids := make([]ent.Value, 0, len(m.links))
+		for id := range m.links {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *PartnerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedlinks != nil {
+		edges = append(edges, partner.EdgeLinks)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *PartnerMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case partner.EdgeLinks:
+		ids := make([]ent.Value, 0, len(m.removedlinks))
+		for id := range m.removedlinks {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *PartnerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedlinks {
+		edges = append(edges, partner.EdgeLinks)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *PartnerMutation) EdgeCleared(name string) bool {
+	switch name {
+	case partner.EdgeLinks:
+		return m.clearedlinks
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *PartnerMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Partner unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *PartnerMutation) ResetEdge(name string) error {
+	switch name {
+	case partner.EdgeLinks:
+		m.ResetLinks()
+		return nil
+	}
 	return fmt.Errorf("unknown Partner edge %s", name)
+}
+
+// PartnerLinkMutation represents an operation that mutates the PartnerLink nodes in the graph.
+type PartnerLinkMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *int
+	label          *string
+	href           *string
+	clearedFields  map[string]struct{}
+	partner        *uuid.UUID
+	clearedpartner bool
+	done           bool
+	oldValue       func(context.Context) (*PartnerLink, error)
+	predicates     []predicate.PartnerLink
+}
+
+var _ ent.Mutation = (*PartnerLinkMutation)(nil)
+
+// partnerlinkOption allows management of the mutation configuration using functional options.
+type partnerlinkOption func(*PartnerLinkMutation)
+
+// newPartnerLinkMutation creates new mutation for the PartnerLink entity.
+func newPartnerLinkMutation(c config, op Op, opts ...partnerlinkOption) *PartnerLinkMutation {
+	m := &PartnerLinkMutation{
+		config:        c,
+		op:            op,
+		typ:           TypePartnerLink,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withPartnerLinkID sets the ID field of the mutation.
+func withPartnerLinkID(id int) partnerlinkOption {
+	return func(m *PartnerLinkMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *PartnerLink
+		)
+		m.oldValue = func(ctx context.Context) (*PartnerLink, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().PartnerLink.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withPartnerLink sets the old PartnerLink of the mutation.
+func withPartnerLink(node *PartnerLink) partnerlinkOption {
+	return func(m *PartnerLinkMutation) {
+		m.oldValue = func(context.Context) (*PartnerLink, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m PartnerLinkMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m PartnerLinkMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *PartnerLinkMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *PartnerLinkMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().PartnerLink.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetLabel sets the "label" field.
+func (m *PartnerLinkMutation) SetLabel(s string) {
+	m.label = &s
+}
+
+// Label returns the value of the "label" field in the mutation.
+func (m *PartnerLinkMutation) Label() (r string, exists bool) {
+	v := m.label
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLabel returns the old "label" field's value of the PartnerLink entity.
+// If the PartnerLink object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PartnerLinkMutation) OldLabel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLabel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLabel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLabel: %w", err)
+	}
+	return oldValue.Label, nil
+}
+
+// ResetLabel resets all changes to the "label" field.
+func (m *PartnerLinkMutation) ResetLabel() {
+	m.label = nil
+}
+
+// SetHref sets the "href" field.
+func (m *PartnerLinkMutation) SetHref(s string) {
+	m.href = &s
+}
+
+// Href returns the value of the "href" field in the mutation.
+func (m *PartnerLinkMutation) Href() (r string, exists bool) {
+	v := m.href
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHref returns the old "href" field's value of the PartnerLink entity.
+// If the PartnerLink object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PartnerLinkMutation) OldHref(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHref is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHref requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHref: %w", err)
+	}
+	return oldValue.Href, nil
+}
+
+// ResetHref resets all changes to the "href" field.
+func (m *PartnerLinkMutation) ResetHref() {
+	m.href = nil
+}
+
+// SetPartnerID sets the "partner" edge to the Partner entity by id.
+func (m *PartnerLinkMutation) SetPartnerID(id uuid.UUID) {
+	m.partner = &id
+}
+
+// ClearPartner clears the "partner" edge to the Partner entity.
+func (m *PartnerLinkMutation) ClearPartner() {
+	m.clearedpartner = true
+}
+
+// PartnerCleared reports if the "partner" edge to the Partner entity was cleared.
+func (m *PartnerLinkMutation) PartnerCleared() bool {
+	return m.clearedpartner
+}
+
+// PartnerID returns the "partner" edge ID in the mutation.
+func (m *PartnerLinkMutation) PartnerID() (id uuid.UUID, exists bool) {
+	if m.partner != nil {
+		return *m.partner, true
+	}
+	return
+}
+
+// PartnerIDs returns the "partner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// PartnerID instead. It exists only for internal usage by the builders.
+func (m *PartnerLinkMutation) PartnerIDs() (ids []uuid.UUID) {
+	if id := m.partner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetPartner resets all changes to the "partner" edge.
+func (m *PartnerLinkMutation) ResetPartner() {
+	m.partner = nil
+	m.clearedpartner = false
+}
+
+// Where appends a list predicates to the PartnerLinkMutation builder.
+func (m *PartnerLinkMutation) Where(ps ...predicate.PartnerLink) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the PartnerLinkMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *PartnerLinkMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.PartnerLink, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *PartnerLinkMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *PartnerLinkMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (PartnerLink).
+func (m *PartnerLinkMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *PartnerLinkMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.label != nil {
+		fields = append(fields, partnerlink.FieldLabel)
+	}
+	if m.href != nil {
+		fields = append(fields, partnerlink.FieldHref)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *PartnerLinkMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case partnerlink.FieldLabel:
+		return m.Label()
+	case partnerlink.FieldHref:
+		return m.Href()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *PartnerLinkMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case partnerlink.FieldLabel:
+		return m.OldLabel(ctx)
+	case partnerlink.FieldHref:
+		return m.OldHref(ctx)
+	}
+	return nil, fmt.Errorf("unknown PartnerLink field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PartnerLinkMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case partnerlink.FieldLabel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLabel(v)
+		return nil
+	case partnerlink.FieldHref:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHref(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PartnerLink field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *PartnerLinkMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *PartnerLinkMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PartnerLinkMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown PartnerLink numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *PartnerLinkMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *PartnerLinkMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *PartnerLinkMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown PartnerLink nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *PartnerLinkMutation) ResetField(name string) error {
+	switch name {
+	case partnerlink.FieldLabel:
+		m.ResetLabel()
+		return nil
+	case partnerlink.FieldHref:
+		m.ResetHref()
+		return nil
+	}
+	return fmt.Errorf("unknown PartnerLink field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *PartnerLinkMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.partner != nil {
+		edges = append(edges, partnerlink.EdgePartner)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *PartnerLinkMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case partnerlink.EdgePartner:
+		if id := m.partner; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *PartnerLinkMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *PartnerLinkMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *PartnerLinkMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedpartner {
+		edges = append(edges, partnerlink.EdgePartner)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *PartnerLinkMutation) EdgeCleared(name string) bool {
+	switch name {
+	case partnerlink.EdgePartner:
+		return m.clearedpartner
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *PartnerLinkMutation) ClearEdge(name string) error {
+	switch name {
+	case partnerlink.EdgePartner:
+		m.ClearPartner()
+		return nil
+	}
+	return fmt.Errorf("unknown PartnerLink unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *PartnerLinkMutation) ResetEdge(name string) error {
+	switch name {
+	case partnerlink.EdgePartner:
+		m.ResetPartner()
+		return nil
+	}
+	return fmt.Errorf("unknown PartnerLink edge %s", name)
 }
 
 // RefreshTokenMutation represents an operation that mutates the RefreshToken nodes in the graph.

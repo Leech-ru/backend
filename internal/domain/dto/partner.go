@@ -6,15 +6,23 @@ import (
 
 // Partner represents a partner entity.
 type Partner struct {
-	ID          uuid.UUID `json:"id" example:"123e4567-e89b-12d3-a456-426614174000"`
-	Name        string    `json:"name" example:"Backend's department"`
-	Description *string   `json:"description,omitempty" example:"Leading supplier of industrial equipment"`
+	ID          uuid.UUID      `json:"id" example:"123e4567-e89b-12d3-a456-426614174000"`
+	Name        string         `json:"name" example:"Backend's department"`
+	Description *string        `json:"description,omitempty" example:"Leading supplier of industrial equipment"`
+	Links       []PartnersLink `json:"links,omitempty"`
+}
+
+// PartnersLink represents a hyperlink related to a partner.
+type PartnersLink struct {
+	Label string `json:"label" validate:"required,min=1,max=150" example:"Official Website"`
+	Href  string `json:"href" validate:"required,min=1,max=2000" example:"https://example.com"`
 }
 
 // CreatePartnerRequest represents a request to create a partner.
 type CreatePartnerRequest struct {
-	Name        string  `json:"name" validate:"required,min=1,max=100" example:"Backend's department"`
-	Description *string `json:"description,omitempty" validate:"omitempty,max=500" example:"Leading supplier of industrial equipment"`
+	Name        string         `json:"name" validate:"required,min=1,max=100" example:"Backend's department"`
+	Description *string        `json:"description,omitempty" validate:"omitempty,max=500" example:"Leading supplier of industrial equipment"`
+	Links       []PartnersLink `json:"links,omitempty" validate:"omitempty,dive"`
 }
 
 // CreatePartnerResponse represents the response after creating a partner.
@@ -39,9 +47,10 @@ type GetAllPartnerResponse []*Partner
 
 // UpdatePartnerRequest represents a request to update a partner.
 type UpdatePartnerRequest struct {
-	ID          uuid.UUID `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000" swaggerignore:"true"`
-	Name        *string   `json:"name,omitempty" validate:"omitempty,min=1,max=100" example:"New Name"`
-	Description *string   `json:"description,omitempty" validate:"omitempty,max=500" example:"Updated description of the partner"`
+	ID          uuid.UUID       `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000" swaggerignore:"true"`
+	Name        *string         `json:"name,omitempty" validate:"omitempty,min=1,max=100" example:"New Name"`
+	Description *string         `json:"description,omitempty" validate:"omitempty,max=500" example:"Updated description of the partner"`
+	Links       []*PartnersLink `json:"links,omitempty" validate:"omitempty,dive"`
 }
 
 // UpdatePartnerResponse represents the response after updating a partner.

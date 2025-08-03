@@ -6,6 +6,7 @@ import (
 	"Leech-ru/pkg/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -202,6 +203,29 @@ func DescriptionEqualFold(v string) predicate.Partner {
 // DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
 func DescriptionContainsFold(v string) predicate.Partner {
 	return predicate.Partner(sql.FieldContainsFold(FieldDescription, v))
+}
+
+// HasLinks applies the HasEdge predicate on the "links" edge.
+func HasLinks() predicate.Partner {
+	return predicate.Partner(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, LinksTable, LinksColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasLinksWith applies the HasEdge predicate on the "links" edge with a given conditions (other predicates).
+func HasLinksWith(preds ...predicate.PartnerLink) predicate.Partner {
+	return predicate.Partner(func(s *sql.Selector) {
+		step := newLinksStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.
