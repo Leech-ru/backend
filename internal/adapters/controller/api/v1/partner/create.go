@@ -21,7 +21,7 @@ import (
 // @Failure      400      {object}  dto.HTTPStatus "Invalid request body or validation error"
 // @Failure      409      {object}  dto.HTTPStatus "Conflict: invalid partner format"
 // @Failure      500      {object}  dto.HTTPStatus "Internal server error"
-// @Router       /api/v1/partner [post]
+// @Router       /api/v1/info/partner [post]
 func (h *handler) Create(c echo.Context) error {
 	var req dto.CreatePartnerRequest
 	if err := c.Bind(&req); err != nil {

@@ -18,7 +18,7 @@ import (
 // @Success      200  {array}   dto.Partner
 // @Failure      400  {object}  dto.HTTPStatus "Invalid query parameters"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
-// @Router       /api/v1/partner [get]
+// @Router       /api/v1/info/partner [get]
 func (h *handler) GetAll(c echo.Context) error {
 	var req dto.GetAllPartnerRequest
 

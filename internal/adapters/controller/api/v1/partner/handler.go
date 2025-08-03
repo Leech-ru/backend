@@ -45,10 +45,10 @@ func NewHandler(
 }
 
 func (h *handler) Setup(router *echo.Group) {
-	router.GET("/partner", h.GetAll)
-	router.GET("/partner/:id", h.GetById)
-	router.POST("/partner", h.Create, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
-	router.PATCH("/partner/:id", h.Update, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
-	router.DELETE("/partner/:id", h.Delete, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	router.GET("/info/partner", h.GetAll)
+	router.GET("/info/partner/:id", h.GetById)
+	router.POST("/info/partner", h.Create, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	router.PATCH("/info/partner/:id", h.Update, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	router.DELETE("/info/partner/:id", h.Delete, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 
 }
