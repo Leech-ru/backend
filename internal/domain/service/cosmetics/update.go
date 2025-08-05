@@ -16,8 +16,8 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 	case err != nil:
 		return nil, err
 	}
-	if req.Category != nil {
-		cosmeticToUpdate.Category = *req.Category
+	if req.CategoryID != nil {
+		cosmeticToUpdate.Edges.Category.ID = *req.CategoryID
 	}
 	if req.Title != nil {
 		cosmeticToUpdate.Title = *req.Title
@@ -54,8 +54,11 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 	}
 
 	return &dto.UpdateCosmeticsResponse{
-		ID:                updatedCosmetic.ID,
-		Category:          updatedCosmetic.Category,
+		ID: updatedCosmetic.ID,
+		Category: dto.Category{
+			ID:   updatedCosmetic.Edges.Category.ID,
+			Name: updatedCosmetic.Edges.Category.Name,
+		},
 		Title:             updatedCosmetic.Title,
 		Description:       updatedCosmetic.Description,
 		ApplicationMethod: updatedCosmetic.ApplicationMethod,

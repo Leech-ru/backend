@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
@@ -77,6 +78,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
+			category.Table:     category.ValidColumn,
 			cosmetics.Table:    cosmetics.ValidColumn,
 			partner.Table:      partner.ValidColumn,
 			partnerlink.Table:  partnerlink.ValidColumn,

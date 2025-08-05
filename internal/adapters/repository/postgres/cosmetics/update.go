@@ -7,17 +7,17 @@ import (
 )
 
 // Update updates an existing cosmetics
-func (s *cosmeticsRepo) Update(ctx context.Context, userEntity ent.Cosmetics) (*ent.Cosmetics, error) {
+func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.Cosmetics, error) {
 	updated, err := s.client.Cosmetics.
-		UpdateOneID(userEntity.ID).
-		SetCategory(userEntity.Category).
-		SetTitle(userEntity.Title).
-		SetNillableDescription(userEntity.Description).
-		SetNillableApplicationMethod(userEntity.ApplicationMethod).
-		SetNillableVolume(userEntity.Volume).
-		SetNillableOzonLink(userEntity.OzonLink).
-		SetNillableWildberriesLink(userEntity.WildberriesLink).
-		SetIsHidden(userEntity.IsHidden).
+		UpdateOneID(entity.ID).
+		SetCategoryID(entity.Edges.Category.ID).
+		SetTitle(entity.Title).
+		SetNillableDescription(entity.Description).
+		SetNillableApplicationMethod(entity.ApplicationMethod).
+		SetNillableVolume(entity.Volume).
+		SetNillableOzonLink(entity.OzonLink).
+		SetNillableWildberriesLink(entity.WildberriesLink).
+		SetIsHidden(entity.IsHidden).
 		Save(ctx)
 
 	switch {

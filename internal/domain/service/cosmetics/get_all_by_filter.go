@@ -15,15 +15,18 @@ func (s *cosmeticsService) GetAllByFilter(ctx context.Context, req *dto.GetAllBy
 	if req.Offset != nil {
 		offset = *req.Offset
 	}
-	allCosmetics, err := s.cosmeticsRepo.GetAllByFilter(ctx, limit, offset, req.Category, req.TitlePrefix, req.Volume, req.IsHidden)
+	allCosmetics, err := s.cosmeticsRepo.GetAllByFilter(ctx, limit, offset, req.CategoryID, req.TitlePrefix, req.Volume, req.IsHidden)
 	if err != nil {
 		return nil, err
 	}
 	var resp dto.GetAllByFilterCosmeticsResponse
 	for _, cosmetics := range allCosmetics {
 		resp = append(resp, &dto.Cosmetics{
-			ID:                cosmetics.ID,
-			Category:          cosmetics.Category,
+			ID: cosmetics.ID,
+			Category: dto.Category{
+				ID:   cosmetics.Edges.Category.ID,
+				Name: cosmetics.Edges.Category.Name,
+			},
 			Title:             cosmetics.Title,
 			Description:       cosmetics.Description,
 			ApplicationMethod: cosmetics.ApplicationMethod,

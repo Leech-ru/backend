@@ -3,10 +3,10 @@
 package cosmetics
 
 import (
-	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -55,12 +55,6 @@ func IDLTE(id uuid.UUID) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldLTE(FieldID, id))
 }
 
-// Category applies equality check predicate on the "category" field. It's identical to CategoryEQ.
-func Category(v types.Category) predicate.Cosmetics {
-	vc := int(v)
-	return predicate.Cosmetics(sql.FieldEQ(FieldCategory, vc))
-}
-
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
 func Title(v string) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldEQ(FieldTitle, v))
@@ -94,60 +88,6 @@ func WildberriesLink(v string) predicate.Cosmetics {
 // IsHidden applies equality check predicate on the "is_hidden" field. It's identical to IsHiddenEQ.
 func IsHidden(v bool) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldEQ(FieldIsHidden, v))
-}
-
-// CategoryEQ applies the EQ predicate on the "category" field.
-func CategoryEQ(v types.Category) predicate.Cosmetics {
-	vc := int(v)
-	return predicate.Cosmetics(sql.FieldEQ(FieldCategory, vc))
-}
-
-// CategoryNEQ applies the NEQ predicate on the "category" field.
-func CategoryNEQ(v types.Category) predicate.Cosmetics {
-	vc := int(v)
-	return predicate.Cosmetics(sql.FieldNEQ(FieldCategory, vc))
-}
-
-// CategoryIn applies the In predicate on the "category" field.
-func CategoryIn(vs ...types.Category) predicate.Cosmetics {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int(vs[i])
-	}
-	return predicate.Cosmetics(sql.FieldIn(FieldCategory, v...))
-}
-
-// CategoryNotIn applies the NotIn predicate on the "category" field.
-func CategoryNotIn(vs ...types.Category) predicate.Cosmetics {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int(vs[i])
-	}
-	return predicate.Cosmetics(sql.FieldNotIn(FieldCategory, v...))
-}
-
-// CategoryGT applies the GT predicate on the "category" field.
-func CategoryGT(v types.Category) predicate.Cosmetics {
-	vc := int(v)
-	return predicate.Cosmetics(sql.FieldGT(FieldCategory, vc))
-}
-
-// CategoryGTE applies the GTE predicate on the "category" field.
-func CategoryGTE(v types.Category) predicate.Cosmetics {
-	vc := int(v)
-	return predicate.Cosmetics(sql.FieldGTE(FieldCategory, vc))
-}
-
-// CategoryLT applies the LT predicate on the "category" field.
-func CategoryLT(v types.Category) predicate.Cosmetics {
-	vc := int(v)
-	return predicate.Cosmetics(sql.FieldLT(FieldCategory, vc))
-}
-
-// CategoryLTE applies the LTE predicate on the "category" field.
-func CategoryLTE(v types.Category) predicate.Cosmetics {
-	vc := int(v)
-	return predicate.Cosmetics(sql.FieldLTE(FieldCategory, vc))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.
@@ -573,6 +513,29 @@ func IsHiddenEQ(v bool) predicate.Cosmetics {
 // IsHiddenNEQ applies the NEQ predicate on the "is_hidden" field.
 func IsHiddenNEQ(v bool) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldNEQ(FieldIsHidden, v))
+}
+
+// HasCategory applies the HasEdge predicate on the "category" edge.
+func HasCategory() predicate.Cosmetics {
+	return predicate.Cosmetics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, CategoryTable, CategoryColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCategoryWith applies the HasEdge predicate on the "category" edge with a given conditions (other predicates).
+func HasCategoryWith(preds ...predicate.Category) predicate.Cosmetics {
+	return predicate.Cosmetics(func(s *sql.Selector) {
+		step := newCategoryStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

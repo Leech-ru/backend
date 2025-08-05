@@ -2,7 +2,6 @@ package cosmetics
 
 import (
 	"Leech-ru/internal/adapters/repository/postgres/cosmetics"
-	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent"
 	"context"
 	"github.com/google/uuid"
@@ -11,7 +10,7 @@ import (
 type cosmeticsRepo interface {
 	Create(ctx context.Context, entity ent.Cosmetics) (*ent.Cosmetics, error)
 	GetById(ctx context.Context, id uuid.UUID) (*ent.Cosmetics, error)
-	GetAllByFilter(ctx context.Context, limit, offset int, category *types.Category, titlePrefix *string, volume *int, isHidden *bool) ([]*ent.Cosmetics, error)
+	GetAllByFilter(ctx context.Context, limit, offset int, categoryID *uuid.UUID, titlePrefix *string, volume *int, isHidden *bool) ([]*ent.Cosmetics, error)
 	Update(ctx context.Context, userEntity ent.Cosmetics) (*ent.Cosmetics, error)
 	Delete(ctx context.Context, id uuid.UUID) error
 }

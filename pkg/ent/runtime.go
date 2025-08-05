@@ -5,6 +5,7 @@ package ent
 import (
 	"Leech-ru/internal/domain/schema"
 	"Leech-ru/internal/domain/types"
+	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
@@ -18,26 +19,32 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	categoryFields := schema.Category{}.Fields()
+	_ = categoryFields
+	// categoryDescName is the schema descriptor for name field.
+	categoryDescName := categoryFields[1].Descriptor()
+	// category.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	category.NameValidator = categoryDescName.Validators[0].(func(string) error)
+	// categoryDescID is the schema descriptor for id field.
+	categoryDescID := categoryFields[0].Descriptor()
+	// category.DefaultID holds the default value on creation for the id field.
+	category.DefaultID = categoryDescID.Default.(func() uuid.UUID)
 	cosmeticsFields := schema.Cosmetics{}.Fields()
 	_ = cosmeticsFields
-	// cosmeticsDescCategory is the schema descriptor for category field.
-	cosmeticsDescCategory := cosmeticsFields[1].Descriptor()
-	// cosmetics.CategoryValidator is a validator for the "category" field. It is called by the builders before save.
-	cosmetics.CategoryValidator = cosmeticsDescCategory.Validators[0].(func(int) error)
 	// cosmeticsDescTitle is the schema descriptor for title field.
-	cosmeticsDescTitle := cosmeticsFields[2].Descriptor()
+	cosmeticsDescTitle := cosmeticsFields[1].Descriptor()
 	// cosmetics.TitleValidator is a validator for the "title" field. It is called by the builders before save.
 	cosmetics.TitleValidator = cosmeticsDescTitle.Validators[0].(func(string) error)
 	// cosmeticsDescDescription is the schema descriptor for description field.
-	cosmeticsDescDescription := cosmeticsFields[3].Descriptor()
+	cosmeticsDescDescription := cosmeticsFields[2].Descriptor()
 	// cosmetics.DefaultDescription holds the default value on creation for the description field.
 	cosmetics.DefaultDescription = cosmeticsDescDescription.Default.(string)
 	// cosmeticsDescApplicationMethod is the schema descriptor for applicationMethod field.
-	cosmeticsDescApplicationMethod := cosmeticsFields[4].Descriptor()
+	cosmeticsDescApplicationMethod := cosmeticsFields[3].Descriptor()
 	// cosmetics.DefaultApplicationMethod holds the default value on creation for the applicationMethod field.
 	cosmetics.DefaultApplicationMethod = cosmeticsDescApplicationMethod.Default.(string)
 	// cosmeticsDescVolume is the schema descriptor for volume field.
-	cosmeticsDescVolume := cosmeticsFields[5].Descriptor()
+	cosmeticsDescVolume := cosmeticsFields[4].Descriptor()
 	// cosmetics.VolumeValidator is a validator for the "volume" field. It is called by the builders before save.
 	cosmetics.VolumeValidator = cosmeticsDescVolume.Validators[0].(func(int) error)
 	// cosmeticsDescID is the schema descriptor for id field.

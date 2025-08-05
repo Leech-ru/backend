@@ -1,18 +1,19 @@
 package cosmetics
 
 import (
-	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent"
+	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
 	"context"
+	"github.com/google/uuid"
 )
 
 // GetAllByFilter retrieves all cosmetics with optional pagination and filter.
-func (s *cosmeticsRepo) GetAllByFilter(ctx context.Context, limit, offset int, category *types.Category, titlePrefix *string, volume *int, isHidden *bool) ([]*ent.Cosmetics, error) {
+func (s *cosmeticsRepo) GetAllByFilter(ctx context.Context, limit, offset int, categoryID *uuid.UUID, titlePrefix *string, volume *int, isHidden *bool) ([]*ent.Cosmetics, error) {
 	query := s.client.Cosmetics.Query()
 
-	if category != nil {
-		query = query.Where(cosmetics.CategoryEQ(*category))
+	if categoryID != nil {
+		query = query.Where(cosmetics.HasCategoryWith(category.IDEQ(*categoryID)))
 	}
 	if titlePrefix != nil {
 		query = query.Where(cosmetics.TitleHasPrefix(*titlePrefix))

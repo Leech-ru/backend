@@ -10,8 +10,7 @@ import (
 func (s *cosmeticsRepo) Create(ctx context.Context, entity ent.Cosmetics) (*ent.Cosmetics, error) {
 	created, err := s.client.Cosmetics.
 		Create().
-		SetCategory(entity.Category).
-		SetTitle(entity.Title).
+		SetTitle(entity.Title).SetCategoryID(entity.Edges.Category.ID).
 		SetNillableDescription(entity.Description).
 		SetNillableApplicationMethod(entity.ApplicationMethod).
 		SetNillableVolume(entity.Volume).
