@@ -1,4 +1,18 @@
 definitions:
+  dto.Category:
+    properties:
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      name:
+        example: Shampoo
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    type: object
   dto.ChangePasswordRequest:
     properties:
       new_password:
@@ -25,9 +39,7 @@ definitions:
         example: Apply to wet hair, lather, rinse.
         type: string
       category:
-        allOf:
-        - $ref: '#/definitions/types.Category'
-        example: 3
+        $ref: '#/definitions/dto.Category'
       description:
         example: Suitable for daily use.
         type: string
@@ -46,6 +58,30 @@ definitions:
         example: 250
         type: integer
     type: object
+  dto.CreateCategoryRequest:
+    properties:
+      name:
+        example: Shampoo
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - name
+    type: object
+  dto.CreateCategoryResponse:
+    properties:
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      name:
+        example: Shampoo
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    type: object
   dto.CreateCosmeticsRequest:
     properties:
       application_method:
@@ -54,9 +90,8 @@ definitions:
         minLength: 3
         type: string
       category:
-        allOf:
-        - $ref: '#/definitions/types.Category'
-        example: 3
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
       description:
         example: Suitable for daily use.
         maxLength: 3000
@@ -90,9 +125,7 @@ definitions:
         example: Apply to wet hair, lather, rinse.
         type: string
       category:
-        allOf:
-        - $ref: '#/definitions/types.Category'
-        example: 3
+        $ref: '#/definitions/dto.Category'
       description:
         example: Suitable for daily use.
         type: string
@@ -137,6 +170,10 @@ definitions:
         example: Leading supplier of industrial equipment
         maxLength: 500
         type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.PartnersLink'
+        type: array
       name:
         example: Backend's department
         maxLength: 100
@@ -153,6 +190,10 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.PartnersLink'
+        type: array
       name:
         example: Backend's department
         type: string
@@ -187,6 +228,20 @@ definitions:
     - fio
     - phone_number
     type: object
+  dto.GetByIdCategoryResponse:
+    properties:
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      name:
+        example: Shampoo
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    type: object
   dto.GetByIdCosmeticsResponse:
     description: Contains product information such as category, title, description,
       and volume.
@@ -195,9 +250,7 @@ definitions:
         example: Apply to wet hair, lather, rinse.
         type: string
       category:
-        allOf:
-        - $ref: '#/definitions/types.Category'
-        example: 3
+        $ref: '#/definitions/dto.Category'
       description:
         example: Suitable for daily use.
         type: string
@@ -224,6 +277,10 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.PartnersLink'
+        type: array
       name:
         example: Backend's department
         type: string
@@ -388,9 +445,29 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.PartnersLink'
+        type: array
       name:
         example: Backend's department
         type: string
+    type: object
+  dto.PartnersLink:
+    properties:
+      href:
+        example: https://example.com
+        maxLength: 2000
+        minLength: 1
+        type: string
+      label:
+        example: Official Website
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - href
+    - label
     type: object
   dto.PingResponse:
     properties:
@@ -458,6 +535,33 @@ definitions:
     - hours
     - weekday
     type: object
+  dto.UpdateCategoryRequest:
+    properties:
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      name:
+        example: Hair conditioner
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - id
+    type: object
+  dto.UpdateCategoryResponse:
+    properties:
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      name:
+        example: Shampoo
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    type: object
   dto.UpdateCosmeticsRequest:
     properties:
       application_method:
@@ -466,9 +570,8 @@ definitions:
         minLength: 3
         type: string
       category:
-        allOf:
-        - $ref: '#/definitions/types.Category'
-        example: 4
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
       description:
         example: Updated product description.
         maxLength: 3000
@@ -489,8 +592,6 @@ definitions:
         maximum: 10000
         minimum: 1
         type: integer
-    required:
-    - is_hidden
     type: object
   dto.UpdateCosmeticsResponse:
     description: Contains product information such as category, title, description,
@@ -500,9 +601,7 @@ definitions:
         example: Apply to wet hair, lather, rinse.
         type: string
       category:
-        allOf:
-        - $ref: '#/definitions/types.Category'
-        example: 3
+        $ref: '#/definitions/dto.Category'
       description:
         example: Suitable for daily use.
         type: string
@@ -655,6 +754,10 @@ definitions:
         example: Updated description of the partner
         maxLength: 500
         type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.PartnersLink'
+        type: array
       name:
         example: New Name
         maxLength: 100
@@ -669,6 +772,10 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      links:
+        items:
+          $ref: '#/definitions/dto.PartnersLink'
+        type: array
       name:
         example: Backend's department
         type: string
@@ -692,28 +799,6 @@ definitions:
         example: Ivanov
         type: string
     type: object
-  types.Category:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    - 6
-    - 7
-    - 8
-    type: integer
-    x-enum-varnames:
-    - CategoryMainFace
-    - CategoryMainBody
-    - CategoryHairCare
-    - CategoryMen
-    - CategoryIntensive
-    - CategoryLuxury
-    - CategoryExclusive
-    - CategoryWholesale
-    - CategoryLeech
   types.Package:
     enum:
     - 0
@@ -800,6 +885,183 @@ paths:
       summary: Refresh tokens
       tags:
       - auth
+  /api/v1/category:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of category filtered by category, volume, title,
+        etc.
+      parameters:
+      - description: Max number of items
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.Category'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get category by filters
+      tags:
+      - category
+    post:
+      consumes:
+      - application/json
+      description: Creates a new category product with provided details.
+      parameters:
+      - description: Category product data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateCategoryResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "409":
+          description: 'Conflict: invalid category format'
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Create a new category product
+      tags:
+      - category
+  /api/v1/category/{id}:
+    delete:
+      description: Deletes the category product with the given UUID.
+      parameters:
+      - description: Category ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Successfully deleted
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Category not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Delete category by ID
+      tags:
+      - category
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a category product using its UUID.
+      parameters:
+      - description: Cosmetic ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetByIdCategoryResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Cosmetic not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get category by ID
+      tags:
+      - category
+    patch:
+      consumes:
+      - application/json
+      description: Updates category product fields by given ID.
+      parameters:
+      - description: Cosmetic ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated category fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateCategoryResponse'
+        "400":
+          description: Validation or binding error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Cosmetic not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Update category
+      tags:
+      - category
   /api/v1/cosmetics:
     get:
       consumes:
@@ -818,20 +1080,12 @@ paths:
         minimum: 0
         name: offset
         type: integer
-      - description: Category enum (0–8)
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        - 8
+      - description: Category UUID
+        example: 123e4567-e89b-12d3-a456-426614174000
+        format: uuid
         in: query
-        name: category
-        type: integer
+        name: category_id
+        type: string
       - description: Filter by title prefix
         in: query
         name: titlePrefix
@@ -1624,6 +1878,8 @@ tags:
   name: auth
 - description: Cosmetics view and management
   name: cosmetics
+- description: Category view and management
+  name: category
 - description: Information about the center
   name: info
 - description: Information about center's partners

@@ -50,10 +50,10 @@ type GetByIdCosmeticsResponse Cosmetics
 type GetAllByFilterCosmeticsRequest struct {
 	Limit       *int       `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100" example:"10"`
 	Offset      *int       `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0" example:"0"`
-	CategoryID  *uuid.UUID `json:"category,omitempty" form:"category" validate:"omitempty,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	CategoryID  *uuid.UUID `json:"category,omitempty" form:"category_id" validate:"omitempty,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
 	TitlePrefix *string    `json:"title_prefix,omitempty" form:"titlePrefix" validate:"omitempty,min=1,max=100" example:"Hair"`
 	Volume      *int       `json:"volume,omitempty" form:"volume" validate:"omitempty,min=1,max=10000" example:"250"`
-	IsHidden    *bool      `json:"is_hidden" form:"is_hidden" validate:"required" example:"false"`
+	IsHidden    *bool      `json:"is_hidden,omitempty" form:"is_hidden" validate:"omitempty" example:"false"`
 }
 
 // GetAllByFilterCosmeticsResponse is the list of cosmetics returned by filters.
@@ -68,7 +68,7 @@ type UpdateCosmeticsRequest struct {
 	ApplicationMethod *string    `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply evenly and rinse well."`
 	Volume            *int       `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"500"`
 	Links             *Links     `json:"links,omitempty" validate:"omitempty"`
-	IsHidden          *bool      `json:"is_hidden" validate:"required" example:"false"`
+	IsHidden          *bool      `json:"is_hidden,omitempty" validate:"omitempty" example:"false"`
 }
 
 // UpdateCosmeticsResponse returns the updated cosmetic product.

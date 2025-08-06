@@ -68,6 +68,275 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/category": {
+            "get": {
+                "description": "Retrieves a list of category filtered by category, volume, title, etc.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Get category by filters",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Max number of items",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.Category"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
+                "description": "Creates a new category product with provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Create a new category product",
+                "parameters": [
+                    {
+                        "description": "Category product data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCategoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict: invalid category format",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/category/{id}": {
+            "get": {
+                "description": "Retrieves a category product using its UUID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Get category by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Cosmetic ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetByIdCategoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Cosmetic not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
+                "description": "Deletes the category product with the given UUID.",
+                "tags": [
+                    "category"
+                ],
+                "summary": "Delete category by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Category ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successfully deleted"
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
+                "description": "Updates category product fields by given ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Update category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Cosmetic ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated category fields",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateCategoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation or binding error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Cosmetic not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/cosmetics": {
             "get": {
                 "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc.",
@@ -98,20 +367,11 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8
-                        ],
-                        "type": "integer",
-                        "description": "Category enum (0–8)",
-                        "name": "category",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000",
+                        "description": "Category UUID",
+                        "name": "category_id",
                         "in": "query"
                     },
                     {
@@ -1283,6 +1543,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.Category": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "Shampoo"
+                }
+            }
+        },
         "dto.ChangePasswordRequest": {
             "type": "object",
             "required": [
@@ -1315,12 +1594,7 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Category"
-                        }
-                    ],
-                    "example": 3
+                    "$ref": "#/definitions/dto.Category"
                 },
                 "description": {
                     "type": "string",
@@ -1347,6 +1621,39 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateCategoryRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "Shampoo"
+                }
+            }
+        },
+        "dto.CreateCategoryResponse": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "Shampoo"
+                }
+            }
+        },
         "dto.CreateCosmeticsRequest": {
             "type": "object",
             "required": [
@@ -1362,12 +1669,8 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Category"
-                        }
-                    ],
-                    "example": 3
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "description": {
                     "type": "string",
@@ -1405,12 +1708,7 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Category"
-                        }
-                    ],
-                    "example": 3
+                    "$ref": "#/definitions/dto.Category"
                 },
                 "description": {
                     "type": "string",
@@ -1478,6 +1776,12 @@ const docTemplate = `{
                     "maxLength": 500,
                     "example": "Leading supplier of industrial equipment"
                 },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PartnersLink"
+                    }
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 100,
@@ -1496,6 +1800,12 @@ const docTemplate = `{
                 "id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PartnersLink"
+                    }
                 },
                 "name": {
                     "type": "string",
@@ -1541,6 +1851,25 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.GetByIdCategoryResponse": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "Shampoo"
+                }
+            }
+        },
         "dto.GetByIdCosmeticsResponse": {
             "description": "Contains product information such as category, title, description, and volume.",
             "type": "object",
@@ -1550,12 +1879,7 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Category"
-                        }
-                    ],
-                    "example": 3
+                    "$ref": "#/definitions/dto.Category"
                 },
                 "description": {
                     "type": "string",
@@ -1592,6 +1916,12 @@ const docTemplate = `{
                 "id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PartnersLink"
+                    }
                 },
                 "name": {
                     "type": "string",
@@ -1824,9 +2154,36 @@ const docTemplate = `{
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PartnersLink"
+                    }
+                },
                 "name": {
                     "type": "string",
                     "example": "Backend's department"
+                }
+            }
+        },
+        "dto.PartnersLink": {
+            "type": "object",
+            "required": [
+                "href",
+                "label"
+            ],
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "example": "https://example.com"
+                },
+                "label": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "Official Website"
                 }
             }
         },
@@ -1924,11 +2281,45 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UpdateCosmeticsRequest": {
+        "dto.UpdateCategoryRequest": {
             "type": "object",
             "required": [
-                "is_hidden"
+                "id"
             ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "Hair conditioner"
+                }
+            }
+        },
+        "dto.UpdateCategoryResponse": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "Shampoo"
+                }
+            }
+        },
+        "dto.UpdateCosmeticsRequest": {
+            "type": "object",
             "properties": {
                 "application_method": {
                     "type": "string",
@@ -1937,12 +2328,8 @@ const docTemplate = `{
                     "example": "Apply evenly and rinse well."
                 },
                 "category": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Category"
-                        }
-                    ],
-                    "example": 4
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "description": {
                     "type": "string",
@@ -1980,12 +2367,7 @@ const docTemplate = `{
                     "example": "Apply to wet hair, lather, rinse."
                 },
                 "category": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Category"
-                        }
-                    ],
-                    "example": 3
+                    "$ref": "#/definitions/dto.Category"
                 },
                 "description": {
                     "type": "string",
@@ -2195,6 +2577,12 @@ const docTemplate = `{
                     "maxLength": 500,
                     "example": "Updated description of the partner"
                 },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PartnersLink"
+                    }
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 100,
@@ -2213,6 +2601,12 @@ const docTemplate = `{
                 "id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PartnersLink"
+                    }
                 },
                 "name": {
                     "type": "string",
@@ -2248,31 +2642,6 @@ const docTemplate = `{
                     "example": "Ivanov"
                 }
             }
-        },
-        "types.Category": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8
-            ],
-            "x-enum-varnames": [
-                "CategoryMainFace",
-                "CategoryMainBody",
-                "CategoryHairCare",
-                "CategoryMen",
-                "CategoryIntensive",
-                "CategoryLuxury",
-                "CategoryExclusive",
-                "CategoryWholesale",
-                "CategoryLeech"
-            ]
         },
         "types.Package": {
             "type": "integer",
@@ -2355,6 +2724,10 @@ const docTemplate = `{
         {
             "description": "Cosmetics view and management",
             "name": "cosmetics"
+        },
+        {
+            "description": "Category view and management",
+            "name": "category"
         },
         {
             "description": "Information about the center",

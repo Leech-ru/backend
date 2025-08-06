@@ -30,6 +30,7 @@ type ServiceProvider struct {
 	orderService     orderService
 	userService      userService
 	cosmeticsService cosmeticsService
+	categoryService  categoryService
 	infoService      infoService
 	partnerService   partnerService
 }
