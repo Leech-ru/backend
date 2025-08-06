@@ -18,8 +18,11 @@ func (s *cosmeticsService) GetByID(ctx context.Context, req *dto.GetByIdCosmetic
 	}
 
 	return &dto.GetByIdCosmeticsResponse{
-		ID:                cosmetics.ID,
-		Category:          cosmetics.Category,
+		ID: cosmetics.ID,
+		Category: dto.Category{
+			ID:   cosmetics.Edges.Category.ID,
+			Name: cosmetics.Edges.Category.Name,
+		},
 		Title:             cosmetics.Title,
 		Description:       cosmetics.Description,
 		ApplicationMethod: cosmetics.ApplicationMethod,

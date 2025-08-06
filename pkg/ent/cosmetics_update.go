@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"Leech-ru/internal/domain/types"
+	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/predicate"
 	"context"
@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // CosmeticsUpdate is the builder for updating Cosmetics entities.
@@ -25,27 +26,6 @@ type CosmeticsUpdate struct {
 // Where appends a list predicates to the CosmeticsUpdate builder.
 func (cu *CosmeticsUpdate) Where(ps ...predicate.Cosmetics) *CosmeticsUpdate {
 	cu.mutation.Where(ps...)
-	return cu
-}
-
-// SetCategory sets the "category" field.
-func (cu *CosmeticsUpdate) SetCategory(t types.Category) *CosmeticsUpdate {
-	cu.mutation.ResetCategory()
-	cu.mutation.SetCategory(t)
-	return cu
-}
-
-// SetNillableCategory sets the "category" field if the given value is not nil.
-func (cu *CosmeticsUpdate) SetNillableCategory(t *types.Category) *CosmeticsUpdate {
-	if t != nil {
-		cu.SetCategory(*t)
-	}
-	return cu
-}
-
-// AddCategory adds t to the "category" field.
-func (cu *CosmeticsUpdate) AddCategory(t types.Category) *CosmeticsUpdate {
-	cu.mutation.AddCategory(t)
 	return cu
 }
 
@@ -184,9 +164,26 @@ func (cu *CosmeticsUpdate) SetNillableIsHidden(b *bool) *CosmeticsUpdate {
 	return cu
 }
 
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (cu *CosmeticsUpdate) SetCategoryID(id uuid.UUID) *CosmeticsUpdate {
+	cu.mutation.SetCategoryID(id)
+	return cu
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (cu *CosmeticsUpdate) SetCategory(c *Category) *CosmeticsUpdate {
+	return cu.SetCategoryID(c.ID)
+}
+
 // Mutation returns the CosmeticsMutation object of the builder.
 func (cu *CosmeticsUpdate) Mutation() *CosmeticsMutation {
 	return cu.mutation
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (cu *CosmeticsUpdate) ClearCategory() *CosmeticsUpdate {
+	cu.mutation.ClearCategory()
+	return cu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -218,11 +215,6 @@ func (cu *CosmeticsUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (cu *CosmeticsUpdate) check() error {
-	if v, ok := cu.mutation.Category(); ok {
-		if err := cosmetics.CategoryValidator(int(v)); err != nil {
-			return &ValidationError{Name: "category", err: fmt.Errorf(`ent: validator failed for field "Cosmetics.category": %w`, err)}
-		}
-	}
 	if v, ok := cu.mutation.Title(); ok {
 		if err := cosmetics.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Cosmetics.title": %w`, err)}
@@ -232,6 +224,9 @@ func (cu *CosmeticsUpdate) check() error {
 		if err := cosmetics.VolumeValidator(v); err != nil {
 			return &ValidationError{Name: "volume", err: fmt.Errorf(`ent: validator failed for field "Cosmetics.volume": %w`, err)}
 		}
+	}
+	if cu.mutation.CategoryCleared() && len(cu.mutation.CategoryIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Cosmetics.category"`)
 	}
 	return nil
 }
@@ -247,12 +242,6 @@ func (cu *CosmeticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := cu.mutation.Category(); ok {
-		_spec.SetField(cosmetics.FieldCategory, field.TypeInt, value)
-	}
-	if value, ok := cu.mutation.AddedCategory(); ok {
-		_spec.AddField(cosmetics.FieldCategory, field.TypeInt, value)
 	}
 	if value, ok := cu.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)
@@ -293,6 +282,35 @@ func (cu *CosmeticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.IsHidden(); ok {
 		_spec.SetField(cosmetics.FieldIsHidden, field.TypeBool, value)
 	}
+	if cu.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   cosmetics.CategoryTable,
+			Columns: []string{cosmetics.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(category.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   cosmetics.CategoryTable,
+			Columns: []string{cosmetics.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(category.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{cosmetics.Label}
@@ -311,27 +329,6 @@ type CosmeticsUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CosmeticsMutation
-}
-
-// SetCategory sets the "category" field.
-func (cuo *CosmeticsUpdateOne) SetCategory(t types.Category) *CosmeticsUpdateOne {
-	cuo.mutation.ResetCategory()
-	cuo.mutation.SetCategory(t)
-	return cuo
-}
-
-// SetNillableCategory sets the "category" field if the given value is not nil.
-func (cuo *CosmeticsUpdateOne) SetNillableCategory(t *types.Category) *CosmeticsUpdateOne {
-	if t != nil {
-		cuo.SetCategory(*t)
-	}
-	return cuo
-}
-
-// AddCategory adds t to the "category" field.
-func (cuo *CosmeticsUpdateOne) AddCategory(t types.Category) *CosmeticsUpdateOne {
-	cuo.mutation.AddCategory(t)
-	return cuo
 }
 
 // SetTitle sets the "title" field.
@@ -469,9 +466,26 @@ func (cuo *CosmeticsUpdateOne) SetNillableIsHidden(b *bool) *CosmeticsUpdateOne 
 	return cuo
 }
 
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (cuo *CosmeticsUpdateOne) SetCategoryID(id uuid.UUID) *CosmeticsUpdateOne {
+	cuo.mutation.SetCategoryID(id)
+	return cuo
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (cuo *CosmeticsUpdateOne) SetCategory(c *Category) *CosmeticsUpdateOne {
+	return cuo.SetCategoryID(c.ID)
+}
+
 // Mutation returns the CosmeticsMutation object of the builder.
 func (cuo *CosmeticsUpdateOne) Mutation() *CosmeticsMutation {
 	return cuo.mutation
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (cuo *CosmeticsUpdateOne) ClearCategory() *CosmeticsUpdateOne {
+	cuo.mutation.ClearCategory()
+	return cuo
 }
 
 // Where appends a list predicates to the CosmeticsUpdate builder.
@@ -516,11 +530,6 @@ func (cuo *CosmeticsUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (cuo *CosmeticsUpdateOne) check() error {
-	if v, ok := cuo.mutation.Category(); ok {
-		if err := cosmetics.CategoryValidator(int(v)); err != nil {
-			return &ValidationError{Name: "category", err: fmt.Errorf(`ent: validator failed for field "Cosmetics.category": %w`, err)}
-		}
-	}
 	if v, ok := cuo.mutation.Title(); ok {
 		if err := cosmetics.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Cosmetics.title": %w`, err)}
@@ -530,6 +539,9 @@ func (cuo *CosmeticsUpdateOne) check() error {
 		if err := cosmetics.VolumeValidator(v); err != nil {
 			return &ValidationError{Name: "volume", err: fmt.Errorf(`ent: validator failed for field "Cosmetics.volume": %w`, err)}
 		}
+	}
+	if cuo.mutation.CategoryCleared() && len(cuo.mutation.CategoryIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Cosmetics.category"`)
 	}
 	return nil
 }
@@ -562,12 +574,6 @@ func (cuo *CosmeticsUpdateOne) sqlSave(ctx context.Context) (_node *Cosmetics, e
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := cuo.mutation.Category(); ok {
-		_spec.SetField(cosmetics.FieldCategory, field.TypeInt, value)
-	}
-	if value, ok := cuo.mutation.AddedCategory(); ok {
-		_spec.AddField(cosmetics.FieldCategory, field.TypeInt, value)
 	}
 	if value, ok := cuo.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)
@@ -607,6 +613,35 @@ func (cuo *CosmeticsUpdateOne) sqlSave(ctx context.Context) (_node *Cosmetics, e
 	}
 	if value, ok := cuo.mutation.IsHidden(); ok {
 		_spec.SetField(cosmetics.FieldIsHidden, field.TypeBool, value)
+	}
+	if cuo.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   cosmetics.CategoryTable,
+			Columns: []string{cosmetics.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(category.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   cosmetics.CategoryTable,
+			Columns: []string{cosmetics.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(category.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Cosmetics{config: cuo.config}
 	_spec.Assign = _node.assignValues

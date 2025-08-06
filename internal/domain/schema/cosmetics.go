@@ -1,8 +1,8 @@
 package schema
 
 import (
-	"Leech-ru/internal/domain/types"
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
@@ -20,10 +20,6 @@ func (Cosmetics) Fields() []ent.Field {
 			Default(uuid.New).
 			Immutable().
 			Unique(),
-
-		field.Int("category").
-			GoType(types.Category(0)).
-			NonNegative(),
 
 		field.String("title").
 			NotEmpty(),
@@ -48,12 +44,15 @@ func (Cosmetics) Fields() []ent.Field {
 
 		field.Bool("is_hidden"),
 	}
-
 }
 
-// Edges of the Cosmetics.
 func (Cosmetics) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("category", Category.Type).
+			Ref("cosmetics").
+			Unique().
+			Required(),
+	}
 }
 
 func (Cosmetics) Indexes() []ent.Index {

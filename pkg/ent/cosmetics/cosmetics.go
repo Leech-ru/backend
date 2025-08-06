@@ -4,6 +4,7 @@ package cosmetics
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -12,8 +13,6 @@ const (
 	Label = "cosmetics"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldCategory holds the string denoting the category field in the database.
-	FieldCategory = "category"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -28,14 +27,22 @@ const (
 	FieldWildberriesLink = "wildberries_link"
 	// FieldIsHidden holds the string denoting the is_hidden field in the database.
 	FieldIsHidden = "is_hidden"
+	// EdgeCategory holds the string denoting the category edge name in mutations.
+	EdgeCategory = "category"
 	// Table holds the table name of the cosmetics in the database.
 	Table = "cosmetics"
+	// CategoryTable is the table that holds the category relation/edge.
+	CategoryTable = "cosmetics"
+	// CategoryInverseTable is the table name for the Category entity.
+	// It exists in this package in order to avoid circular dependency with the "category" package.
+	CategoryInverseTable = "categories"
+	// CategoryColumn is the table column denoting the category relation/edge.
+	CategoryColumn = "category_cosmetics"
 )
 
 // Columns holds all SQL columns for cosmetics fields.
 var Columns = []string{
 	FieldID,
-	FieldCategory,
 	FieldTitle,
 	FieldDescription,
 	FieldApplicationMethod,
@@ -45,6 +52,12 @@ var Columns = []string{
 	FieldIsHidden,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "cosmetics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"category_cosmetics",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
@@ -52,12 +65,15 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
+			return true
+		}
+	}
 	return false
 }
 
 var (
-	// CategoryValidator is a validator for the "category" field. It is called by the builders before save.
-	CategoryValidator func(int) error
 	// TitleValidator is a validator for the "title" field. It is called by the builders before save.
 	TitleValidator func(string) error
 	// DefaultDescription holds the default value on creation for the "description" field.
@@ -76,11 +92,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByCategory orders the results by the category field.
-func ByCategory(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCategory, opts...).ToFunc()
 }
 
 // ByTitle orders the results by the title field.
@@ -116,4 +127,18 @@ func ByWildberriesLink(opts ...sql.OrderTermOption) OrderOption {
 // ByIsHidden orders the results by the is_hidden field.
 func ByIsHidden(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIsHidden, opts...).ToFunc()
+}
+
+// ByCategoryField orders the results by category field.
+func ByCategoryField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCategoryStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newCategoryStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CategoryInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, CategoryTable, CategoryColumn),
+	)
 }

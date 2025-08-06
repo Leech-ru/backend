@@ -8,10 +8,20 @@ import (
 )
 
 var (
+	// CategoriesColumns holds the columns for the "categories" table.
+	CategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "name", Type: field.TypeString, Unique: true},
+	}
+	// CategoriesTable holds the schema information for the "categories" table.
+	CategoriesTable = &schema.Table{
+		Name:       "categories",
+		Columns:    CategoriesColumns,
+		PrimaryKey: []*schema.Column{CategoriesColumns[0]},
+	}
 	// CosmeticsColumns holds the columns for the "cosmetics" table.
 	CosmeticsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
-		{Name: "category", Type: field.TypeInt},
 		{Name: "title", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "application_method", Type: field.TypeString, Nullable: true, Default: ""},
@@ -19,17 +29,26 @@ var (
 		{Name: "ozon_link", Type: field.TypeString, Nullable: true},
 		{Name: "wildberries_link", Type: field.TypeString, Nullable: true},
 		{Name: "is_hidden", Type: field.TypeBool},
+		{Name: "category_cosmetics", Type: field.TypeUUID},
 	}
 	// CosmeticsTable holds the schema information for the "cosmetics" table.
 	CosmeticsTable = &schema.Table{
 		Name:       "cosmetics",
 		Columns:    CosmeticsColumns,
 		PrimaryKey: []*schema.Column{CosmeticsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "cosmetics_categories_cosmetics",
+				Columns:    []*schema.Column{CosmeticsColumns[8]},
+				RefColumns: []*schema.Column{CategoriesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "cosmetics_is_hidden",
 				Unique:  false,
-				Columns: []*schema.Column{CosmeticsColumns[8]},
+				Columns: []*schema.Column{CosmeticsColumns[7]},
 			},
 		},
 	}
@@ -103,6 +122,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CategoriesTable,
 		CosmeticsTable,
 		PartnersTable,
 		PartnerLinksTable,
@@ -112,6 +132,7 @@ var (
 )
 
 func init() {
+	CosmeticsTable.ForeignKeys[0].RefTable = CategoriesTable
 	PartnerLinksTable.ForeignKeys[0].RefTable = PartnersTable
 	RefreshTokensTable.ForeignKeys[0].RefTable = UsersTable
 }

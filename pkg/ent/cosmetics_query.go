@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
 	"Leech-ru/pkg/ent/predicate"
 	"context"
@@ -19,10 +20,12 @@ import (
 // CosmeticsQuery is the builder for querying Cosmetics entities.
 type CosmeticsQuery struct {
 	config
-	ctx        *QueryContext
-	order      []cosmetics.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Cosmetics
+	ctx          *QueryContext
+	order        []cosmetics.OrderOption
+	inters       []Interceptor
+	predicates   []predicate.Cosmetics
+	withCategory *CategoryQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -57,6 +60,28 @@ func (cq *CosmeticsQuery) Unique(unique bool) *CosmeticsQuery {
 func (cq *CosmeticsQuery) Order(o ...cosmetics.OrderOption) *CosmeticsQuery {
 	cq.order = append(cq.order, o...)
 	return cq
+}
+
+// QueryCategory chains the current query on the "category" edge.
+func (cq *CosmeticsQuery) QueryCategory() *CategoryQuery {
+	query := (&CategoryClient{config: cq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(cosmetics.Table, cosmetics.FieldID, selector),
+			sqlgraph.To(category.Table, category.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, cosmetics.CategoryTable, cosmetics.CategoryColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Cosmetics entity from the query.
@@ -246,15 +271,27 @@ func (cq *CosmeticsQuery) Clone() *CosmeticsQuery {
 		return nil
 	}
 	return &CosmeticsQuery{
-		config:     cq.config,
-		ctx:        cq.ctx.Clone(),
-		order:      append([]cosmetics.OrderOption{}, cq.order...),
-		inters:     append([]Interceptor{}, cq.inters...),
-		predicates: append([]predicate.Cosmetics{}, cq.predicates...),
+		config:       cq.config,
+		ctx:          cq.ctx.Clone(),
+		order:        append([]cosmetics.OrderOption{}, cq.order...),
+		inters:       append([]Interceptor{}, cq.inters...),
+		predicates:   append([]predicate.Cosmetics{}, cq.predicates...),
+		withCategory: cq.withCategory.Clone(),
 		// clone intermediate query.
 		sql:  cq.sql.Clone(),
 		path: cq.path,
 	}
+}
+
+// WithCategory tells the query-builder to eager-load the nodes that are connected to
+// the "category" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CosmeticsQuery) WithCategory(opts ...func(*CategoryQuery)) *CosmeticsQuery {
+	query := (&CategoryClient{config: cq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withCategory = query
+	return cq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -263,12 +300,12 @@ func (cq *CosmeticsQuery) Clone() *CosmeticsQuery {
 // Example:
 //
 //	var v []struct {
-//		Category types.Category `json:"category,omitempty"`
+//		Title string `json:"title,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Cosmetics.Query().
-//		GroupBy(cosmetics.FieldCategory).
+//		GroupBy(cosmetics.FieldTitle).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cq *CosmeticsQuery) GroupBy(field string, fields ...string) *CosmeticsGroupBy {
@@ -286,11 +323,11 @@ func (cq *CosmeticsQuery) GroupBy(field string, fields ...string) *CosmeticsGrou
 // Example:
 //
 //	var v []struct {
-//		Category types.Category `json:"category,omitempty"`
+//		Title string `json:"title,omitempty"`
 //	}
 //
 //	client.Cosmetics.Query().
-//		Select(cosmetics.FieldCategory).
+//		Select(cosmetics.FieldTitle).
 //		Scan(ctx, &v)
 func (cq *CosmeticsQuery) Select(fields ...string) *CosmeticsSelect {
 	cq.ctx.Fields = append(cq.ctx.Fields, fields...)
@@ -333,15 +370,26 @@ func (cq *CosmeticsQuery) prepareQuery(ctx context.Context) error {
 
 func (cq *CosmeticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cosmetics, error) {
 	var (
-		nodes = []*Cosmetics{}
-		_spec = cq.querySpec()
+		nodes       = []*Cosmetics{}
+		withFKs     = cq.withFKs
+		_spec       = cq.querySpec()
+		loadedTypes = [1]bool{
+			cq.withCategory != nil,
+		}
 	)
+	if cq.withCategory != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, cosmetics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Cosmetics).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Cosmetics{config: cq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -353,7 +401,46 @@ func (cq *CosmeticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := cq.withCategory; query != nil {
+		if err := cq.loadCategory(ctx, query, nodes, nil,
+			func(n *Cosmetics, e *Category) { n.Edges.Category = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (cq *CosmeticsQuery) loadCategory(ctx context.Context, query *CategoryQuery, nodes []*Cosmetics, init func(*Cosmetics), assign func(*Cosmetics, *Category)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Cosmetics)
+	for i := range nodes {
+		if nodes[i].category_cosmetics == nil {
+			continue
+		}
+		fk := *nodes[i].category_cosmetics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(category.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "category_cosmetics" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (cq *CosmeticsQuery) sqlCount(ctx context.Context) (int, error) {

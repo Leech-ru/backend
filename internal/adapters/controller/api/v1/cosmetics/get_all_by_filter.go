@@ -15,7 +15,7 @@ import (
 // @Produce      json
 // @Param        limit        query     int     false  "Max number of items"          minimum(1) maximum(100)
 // @Param        offset       query     int     false  "Offset for pagination"        minimum(0)
-// @Param        category     query     int     false  "Category enum (0–8)"          Enums(0,1,2,3,4,5,6,7,8)
+// @Param        category_id  query     string  false  "Category UUID"  Format(uuid)  example(123e4567-e89b-12d3-a456-426614174000)
 // @Param        titlePrefix  query     string  false  "Filter by title prefix"
 // @Param        volume       query     int     false  "Exact volume in ml"           minimum(1) maximum(10000)
 // @Success      200  {array}   dto.Cosmetics

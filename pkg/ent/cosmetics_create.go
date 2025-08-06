@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"Leech-ru/internal/domain/types"
+	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
 	"context"
 	"errors"
@@ -19,12 +19,6 @@ type CosmeticsCreate struct {
 	config
 	mutation *CosmeticsMutation
 	hooks    []Hook
-}
-
-// SetCategory sets the "category" field.
-func (cc *CosmeticsCreate) SetCategory(t types.Category) *CosmeticsCreate {
-	cc.mutation.SetCategory(t)
-	return cc
 }
 
 // SetTitle sets the "title" field.
@@ -123,6 +117,17 @@ func (cc *CosmeticsCreate) SetNillableID(u *uuid.UUID) *CosmeticsCreate {
 	return cc
 }
 
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (cc *CosmeticsCreate) SetCategoryID(id uuid.UUID) *CosmeticsCreate {
+	cc.mutation.SetCategoryID(id)
+	return cc
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (cc *CosmeticsCreate) SetCategory(c *Category) *CosmeticsCreate {
+	return cc.SetCategoryID(c.ID)
+}
+
 // Mutation returns the CosmeticsMutation object of the builder.
 func (cc *CosmeticsCreate) Mutation() *CosmeticsMutation {
 	return cc.mutation
@@ -174,14 +179,6 @@ func (cc *CosmeticsCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (cc *CosmeticsCreate) check() error {
-	if _, ok := cc.mutation.Category(); !ok {
-		return &ValidationError{Name: "category", err: errors.New(`ent: missing required field "Cosmetics.category"`)}
-	}
-	if v, ok := cc.mutation.Category(); ok {
-		if err := cosmetics.CategoryValidator(int(v)); err != nil {
-			return &ValidationError{Name: "category", err: fmt.Errorf(`ent: validator failed for field "Cosmetics.category": %w`, err)}
-		}
-	}
 	if _, ok := cc.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Cosmetics.title"`)}
 	}
@@ -197,6 +194,9 @@ func (cc *CosmeticsCreate) check() error {
 	}
 	if _, ok := cc.mutation.IsHidden(); !ok {
 		return &ValidationError{Name: "is_hidden", err: errors.New(`ent: missing required field "Cosmetics.is_hidden"`)}
+	}
+	if len(cc.mutation.CategoryIDs()) == 0 {
+		return &ValidationError{Name: "category", err: errors.New(`ent: missing required edge "Cosmetics.category"`)}
 	}
 	return nil
 }
@@ -233,10 +233,6 @@ func (cc *CosmeticsCreate) createSpec() (*Cosmetics, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := cc.mutation.Category(); ok {
-		_spec.SetField(cosmetics.FieldCategory, field.TypeInt, value)
-		_node.Category = value
-	}
 	if value, ok := cc.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)
 		_node.Title = value
@@ -264,6 +260,23 @@ func (cc *CosmeticsCreate) createSpec() (*Cosmetics, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.IsHidden(); ok {
 		_spec.SetField(cosmetics.FieldIsHidden, field.TypeBool, value)
 		_node.IsHidden = value
+	}
+	if nodes := cc.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   cosmetics.CategoryTable,
+			Columns: []string{cosmetics.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(category.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.category_cosmetics = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

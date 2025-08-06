@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"Leech-ru/internal/domain/types"
+	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
 	"fmt"
 	"strings"
@@ -18,8 +18,6 @@ type Cosmetics struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
-	// Category holds the value of the "category" field.
-	Category types.Category `json:"category,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Description holds the value of the "description" field.
@@ -33,8 +31,32 @@ type Cosmetics struct {
 	// WildberriesLink holds the value of the "wildberries_link" field.
 	WildberriesLink *string `json:"wildberries_link,omitempty"`
 	// IsHidden holds the value of the "is_hidden" field.
-	IsHidden     bool `json:"is_hidden,omitempty"`
-	selectValues sql.SelectValues
+	IsHidden bool `json:"is_hidden,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the CosmeticsQuery when eager-loading is set.
+	Edges              CosmeticsEdges `json:"edges"`
+	category_cosmetics *uuid.UUID
+	selectValues       sql.SelectValues
+}
+
+// CosmeticsEdges holds the relations/edges for other nodes in the graph.
+type CosmeticsEdges struct {
+	// Category holds the value of the category edge.
+	Category *Category `json:"category,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// CategoryOrErr returns the Category value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CosmeticsEdges) CategoryOrErr() (*Category, error) {
+	if e.Category != nil {
+		return e.Category, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: category.Label}
+	}
+	return nil, &NotLoadedError{edge: "category"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -44,12 +66,14 @@ func (*Cosmetics) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case cosmetics.FieldIsHidden:
 			values[i] = new(sql.NullBool)
-		case cosmetics.FieldCategory, cosmetics.FieldVolume:
+		case cosmetics.FieldVolume:
 			values[i] = new(sql.NullInt64)
 		case cosmetics.FieldTitle, cosmetics.FieldDescription, cosmetics.FieldApplicationMethod, cosmetics.FieldOzonLink, cosmetics.FieldWildberriesLink:
 			values[i] = new(sql.NullString)
 		case cosmetics.FieldID:
 			values[i] = new(uuid.UUID)
+		case cosmetics.ForeignKeys[0]: // category_cosmetics
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -70,12 +94,6 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				c.ID = *value
-			}
-		case cosmetics.FieldCategory:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field category", values[i])
-			} else if value.Valid {
-				c.Category = types.Category(value.Int64)
 			}
 		case cosmetics.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -124,6 +142,13 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				c.IsHidden = value.Bool
 			}
+		case cosmetics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field category_cosmetics", values[i])
+			} else if value.Valid {
+				c.category_cosmetics = new(uuid.UUID)
+				*c.category_cosmetics = *value.S.(*uuid.UUID)
+			}
 		default:
 			c.selectValues.Set(columns[i], values[i])
 		}
@@ -135,6 +160,11 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (c *Cosmetics) Value(name string) (ent.Value, error) {
 	return c.selectValues.Get(name)
+}
+
+// QueryCategory queries the "category" edge of the Cosmetics entity.
+func (c *Cosmetics) QueryCategory() *CategoryQuery {
+	return NewCosmeticsClient(c.config).QueryCategory(c)
 }
 
 // Update returns a builder for updating this Cosmetics.
@@ -160,9 +190,6 @@ func (c *Cosmetics) String() string {
 	var builder strings.Builder
 	builder.WriteString("Cosmetics(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
-	builder.WriteString("category=")
-	builder.WriteString(fmt.Sprintf("%v", c.Category))
-	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(c.Title)
 	builder.WriteString(", ")

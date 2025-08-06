@@ -36,6 +36,9 @@ import (
 // @tag.name        cosmetics
 // @tag.description Cosmetics view and management
 
+// @tag.name        category
+// @tag.description Category view and management
+
 // @tag.name        info
 // @tag.description Information about the center
 

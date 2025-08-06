@@ -12,6 +12,7 @@ import (
 func (s *cosmeticsRepo) GetById(ctx context.Context, id uuid.UUID) (*ent.Cosmetics, error) {
 	c, err := s.client.Cosmetics.
 		Query().
+		WithCategory().
 		Where(cosmetics.ID(id)).
 		Only(ctx)
 

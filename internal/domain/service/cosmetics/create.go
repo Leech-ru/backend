@@ -11,7 +11,9 @@ import (
 // Create create cosmetics and returns it.
 func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsRequest) (*dto.CreateCosmeticsResponse, error) {
 	cosmetics := &ent.Cosmetics{
-		Category:          req.Category,
+		Edges: ent.CosmeticsEdges{
+			Category: &ent.Category{ID: req.CategoryID},
+		},
 		Title:             req.Title,
 		Description:       req.Description,
 		ApplicationMethod: req.ApplicationMethod,
@@ -30,8 +32,11 @@ func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsR
 		return nil, err
 	}
 	return &dto.CreateCosmeticsResponse{
-		ID:                cosmetics.ID,
-		Category:          cosmetics.Category,
+		ID: cosmetics.ID,
+		Category: dto.Category{
+			ID:   cosmetics.Edges.Category.ID,
+			Name: cosmetics.Edges.Category.Name,
+		},
 		Title:             cosmetics.Title,
 		Description:       cosmetics.Description,
 		ApplicationMethod: cosmetics.ApplicationMethod,
