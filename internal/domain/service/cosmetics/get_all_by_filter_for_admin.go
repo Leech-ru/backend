@@ -5,8 +5,8 @@ import (
 	"context"
 )
 
-// GetAllByFilter realizes a search for cosmetics with filtering parameters.
-func (s *cosmeticsService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilterCosmeticsRequest) (*dto.GetAllByFilterCosmeticsResponse, error) {
+// GetAllByFilterForAdmin realizes a search for cosmetics with filtering parameters for admins.
+func (s *cosmeticsService) GetAllByFilterForAdmin(ctx context.Context, req *dto.GetAllByFilterForAdminCosmeticsRequest) (*dto.GetAllByFilterForAdminCosmeticsResponse, error) {
 	limit := 10
 	if req.Limit != nil {
 		limit = *req.Limit
@@ -15,12 +15,11 @@ func (s *cosmeticsService) GetAllByFilter(ctx context.Context, req *dto.GetAllBy
 	if req.Offset != nil {
 		offset = *req.Offset
 	}
-	isHidden := false
-	allCosmetics, err := s.cosmeticsRepo.GetAllByFilter(ctx, limit, offset, req.CategoryID, req.TitlePrefix, req.Volume, &isHidden)
+	allCosmetics, err := s.cosmeticsRepo.GetAllByFilter(ctx, limit, offset, req.CategoryID, req.TitlePrefix, req.Volume, req.IsHidden)
 	if err != nil {
 		return nil, err
 	}
-	var resp dto.GetAllByFilterCosmeticsResponse
+	var resp dto.GetAllByFilterForAdminCosmeticsResponse
 	for _, cosmetics := range allCosmetics {
 		resp = append(resp, &dto.Cosmetics{
 			ID: cosmetics.ID,

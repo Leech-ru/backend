@@ -53,11 +53,22 @@ type GetAllByFilterCosmeticsRequest struct {
 	CategoryID  *uuid.UUID `json:"category_id,omitempty" form:"category_id" validate:"omitempty,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
 	TitlePrefix *string    `json:"title_prefix,omitempty" form:"titlePrefix" validate:"omitempty,min=1,max=100" example:"Hair"`
 	Volume      *int       `json:"volume,omitempty" form:"volume" validate:"omitempty,min=1,max=10000" example:"250"`
-	IsHidden    *bool      `json:"is_hidden,omitempty" form:"is_hidden" validate:"omitempty" example:"false"`
 }
 
 // GetAllByFilterCosmeticsResponse is the list of cosmetics returned by filters.
 type GetAllByFilterCosmeticsResponse []*Cosmetics
+
+type GetAllByFilterForAdminCosmeticsRequest struct {
+	Limit       *int       `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100" example:"10"`
+	Offset      *int       `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0" example:"0"`
+	CategoryID  *uuid.UUID `json:"category_id,omitempty" form:"category_id" validate:"omitempty,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	TitlePrefix *string    `json:"title_prefix,omitempty" form:"titlePrefix" validate:"omitempty,min=1,max=100" example:"Hair"`
+	Volume      *int       `json:"volume,omitempty" form:"volume" validate:"omitempty,min=1,max=10000" example:"250"`
+	IsHidden    *bool      `json:"is_hidden,omitempty" form:"is_hidden" validate:"omitempty" example:"false"`
+}
+
+// GetAllByFilterCosmeticsResponse is the list of cosmetics returned by filters.
+type GetAllByFilterForAdminCosmeticsResponse []*Cosmetics
 
 // UpdateCosmeticsRequest represents an update request for a cosmetic product.
 type UpdateCosmeticsRequest struct {
