@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Delete removes a category by ID
+// Delete removes an image by ID
 func (s *imageRepo) Delete(ctx context.Context, id uuid.UUID) error {
 	err := s.client.Image.
 		DeleteOneID(id).

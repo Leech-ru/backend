@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// GetById retrieves a category by ID
+// GetById retrieves an image by ID
 func (s *imageRepo) GetById(ctx context.Context, id uuid.UUID) (*ent.Image, error) {
 	c, err := s.client.Image.
 		Query().

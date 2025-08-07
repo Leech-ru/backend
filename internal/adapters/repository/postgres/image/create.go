@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// Create creates a new category in the database
+// Create creates a new image in the database
 func (s *imageRepo) Create(ctx context.Context, entity ent.Image) (*ent.Image, error) {
 	created, err := s.client.Image.Create().
 		SetName(entity.Name).
