@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-// Create creates a new user in the database
+// Create creates a new refresh token in the database
 func (s *tokenRepo) Create(ctx context.Context, entity ent.RefreshToken) (*ent.RefreshToken, error) {
 	created, err := s.client.RefreshToken.
 		Create().
