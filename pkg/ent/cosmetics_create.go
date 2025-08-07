@@ -5,6 +5,7 @@ package ent
 import (
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
+	"Leech-ru/pkg/ent/image"
 	"context"
 	"errors"
 	"fmt"
@@ -126,6 +127,25 @@ func (cc *CosmeticsCreate) SetCategoryID(id uuid.UUID) *CosmeticsCreate {
 // SetCategory sets the "category" edge to the Category entity.
 func (cc *CosmeticsCreate) SetCategory(c *Category) *CosmeticsCreate {
 	return cc.SetCategoryID(c.ID)
+}
+
+// SetImagesID sets the "images" edge to the Image entity by ID.
+func (cc *CosmeticsCreate) SetImagesID(id uuid.UUID) *CosmeticsCreate {
+	cc.mutation.SetImagesID(id)
+	return cc
+}
+
+// SetNillableImagesID sets the "images" edge to the Image entity by ID if the given value is not nil.
+func (cc *CosmeticsCreate) SetNillableImagesID(id *uuid.UUID) *CosmeticsCreate {
+	if id != nil {
+		cc = cc.SetImagesID(*id)
+	}
+	return cc
+}
+
+// SetImages sets the "images" edge to the Image entity.
+func (cc *CosmeticsCreate) SetImages(i *Image) *CosmeticsCreate {
+	return cc.SetImagesID(i.ID)
 }
 
 // Mutation returns the CosmeticsMutation object of the builder.
@@ -276,6 +296,23 @@ func (cc *CosmeticsCreate) createSpec() (*Cosmetics, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.category_cosmetics = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.ImagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   cosmetics.ImagesTable,
+			Columns: []string{cosmetics.ImagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.image_cosmetics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

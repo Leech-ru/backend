@@ -5,6 +5,7 @@ package ent
 import (
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
+	"Leech-ru/pkg/ent/image"
 	"fmt"
 	"strings"
 
@@ -36,6 +37,7 @@ type Cosmetics struct {
 	// The values are being populated by the CosmeticsQuery when eager-loading is set.
 	Edges              CosmeticsEdges `json:"edges"`
 	category_cosmetics *uuid.UUID
+	image_cosmetics    *uuid.UUID
 	selectValues       sql.SelectValues
 }
 
@@ -43,9 +45,11 @@ type Cosmetics struct {
 type CosmeticsEdges struct {
 	// Category holds the value of the category edge.
 	Category *Category `json:"category,omitempty"`
+	// Images holds the value of the images edge.
+	Images *Image `json:"images,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // CategoryOrErr returns the Category value or an error if the edge
@@ -57,6 +61,17 @@ func (e CosmeticsEdges) CategoryOrErr() (*Category, error) {
 		return nil, &NotFoundError{label: category.Label}
 	}
 	return nil, &NotLoadedError{edge: "category"}
+}
+
+// ImagesOrErr returns the Images value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CosmeticsEdges) ImagesOrErr() (*Image, error) {
+	if e.Images != nil {
+		return e.Images, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: image.Label}
+	}
+	return nil, &NotLoadedError{edge: "images"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -73,6 +88,8 @@ func (*Cosmetics) scanValues(columns []string) ([]any, error) {
 		case cosmetics.FieldID:
 			values[i] = new(uuid.UUID)
 		case cosmetics.ForeignKeys[0]: // category_cosmetics
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
+		case cosmetics.ForeignKeys[1]: // image_cosmetics
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
@@ -149,6 +166,13 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 				c.category_cosmetics = new(uuid.UUID)
 				*c.category_cosmetics = *value.S.(*uuid.UUID)
 			}
+		case cosmetics.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field image_cosmetics", values[i])
+			} else if value.Valid {
+				c.image_cosmetics = new(uuid.UUID)
+				*c.image_cosmetics = *value.S.(*uuid.UUID)
+			}
 		default:
 			c.selectValues.Set(columns[i], values[i])
 		}
@@ -165,6 +189,11 @@ func (c *Cosmetics) Value(name string) (ent.Value, error) {
 // QueryCategory queries the "category" edge of the Cosmetics entity.
 func (c *Cosmetics) QueryCategory() *CategoryQuery {
 	return NewCosmeticsClient(c.config).QueryCategory(c)
+}
+
+// QueryImages queries the "images" edge of the Cosmetics entity.
+func (c *Cosmetics) QueryImages() *ImageQuery {
+	return NewCosmeticsClient(c.config).QueryImages(c)
 }
 
 // Update returns a builder for updating this Cosmetics.

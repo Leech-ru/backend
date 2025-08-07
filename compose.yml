@@ -1,4 +1,5 @@
-#TODO Закрыть порты при финальном деплое
+version: '3.8'
+
 services:
   app:
     build: .
@@ -11,6 +12,8 @@ services:
       postgres:
         condition: service_healthy
       valkey:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     restart: unless-stopped
 
@@ -53,6 +56,27 @@ services:
       timeout: 3s
       retries: 3
 
+  minio:
+    image: minio/minio
+    container_name: LeechMinIO
+    env_file:
+      - .env
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    ports:
+      - "${MINIO_PORT}:9000"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   valkey_data:
+  minio_data:

@@ -43,6 +43,16 @@ func (h *handler) Create(c echo.Context) error {
 			Code:    http.StatusConflict,
 			Message: err.Error(),
 		})
+	case errors.Is(err, errorz.CategoryNotFound):
+		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
+	case errors.Is(err, errorz.ImageNotFound):
+		return c.JSON(http.StatusNotFound, dto.HTTPStatus{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
 	case err != nil:
 		return c.JSON(http.StatusInternalServerError, dto.HTTPStatus{
 			Code:    http.StatusInternalServerError,

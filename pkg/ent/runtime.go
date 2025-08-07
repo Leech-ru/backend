@@ -7,6 +7,7 @@ import (
 	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
+	"Leech-ru/pkg/ent/image"
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/refreshtoken"
@@ -51,6 +52,16 @@ func init() {
 	cosmeticsDescID := cosmeticsFields[0].Descriptor()
 	// cosmetics.DefaultID holds the default value on creation for the id field.
 	cosmetics.DefaultID = cosmeticsDescID.Default.(func() uuid.UUID)
+	imageFields := schema.Image{}.Fields()
+	_ = imageFields
+	// imageDescName is the schema descriptor for name field.
+	imageDescName := imageFields[1].Descriptor()
+	// image.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	image.NameValidator = imageDescName.Validators[0].(func(string) error)
+	// imageDescID is the schema descriptor for id field.
+	imageDescID := imageFields[0].Descriptor()
+	// image.DefaultID holds the default value on creation for the id field.
+	image.DefaultID = imageDescID.Default.(func() uuid.UUID)
 	partnerFields := schema.Partner{}.Fields()
 	_ = partnerFields
 	// partnerDescName is the schema descriptor for name field.

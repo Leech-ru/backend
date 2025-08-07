@@ -45,8 +45,12 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 
 	updatedCosmetic, err := s.cosmeticsRepo.Update(ctx, *cosmeticToUpdate)
 	switch {
-	case errors.Is(err, errorz.CosmeticsNotFound):
-		return nil, errorz.CosmeticsNotFound
+	case errors.Is(err, errorz.InvalidCosmeticsFormat):
+		return nil, errorz.InvalidCosmeticsFormat
+	case errors.Is(err, errorz.CategoryNotFound):
+		return nil, errorz.CategoryNotFound
+	case errors.Is(err, errorz.ImageNotFound):
+		return nil, errorz.ImageNotFound
 	case errors.Is(err, errorz.InvalidCosmeticsFormat):
 		return nil, errorz.InvalidCosmeticsFormat
 	case err != nil:

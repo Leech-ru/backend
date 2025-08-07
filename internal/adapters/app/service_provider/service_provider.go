@@ -6,6 +6,7 @@ import (
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/logger"
 	"github.com/go-playground/form"
+	"github.com/minio/minio-go/v7"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -17,9 +18,11 @@ type ServiceProvider struct {
 	jwtConfig      config.JWTConfig
 	jsonInfoConfig config.JsonInfoConfig
 	mailConfig     config.MailConfig
+	minioConfig    config.MinIOConfig
 
 	db    *ent.Client
 	redis *redis.Client
+	minio *minio.Client
 
 	logger      *logger.Logger
 	validator   *validator.Validator

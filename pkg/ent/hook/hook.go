@@ -32,6 +32,18 @@ func (f CosmeticsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CosmeticsMutation", m)
 }
 
+// The ImageFunc type is an adapter to allow the use of ordinary
+// function as Image mutator.
+type ImageFunc func(context.Context, *ent.ImageMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ImageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ImageMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ImageMutation", m)
+}
+
 // The PartnerFunc type is an adapter to allow the use of ordinary
 // function as Partner mutator.
 type PartnerFunc func(context.Context, *ent.PartnerMutation) (ent.Value, error)

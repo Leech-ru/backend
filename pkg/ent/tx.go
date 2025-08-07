@@ -16,6 +16,8 @@ type Tx struct {
 	Category *CategoryClient
 	// Cosmetics is the client for interacting with the Cosmetics builders.
 	Cosmetics *CosmeticsClient
+	// Image is the client for interacting with the Image builders.
+	Image *ImageClient
 	// Partner is the client for interacting with the Partner builders.
 	Partner *PartnerClient
 	// PartnerLink is the client for interacting with the PartnerLink builders.
@@ -157,6 +159,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Category = NewCategoryClient(tx.config)
 	tx.Cosmetics = NewCosmeticsClient(tx.config)
+	tx.Image = NewImageClient(tx.config)
 	tx.Partner = NewPartnerClient(tx.config)
 	tx.PartnerLink = NewPartnerLinkClient(tx.config)
 	tx.RefreshToken = NewRefreshTokenClient(tx.config)

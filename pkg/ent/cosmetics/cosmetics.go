@@ -29,6 +29,8 @@ const (
 	FieldIsHidden = "is_hidden"
 	// EdgeCategory holds the string denoting the category edge name in mutations.
 	EdgeCategory = "category"
+	// EdgeImages holds the string denoting the images edge name in mutations.
+	EdgeImages = "images"
 	// Table holds the table name of the cosmetics in the database.
 	Table = "cosmetics"
 	// CategoryTable is the table that holds the category relation/edge.
@@ -38,6 +40,13 @@ const (
 	CategoryInverseTable = "categories"
 	// CategoryColumn is the table column denoting the category relation/edge.
 	CategoryColumn = "category_cosmetics"
+	// ImagesTable is the table that holds the images relation/edge.
+	ImagesTable = "cosmetics"
+	// ImagesInverseTable is the table name for the Image entity.
+	// It exists in this package in order to avoid circular dependency with the "image" package.
+	ImagesInverseTable = "images"
+	// ImagesColumn is the table column denoting the images relation/edge.
+	ImagesColumn = "image_cosmetics"
 )
 
 // Columns holds all SQL columns for cosmetics fields.
@@ -56,6 +65,7 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"category_cosmetics",
+	"image_cosmetics",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -135,10 +145,24 @@ func ByCategoryField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newCategoryStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByImagesField orders the results by images field.
+func ByImagesField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newImagesStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newCategoryStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CategoryInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, CategoryTable, CategoryColumn),
+	)
+}
+func newImagesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ImagesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ImagesTable, ImagesColumn),
 	)
 }

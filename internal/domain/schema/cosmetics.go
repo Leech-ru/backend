@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
@@ -52,6 +53,10 @@ func (Cosmetics) Edges() []ent.Edge {
 			Ref("cosmetics").
 			Unique().
 			Required(),
+
+		edge.From("images", Image.Type).
+			Ref("cosmetics").
+			Unique().Annotations(entsql.OnDelete(entsql.Cascade)),
 	}
 }
 

@@ -28,6 +28,10 @@ func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsR
 	switch {
 	case errors.Is(err, errorz.InvalidCosmeticsFormat):
 		return nil, errorz.InvalidCosmeticsFormat
+	case errors.Is(err, errorz.CategoryNotFound):
+		return nil, errorz.CategoryNotFound
+	case errors.Is(err, errorz.ImageNotFound):
+		return nil, errorz.ImageNotFound
 	case err != nil:
 		return nil, err
 	}

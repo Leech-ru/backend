@@ -538,6 +538,29 @@ func HasCategoryWith(preds ...predicate.Category) predicate.Cosmetics {
 	})
 }
 
+// HasImages applies the HasEdge predicate on the "images" edge.
+func HasImages() predicate.Cosmetics {
+	return predicate.Cosmetics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ImagesTable, ImagesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasImagesWith applies the HasEdge predicate on the "images" edge with a given conditions (other predicates).
+func HasImagesWith(preds ...predicate.Image) predicate.Cosmetics {
+	return predicate.Cosmetics(func(s *sql.Selector) {
+		step := newImagesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Cosmetics) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.AndPredicates(predicates...))
