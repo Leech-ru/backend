@@ -5,10 +5,12 @@ import (
 	"Leech-ru/internal/domain/dto"
 	"context"
 	"errors"
+	"mime/multipart"
+	"time"
 )
 
-// Update change cosmetics data.
-func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsRequest) (*dto.UpdateCosmeticsResponse, error) {
+// Update change cosmetics data and optionally upload a new image file.
+func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsRequest, file *multipart.FileHeader) (*dto.UpdateCosmeticsResponse, error) {
 	cosmeticToUpdate, err := s.cosmeticsRepo.GetById(ctx, req.ID)
 	switch {
 	case errors.Is(err, errorz.CosmeticsNotFound):
@@ -16,6 +18,41 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 	case err != nil:
 		return nil, err
 	}
+
+	if file != nil {
+		src, err := file.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer src.Close()
+
+		imageDTO, err := s.imageService.Create(ctx, &dto.CreateImageRequest{
+			File: &dto.FilePackage{
+				Content:      src,
+				ContentType:  file.Header.Get("Content-Type"),
+				Size:         file.Size,
+				Filename:     file.Filename,
+				LastModified: time.Now(),
+			},
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		if cosmeticToUpdate.ImageID != nil {
+			err := s.imageService.Delete(ctx, &dto.DeleteImageRequest{
+				ID: *cosmeticToUpdate.ImageID,
+			})
+			switch {
+			case errors.Is(err, errorz.ImageNotFound): //ignore
+			case err != nil:
+				return nil, err
+			}
+		}
+
+		cosmeticToUpdate.ImageID = &imageDTO.ID
+	}
+
 	if req.CategoryID != nil {
 		cosmeticToUpdate.Edges.Category.ID = *req.CategoryID
 	}
@@ -45,16 +82,19 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 
 	updatedCosmetic, err := s.cosmeticsRepo.Update(ctx, *cosmeticToUpdate)
 	switch {
-	case errors.Is(err, errorz.CosmeticsNotFound):
-		return nil, errorz.CosmeticsNotFound
 	case errors.Is(err, errorz.InvalidCosmeticsFormat):
 		return nil, errorz.InvalidCosmeticsFormat
+	case errors.Is(err, errorz.CategoryNotFound):
+		return nil, errorz.CategoryNotFound
+	case errors.Is(err, errorz.ImageNotFound):
+		return nil, errorz.ImageNotFound
 	case err != nil:
 		return nil, err
 	}
 
 	return &dto.UpdateCosmeticsResponse{
-		ID: updatedCosmetic.ID,
+		ID:      updatedCosmetic.ID,
+		ImageID: updatedCosmetic.ImageID,
 		Category: dto.Category{
 			ID:   updatedCosmetic.Edges.Category.ID,
 			Name: updatedCosmetic.Edges.Category.Name,

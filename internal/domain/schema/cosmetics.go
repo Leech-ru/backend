@@ -21,16 +21,17 @@ func (Cosmetics) Fields() []ent.Field {
 			Immutable().
 			Unique(),
 
+		field.UUID("image_id", uuid.UUID{}).
+			Optional().Nillable(),
+
 		field.String("title").
 			NotEmpty(),
 
 		field.String("description").
-			Optional().Nillable().
-			Default(""),
+			Optional().Nillable(),
 
 		field.String("applicationMethod").
-			Optional().Nillable().
-			Default(""),
+			Optional().Nillable(),
 
 		field.Int("volume").
 			Optional().Nillable().

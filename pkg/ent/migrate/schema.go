@@ -11,7 +11,7 @@ var (
 	// CategoriesColumns holds the columns for the "categories" table.
 	CategoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
-		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
 	}
 	// CategoriesTable holds the schema information for the "categories" table.
 	CategoriesTable = &schema.Table{
@@ -22,9 +22,10 @@ var (
 	// CosmeticsColumns holds the columns for the "cosmetics" table.
 	CosmeticsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "image_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "title", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "application_method", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "application_method", Type: field.TypeString, Nullable: true},
 		{Name: "volume", Type: field.TypeInt, Nullable: true},
 		{Name: "ozon_link", Type: field.TypeString, Nullable: true},
 		{Name: "wildberries_link", Type: field.TypeString, Nullable: true},
@@ -39,7 +40,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "cosmetics_categories_cosmetics",
-				Columns:    []*schema.Column{CosmeticsColumns[8]},
+				Columns:    []*schema.Column{CosmeticsColumns[9]},
 				RefColumns: []*schema.Column{CategoriesColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -48,7 +49,7 @@ var (
 			{
 				Name:    "cosmetics_is_hidden",
 				Unique:  false,
-				Columns: []*schema.Column{CosmeticsColumns[7]},
+				Columns: []*schema.Column{CosmeticsColumns[8]},
 			},
 		},
 	}

@@ -29,6 +29,26 @@ func (cu *CosmeticsUpdate) Where(ps ...predicate.Cosmetics) *CosmeticsUpdate {
 	return cu
 }
 
+// SetImageID sets the "image_id" field.
+func (cu *CosmeticsUpdate) SetImageID(u uuid.UUID) *CosmeticsUpdate {
+	cu.mutation.SetImageID(u)
+	return cu
+}
+
+// SetNillableImageID sets the "image_id" field if the given value is not nil.
+func (cu *CosmeticsUpdate) SetNillableImageID(u *uuid.UUID) *CosmeticsUpdate {
+	if u != nil {
+		cu.SetImageID(*u)
+	}
+	return cu
+}
+
+// ClearImageID clears the value of the "image_id" field.
+func (cu *CosmeticsUpdate) ClearImageID() *CosmeticsUpdate {
+	cu.mutation.ClearImageID()
+	return cu
+}
+
 // SetTitle sets the "title" field.
 func (cu *CosmeticsUpdate) SetTitle(s string) *CosmeticsUpdate {
 	cu.mutation.SetTitle(s)
@@ -243,6 +263,12 @@ func (cu *CosmeticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := cu.mutation.ImageID(); ok {
+		_spec.SetField(cosmetics.FieldImageID, field.TypeUUID, value)
+	}
+	if cu.mutation.ImageIDCleared() {
+		_spec.ClearField(cosmetics.FieldImageID, field.TypeUUID)
+	}
 	if value, ok := cu.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)
 	}
@@ -329,6 +355,26 @@ type CosmeticsUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CosmeticsMutation
+}
+
+// SetImageID sets the "image_id" field.
+func (cuo *CosmeticsUpdateOne) SetImageID(u uuid.UUID) *CosmeticsUpdateOne {
+	cuo.mutation.SetImageID(u)
+	return cuo
+}
+
+// SetNillableImageID sets the "image_id" field if the given value is not nil.
+func (cuo *CosmeticsUpdateOne) SetNillableImageID(u *uuid.UUID) *CosmeticsUpdateOne {
+	if u != nil {
+		cuo.SetImageID(*u)
+	}
+	return cuo
+}
+
+// ClearImageID clears the value of the "image_id" field.
+func (cuo *CosmeticsUpdateOne) ClearImageID() *CosmeticsUpdateOne {
+	cuo.mutation.ClearImageID()
+	return cuo
 }
 
 // SetTitle sets the "title" field.
@@ -574,6 +620,12 @@ func (cuo *CosmeticsUpdateOne) sqlSave(ctx context.Context) (_node *Cosmetics, e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := cuo.mutation.ImageID(); ok {
+		_spec.SetField(cosmetics.FieldImageID, field.TypeUUID, value)
+	}
+	if cuo.mutation.ImageIDCleared() {
+		_spec.ClearField(cosmetics.FieldImageID, field.TypeUUID)
 	}
 	if value, ok := cuo.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)

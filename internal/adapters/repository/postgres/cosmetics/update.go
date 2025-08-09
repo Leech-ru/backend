@@ -14,8 +14,27 @@ func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.
 		return nil, err
 	}
 
+	_, err = tx.Cosmetics.Get(ctx, entity.ID)
+	if err != nil {
+		_ = tx.Rollback()
+		if ent.IsNotFound(err) {
+			return nil, errorz.CosmeticsNotFound
+		}
+		return nil, err
+	}
+
+	_, err = tx.Category.Get(ctx, entity.Edges.Category.ID)
+	if err != nil {
+		_ = tx.Rollback()
+		if ent.IsNotFound(err) {
+			return nil, errorz.CategoryNotFound
+		}
+		return nil, err
+	}
+
 	_, err = tx.Cosmetics.
 		UpdateOneID(entity.ID).
+		SetNillableImageID(entity.ImageID).
 		SetTitle(entity.Title).
 		SetCategoryID(entity.Edges.Category.ID).
 		SetNillableDescription(entity.Description).
@@ -26,11 +45,7 @@ func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.
 		SetIsHidden(entity.IsHidden).
 		Save(ctx)
 
-	switch {
-	case ent.IsNotFound(err):
-		_ = tx.Rollback()
-		return nil, errorz.CosmeticsNotFound
-	case err != nil:
+	if err != nil {
 		_ = tx.Rollback()
 		return nil, err
 	}

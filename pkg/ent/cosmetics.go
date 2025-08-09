@@ -18,6 +18,8 @@ type Cosmetics struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// ImageID holds the value of the "image_id" field.
+	ImageID *uuid.UUID `json:"image_id,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Description holds the value of the "description" field.
@@ -64,6 +66,8 @@ func (*Cosmetics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case cosmetics.FieldImageID:
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		case cosmetics.FieldIsHidden:
 			values[i] = new(sql.NullBool)
 		case cosmetics.FieldVolume:
@@ -94,6 +98,13 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				c.ID = *value
+			}
+		case cosmetics.FieldImageID:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field image_id", values[i])
+			} else if value.Valid {
+				c.ImageID = new(uuid.UUID)
+				*c.ImageID = *value.S.(*uuid.UUID)
 			}
 		case cosmetics.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -190,6 +201,11 @@ func (c *Cosmetics) String() string {
 	var builder strings.Builder
 	builder.WriteString("Cosmetics(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
+	if v := c.ImageID; v != nil {
+		builder.WriteString("image_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(c.Title)
 	builder.WriteString(", ")

@@ -13,6 +13,8 @@ const (
 	Label = "cosmetics"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldImageID holds the string denoting the image_id field in the database.
+	FieldImageID = "image_id"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -43,6 +45,7 @@ const (
 // Columns holds all SQL columns for cosmetics fields.
 var Columns = []string{
 	FieldID,
+	FieldImageID,
 	FieldTitle,
 	FieldDescription,
 	FieldApplicationMethod,
@@ -76,10 +79,6 @@ func ValidColumn(column string) bool {
 var (
 	// TitleValidator is a validator for the "title" field. It is called by the builders before save.
 	TitleValidator func(string) error
-	// DefaultDescription holds the default value on creation for the "description" field.
-	DefaultDescription string
-	// DefaultApplicationMethod holds the default value on creation for the "applicationMethod" field.
-	DefaultApplicationMethod string
 	// VolumeValidator is a validator for the "volume" field. It is called by the builders before save.
 	VolumeValidator func(int) error
 	// DefaultID holds the default value on creation for the "id" field.
@@ -92,6 +91,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByImageID orders the results by the image_id field.
+func ByImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldImageID, opts...).ToFunc()
 }
 
 // ByTitle orders the results by the title field.

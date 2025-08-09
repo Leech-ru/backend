@@ -55,6 +55,11 @@ func IDLTE(id uuid.UUID) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldLTE(FieldID, id))
 }
 
+// ImageID applies equality check predicate on the "image_id" field. It's identical to ImageIDEQ.
+func ImageID(v uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEQ(FieldImageID, v))
+}
+
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
 func Title(v string) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldEQ(FieldTitle, v))
@@ -88,6 +93,56 @@ func WildberriesLink(v string) predicate.Cosmetics {
 // IsHidden applies equality check predicate on the "is_hidden" field. It's identical to IsHiddenEQ.
 func IsHidden(v bool) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldEQ(FieldIsHidden, v))
+}
+
+// ImageIDEQ applies the EQ predicate on the "image_id" field.
+func ImageIDEQ(v uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldEQ(FieldImageID, v))
+}
+
+// ImageIDNEQ applies the NEQ predicate on the "image_id" field.
+func ImageIDNEQ(v uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNEQ(FieldImageID, v))
+}
+
+// ImageIDIn applies the In predicate on the "image_id" field.
+func ImageIDIn(vs ...uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldIn(FieldImageID, vs...))
+}
+
+// ImageIDNotIn applies the NotIn predicate on the "image_id" field.
+func ImageIDNotIn(vs ...uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNotIn(FieldImageID, vs...))
+}
+
+// ImageIDGT applies the GT predicate on the "image_id" field.
+func ImageIDGT(v uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldGT(FieldImageID, v))
+}
+
+// ImageIDGTE applies the GTE predicate on the "image_id" field.
+func ImageIDGTE(v uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldGTE(FieldImageID, v))
+}
+
+// ImageIDLT applies the LT predicate on the "image_id" field.
+func ImageIDLT(v uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldLT(FieldImageID, v))
+}
+
+// ImageIDLTE applies the LTE predicate on the "image_id" field.
+func ImageIDLTE(v uuid.UUID) predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldLTE(FieldImageID, v))
+}
+
+// ImageIDIsNil applies the IsNil predicate on the "image_id" field.
+func ImageIDIsNil() predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldIsNull(FieldImageID))
+}
+
+// ImageIDNotNil applies the NotNil predicate on the "image_id" field.
+func ImageIDNotNil() predicate.Cosmetics {
+	return predicate.Cosmetics(sql.FieldNotNull(FieldImageID))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.

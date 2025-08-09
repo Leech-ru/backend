@@ -21,6 +21,20 @@ type CosmeticsCreate struct {
 	hooks    []Hook
 }
 
+// SetImageID sets the "image_id" field.
+func (cc *CosmeticsCreate) SetImageID(u uuid.UUID) *CosmeticsCreate {
+	cc.mutation.SetImageID(u)
+	return cc
+}
+
+// SetNillableImageID sets the "image_id" field if the given value is not nil.
+func (cc *CosmeticsCreate) SetNillableImageID(u *uuid.UUID) *CosmeticsCreate {
+	if u != nil {
+		cc.SetImageID(*u)
+	}
+	return cc
+}
+
 // SetTitle sets the "title" field.
 func (cc *CosmeticsCreate) SetTitle(s string) *CosmeticsCreate {
 	cc.mutation.SetTitle(s)
@@ -163,14 +177,6 @@ func (cc *CosmeticsCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (cc *CosmeticsCreate) defaults() {
-	if _, ok := cc.mutation.Description(); !ok {
-		v := cosmetics.DefaultDescription
-		cc.mutation.SetDescription(v)
-	}
-	if _, ok := cc.mutation.ApplicationMethod(); !ok {
-		v := cosmetics.DefaultApplicationMethod
-		cc.mutation.SetApplicationMethod(v)
-	}
 	if _, ok := cc.mutation.ID(); !ok {
 		v := cosmetics.DefaultID()
 		cc.mutation.SetID(v)
@@ -232,6 +238,10 @@ func (cc *CosmeticsCreate) createSpec() (*Cosmetics, *sqlgraph.CreateSpec) {
 	if id, ok := cc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
+	}
+	if value, ok := cc.mutation.ImageID(); ok {
+		_spec.SetField(cosmetics.FieldImageID, field.TypeUUID, value)
+		_node.ImageID = &value
 	}
 	if value, ok := cc.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)

@@ -9,7 +9,6 @@ import (
 )
 
 // Category holds the schema definition for the Category entity.
-// Category holds the schema definition for the Category entity.
 type Category struct {
 	ent.Schema
 }
@@ -23,8 +22,7 @@ func (Category) Fields() []ent.Field {
 			Unique(),
 
 		field.String("name").
-			NotEmpty().
-			Unique(),
+			NotEmpty(),
 	}
 }
 

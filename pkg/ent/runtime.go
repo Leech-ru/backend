@@ -32,19 +32,11 @@ func init() {
 	cosmeticsFields := schema.Cosmetics{}.Fields()
 	_ = cosmeticsFields
 	// cosmeticsDescTitle is the schema descriptor for title field.
-	cosmeticsDescTitle := cosmeticsFields[1].Descriptor()
+	cosmeticsDescTitle := cosmeticsFields[2].Descriptor()
 	// cosmetics.TitleValidator is a validator for the "title" field. It is called by the builders before save.
 	cosmetics.TitleValidator = cosmeticsDescTitle.Validators[0].(func(string) error)
-	// cosmeticsDescDescription is the schema descriptor for description field.
-	cosmeticsDescDescription := cosmeticsFields[2].Descriptor()
-	// cosmetics.DefaultDescription holds the default value on creation for the description field.
-	cosmetics.DefaultDescription = cosmeticsDescDescription.Default.(string)
-	// cosmeticsDescApplicationMethod is the schema descriptor for applicationMethod field.
-	cosmeticsDescApplicationMethod := cosmeticsFields[3].Descriptor()
-	// cosmetics.DefaultApplicationMethod holds the default value on creation for the applicationMethod field.
-	cosmetics.DefaultApplicationMethod = cosmeticsDescApplicationMethod.Default.(string)
 	// cosmeticsDescVolume is the schema descriptor for volume field.
-	cosmeticsDescVolume := cosmeticsFields[4].Descriptor()
+	cosmeticsDescVolume := cosmeticsFields[5].Descriptor()
 	// cosmetics.VolumeValidator is a validator for the "volume" field. It is called by the builders before save.
 	cosmetics.VolumeValidator = cosmeticsDescVolume.Validators[0].(func(int) error)
 	// cosmeticsDescID is the schema descriptor for id field.

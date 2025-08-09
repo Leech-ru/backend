@@ -2,6 +2,7 @@ package cosmetics
 
 import (
 	"Leech-ru/internal/adapters/repository/postgres/cosmetics"
+	"Leech-ru/internal/domain/dto"
 	"Leech-ru/pkg/ent"
 	"context"
 	"github.com/google/uuid"
@@ -15,12 +16,20 @@ type cosmeticsRepo interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 
-type cosmeticsService struct {
-	cosmeticsRepo cosmeticsRepo
+type imageService interface {
+	Create(ctx context.Context, req *dto.CreateImageRequest) (*dto.CreateImageResponse, error)
+	GetById(ctx context.Context, req *dto.GetByIdImageRequest) (*dto.GetByIdImageResponse, error)
+	Delete(ctx context.Context, req *dto.DeleteImageRequest) error
 }
 
-func NewCosmeticsService(entClient *ent.Client) *cosmeticsService {
+type cosmeticsService struct {
+	cosmeticsRepo cosmeticsRepo
+	imageService  imageService
+}
+
+func NewCosmeticsService(entClient *ent.Client, imageService imageService) *cosmeticsService {
 	return &cosmeticsService{
 		cosmeticsRepo: cosmetics.NewCosmeticsRepo(entClient),
+		imageService:  imageService,
 	}
 }

@@ -469,6 +469,83 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/cosmetics/admin": {
+            "get": {
+                "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc and hidden parameters.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cosmetics"
+                ],
+                "summary": "Get cosmetics by filters",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Max number of items",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000",
+                        "description": "Category UUID",
+                        "name": "category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by title prefix",
+                        "name": "titlePrefix",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 10000,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Exact volume in ml",
+                        "name": "volume",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.Cosmetics"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/cosmetics/{id}": {
             "get": {
                 "description": "Retrieves a cosmetic product using its UUID.",
@@ -1657,7 +1734,7 @@ const docTemplate = `{
         "dto.CreateCosmeticsRequest": {
             "type": "object",
             "required": [
-                "category",
+                "category_id",
                 "is_hidden",
                 "title"
             ],
@@ -1668,7 +1745,7 @@ const docTemplate = `{
                     "minLength": 3,
                     "example": "Apply to wet hair, lather, rinse."
                 },
-                "category": {
+                "category_id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
@@ -2327,7 +2404,7 @@ const docTemplate = `{
                     "minLength": 3,
                     "example": "Apply evenly and rinse well."
                 },
-                "category": {
+                "category_id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },

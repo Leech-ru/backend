@@ -300,12 +300,12 @@ func (cq *CosmeticsQuery) WithCategory(opts ...func(*CategoryQuery)) *CosmeticsQ
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		ImageID uuid.UUID `json:"image_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Cosmetics.Query().
-//		GroupBy(cosmetics.FieldTitle).
+//		GroupBy(cosmetics.FieldImageID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cq *CosmeticsQuery) GroupBy(field string, fields ...string) *CosmeticsGroupBy {
@@ -323,11 +323,11 @@ func (cq *CosmeticsQuery) GroupBy(field string, fields ...string) *CosmeticsGrou
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		ImageID uuid.UUID `json:"image_id,omitempty"`
 //	}
 //
 //	client.Cosmetics.Query().
-//		Select(cosmetics.FieldTitle).
+//		Select(cosmetics.FieldImageID).
 //		Scan(ctx, &v)
 func (cq *CosmeticsQuery) Select(fields ...string) *CosmeticsSelect {
 	cq.ctx.Fields = append(cq.ctx.Fields, fields...)

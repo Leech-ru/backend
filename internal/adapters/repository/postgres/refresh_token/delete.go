@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// DeleteByUserID removes a user by ID
+// DeleteByUserID removes a token by user ID
 func (s *tokenRepo) DeleteByUserID(ctx context.Context, userID uuid.UUID) error {
 	_, err := s.client.RefreshToken.
 		Delete().
