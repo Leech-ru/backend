@@ -10,10 +10,5 @@ func (s *imageService) Delete(ctx context.Context, req *dto.DeleteImageRequest) 
 	if err != nil {
 		return err
 	}
-	err = s.imageMinIORepo.Delete(ctx, req.ID)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }

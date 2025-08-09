@@ -6,7 +6,6 @@ import (
 	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
-	"Leech-ru/pkg/ent/image"
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/predicate"
@@ -33,7 +32,6 @@ const (
 	// Node types.
 	TypeCategory     = "Category"
 	TypeCosmetics    = "Cosmetics"
-	TypeImage        = "Image"
 	TypePartner      = "Partner"
 	TypePartnerLink  = "PartnerLink"
 	TypeRefreshToken = "RefreshToken"
@@ -471,6 +469,7 @@ type CosmeticsMutation struct {
 	op                Op
 	typ               string
 	id                *uuid.UUID
+	image_id          *uuid.UUID
 	title             *string
 	description       *string
 	applicationMethod *string
@@ -482,8 +481,6 @@ type CosmeticsMutation struct {
 	clearedFields     map[string]struct{}
 	category          *uuid.UUID
 	clearedcategory   bool
-	images            *uuid.UUID
-	clearedimages     bool
 	done              bool
 	oldValue          func(context.Context) (*Cosmetics, error)
 	predicates        []predicate.Cosmetics
@@ -591,6 +588,55 @@ func (m *CosmeticsMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetImageID sets the "image_id" field.
+func (m *CosmeticsMutation) SetImageID(u uuid.UUID) {
+	m.image_id = &u
+}
+
+// ImageID returns the value of the "image_id" field in the mutation.
+func (m *CosmeticsMutation) ImageID() (r uuid.UUID, exists bool) {
+	v := m.image_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldImageID returns the old "image_id" field's value of the Cosmetics entity.
+// If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CosmeticsMutation) OldImageID(ctx context.Context) (v *uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldImageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldImageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldImageID: %w", err)
+	}
+	return oldValue.ImageID, nil
+}
+
+// ClearImageID clears the value of the "image_id" field.
+func (m *CosmeticsMutation) ClearImageID() {
+	m.image_id = nil
+	m.clearedFields[cosmetics.FieldImageID] = struct{}{}
+}
+
+// ImageIDCleared returns if the "image_id" field was cleared in this mutation.
+func (m *CosmeticsMutation) ImageIDCleared() bool {
+	_, ok := m.clearedFields[cosmetics.FieldImageID]
+	return ok
+}
+
+// ResetImageID resets all changes to the "image_id" field.
+func (m *CosmeticsMutation) ResetImageID() {
+	m.image_id = nil
+	delete(m.clearedFields, cosmetics.FieldImageID)
 }
 
 // SetTitle sets the "title" field.
@@ -970,45 +1016,6 @@ func (m *CosmeticsMutation) ResetCategory() {
 	m.clearedcategory = false
 }
 
-// SetImagesID sets the "images" edge to the Image entity by id.
-func (m *CosmeticsMutation) SetImagesID(id uuid.UUID) {
-	m.images = &id
-}
-
-// ClearImages clears the "images" edge to the Image entity.
-func (m *CosmeticsMutation) ClearImages() {
-	m.clearedimages = true
-}
-
-// ImagesCleared reports if the "images" edge to the Image entity was cleared.
-func (m *CosmeticsMutation) ImagesCleared() bool {
-	return m.clearedimages
-}
-
-// ImagesID returns the "images" edge ID in the mutation.
-func (m *CosmeticsMutation) ImagesID() (id uuid.UUID, exists bool) {
-	if m.images != nil {
-		return *m.images, true
-	}
-	return
-}
-
-// ImagesIDs returns the "images" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ImagesID instead. It exists only for internal usage by the builders.
-func (m *CosmeticsMutation) ImagesIDs() (ids []uuid.UUID) {
-	if id := m.images; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetImages resets all changes to the "images" edge.
-func (m *CosmeticsMutation) ResetImages() {
-	m.images = nil
-	m.clearedimages = false
-}
-
 // Where appends a list predicates to the CosmeticsMutation builder.
 func (m *CosmeticsMutation) Where(ps ...predicate.Cosmetics) {
 	m.predicates = append(m.predicates, ps...)
@@ -1043,7 +1050,10 @@ func (m *CosmeticsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CosmeticsMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
+	if m.image_id != nil {
+		fields = append(fields, cosmetics.FieldImageID)
+	}
 	if m.title != nil {
 		fields = append(fields, cosmetics.FieldTitle)
 	}
@@ -1073,6 +1083,8 @@ func (m *CosmeticsMutation) Fields() []string {
 // schema.
 func (m *CosmeticsMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case cosmetics.FieldImageID:
+		return m.ImageID()
 	case cosmetics.FieldTitle:
 		return m.Title()
 	case cosmetics.FieldDescription:
@@ -1096,6 +1108,8 @@ func (m *CosmeticsMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CosmeticsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case cosmetics.FieldImageID:
+		return m.OldImageID(ctx)
 	case cosmetics.FieldTitle:
 		return m.OldTitle(ctx)
 	case cosmetics.FieldDescription:
@@ -1119,6 +1133,13 @@ func (m *CosmeticsMutation) OldField(ctx context.Context, name string) (ent.Valu
 // type.
 func (m *CosmeticsMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case cosmetics.FieldImageID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetImageID(v)
+		return nil
 	case cosmetics.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
@@ -1213,6 +1234,9 @@ func (m *CosmeticsMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *CosmeticsMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(cosmetics.FieldImageID) {
+		fields = append(fields, cosmetics.FieldImageID)
+	}
 	if m.FieldCleared(cosmetics.FieldDescription) {
 		fields = append(fields, cosmetics.FieldDescription)
 	}
@@ -1242,6 +1266,9 @@ func (m *CosmeticsMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *CosmeticsMutation) ClearField(name string) error {
 	switch name {
+	case cosmetics.FieldImageID:
+		m.ClearImageID()
+		return nil
 	case cosmetics.FieldDescription:
 		m.ClearDescription()
 		return nil
@@ -1265,6 +1292,9 @@ func (m *CosmeticsMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CosmeticsMutation) ResetField(name string) error {
 	switch name {
+	case cosmetics.FieldImageID:
+		m.ResetImageID()
+		return nil
 	case cosmetics.FieldTitle:
 		m.ResetTitle()
 		return nil
@@ -1292,12 +1322,9 @@ func (m *CosmeticsMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CosmeticsMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.category != nil {
 		edges = append(edges, cosmetics.EdgeCategory)
-	}
-	if m.images != nil {
-		edges = append(edges, cosmetics.EdgeImages)
 	}
 	return edges
 }
@@ -1310,17 +1337,13 @@ func (m *CosmeticsMutation) AddedIDs(name string) []ent.Value {
 		if id := m.category; id != nil {
 			return []ent.Value{*id}
 		}
-	case cosmetics.EdgeImages:
-		if id := m.images; id != nil {
-			return []ent.Value{*id}
-		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CosmeticsMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -1332,12 +1355,9 @@ func (m *CosmeticsMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CosmeticsMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.clearedcategory {
 		edges = append(edges, cosmetics.EdgeCategory)
-	}
-	if m.clearedimages {
-		edges = append(edges, cosmetics.EdgeImages)
 	}
 	return edges
 }
@@ -1348,8 +1368,6 @@ func (m *CosmeticsMutation) EdgeCleared(name string) bool {
 	switch name {
 	case cosmetics.EdgeCategory:
 		return m.clearedcategory
-	case cosmetics.EdgeImages:
-		return m.clearedimages
 	}
 	return false
 }
@@ -1360,9 +1378,6 @@ func (m *CosmeticsMutation) ClearEdge(name string) error {
 	switch name {
 	case cosmetics.EdgeCategory:
 		m.ClearCategory()
-		return nil
-	case cosmetics.EdgeImages:
-		m.ClearImages()
 		return nil
 	}
 	return fmt.Errorf("unknown Cosmetics unique edge %s", name)
@@ -1375,436 +1390,8 @@ func (m *CosmeticsMutation) ResetEdge(name string) error {
 	case cosmetics.EdgeCategory:
 		m.ResetCategory()
 		return nil
-	case cosmetics.EdgeImages:
-		m.ResetImages()
-		return nil
 	}
 	return fmt.Errorf("unknown Cosmetics edge %s", name)
-}
-
-// ImageMutation represents an operation that mutates the Image nodes in the graph.
-type ImageMutation struct {
-	config
-	op               Op
-	typ              string
-	id               *uuid.UUID
-	name             *string
-	clearedFields    map[string]struct{}
-	cosmetics        map[uuid.UUID]struct{}
-	removedcosmetics map[uuid.UUID]struct{}
-	clearedcosmetics bool
-	done             bool
-	oldValue         func(context.Context) (*Image, error)
-	predicates       []predicate.Image
-}
-
-var _ ent.Mutation = (*ImageMutation)(nil)
-
-// imageOption allows management of the mutation configuration using functional options.
-type imageOption func(*ImageMutation)
-
-// newImageMutation creates new mutation for the Image entity.
-func newImageMutation(c config, op Op, opts ...imageOption) *ImageMutation {
-	m := &ImageMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeImage,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withImageID sets the ID field of the mutation.
-func withImageID(id uuid.UUID) imageOption {
-	return func(m *ImageMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Image
-		)
-		m.oldValue = func(ctx context.Context) (*Image, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Image.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withImage sets the old Image of the mutation.
-func withImage(node *Image) imageOption {
-	return func(m *ImageMutation) {
-		m.oldValue = func(context.Context) (*Image, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ImageMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ImageMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Image entities.
-func (m *ImageMutation) SetID(id uuid.UUID) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ImageMutation) ID() (id uuid.UUID, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ImageMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []uuid.UUID{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Image.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetName sets the "name" field.
-func (m *ImageMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *ImageMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the Image entity.
-// If the Image object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ImageMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *ImageMutation) ResetName() {
-	m.name = nil
-}
-
-// AddCosmeticIDs adds the "cosmetics" edge to the Cosmetics entity by ids.
-func (m *ImageMutation) AddCosmeticIDs(ids ...uuid.UUID) {
-	if m.cosmetics == nil {
-		m.cosmetics = make(map[uuid.UUID]struct{})
-	}
-	for i := range ids {
-		m.cosmetics[ids[i]] = struct{}{}
-	}
-}
-
-// ClearCosmetics clears the "cosmetics" edge to the Cosmetics entity.
-func (m *ImageMutation) ClearCosmetics() {
-	m.clearedcosmetics = true
-}
-
-// CosmeticsCleared reports if the "cosmetics" edge to the Cosmetics entity was cleared.
-func (m *ImageMutation) CosmeticsCleared() bool {
-	return m.clearedcosmetics
-}
-
-// RemoveCosmeticIDs removes the "cosmetics" edge to the Cosmetics entity by IDs.
-func (m *ImageMutation) RemoveCosmeticIDs(ids ...uuid.UUID) {
-	if m.removedcosmetics == nil {
-		m.removedcosmetics = make(map[uuid.UUID]struct{})
-	}
-	for i := range ids {
-		delete(m.cosmetics, ids[i])
-		m.removedcosmetics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedCosmetics returns the removed IDs of the "cosmetics" edge to the Cosmetics entity.
-func (m *ImageMutation) RemovedCosmeticsIDs() (ids []uuid.UUID) {
-	for id := range m.removedcosmetics {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// CosmeticsIDs returns the "cosmetics" edge IDs in the mutation.
-func (m *ImageMutation) CosmeticsIDs() (ids []uuid.UUID) {
-	for id := range m.cosmetics {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetCosmetics resets all changes to the "cosmetics" edge.
-func (m *ImageMutation) ResetCosmetics() {
-	m.cosmetics = nil
-	m.clearedcosmetics = false
-	m.removedcosmetics = nil
-}
-
-// Where appends a list predicates to the ImageMutation builder.
-func (m *ImageMutation) Where(ps ...predicate.Image) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ImageMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ImageMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Image, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ImageMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ImageMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (Image).
-func (m *ImageMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ImageMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.name != nil {
-		fields = append(fields, image.FieldName)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ImageMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case image.FieldName:
-		return m.Name()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ImageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case image.FieldName:
-		return m.OldName(ctx)
-	}
-	return nil, fmt.Errorf("unknown Image field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ImageMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case image.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Image field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ImageMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ImageMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ImageMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Image numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ImageMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ImageMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ImageMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Image nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ImageMutation) ResetField(name string) error {
-	switch name {
-	case image.FieldName:
-		m.ResetName()
-		return nil
-	}
-	return fmt.Errorf("unknown Image field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ImageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.cosmetics != nil {
-		edges = append(edges, image.EdgeCosmetics)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ImageMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case image.EdgeCosmetics:
-		ids := make([]ent.Value, 0, len(m.cosmetics))
-		for id := range m.cosmetics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ImageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedcosmetics != nil {
-		edges = append(edges, image.EdgeCosmetics)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ImageMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case image.EdgeCosmetics:
-		ids := make([]ent.Value, 0, len(m.removedcosmetics))
-		for id := range m.removedcosmetics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ImageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedcosmetics {
-		edges = append(edges, image.EdgeCosmetics)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ImageMutation) EdgeCleared(name string) bool {
-	switch name {
-	case image.EdgeCosmetics:
-		return m.clearedcosmetics
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ImageMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Image unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ImageMutation) ResetEdge(name string) error {
-	switch name {
-	case image.EdgeCosmetics:
-		m.ResetCosmetics()
-		return nil
-	}
-	return fmt.Errorf("unknown Image edge %s", name)
 }
 
 // PartnerMutation represents an operation that mutates the Partner nodes in the graph.

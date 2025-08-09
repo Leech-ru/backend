@@ -2,7 +2,6 @@ package schema
 
 import (
 	"entgo.io/ent"
-	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
@@ -22,16 +21,17 @@ func (Cosmetics) Fields() []ent.Field {
 			Immutable().
 			Unique(),
 
+		field.UUID("image_id", uuid.UUID{}).
+			Optional().Nillable(),
+
 		field.String("title").
 			NotEmpty(),
 
 		field.String("description").
-			Optional().Nillable().
-			Default(""),
+			Optional().Nillable(),
 
 		field.String("applicationMethod").
-			Optional().Nillable().
-			Default(""),
+			Optional().Nillable(),
 
 		field.Int("volume").
 			Optional().Nillable().
@@ -53,10 +53,6 @@ func (Cosmetics) Edges() []ent.Edge {
 			Ref("cosmetics").
 			Unique().
 			Required(),
-
-		edge.From("images", Image.Type).
-			Ref("cosmetics").
-			Unique().Annotations(entsql.OnDelete(entsql.Cascade)),
 	}
 }
 

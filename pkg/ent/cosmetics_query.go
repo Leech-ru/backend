@@ -5,7 +5,6 @@ package ent
 import (
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
-	"Leech-ru/pkg/ent/image"
 	"Leech-ru/pkg/ent/predicate"
 	"context"
 	"fmt"
@@ -26,7 +25,6 @@ type CosmeticsQuery struct {
 	inters       []Interceptor
 	predicates   []predicate.Cosmetics
 	withCategory *CategoryQuery
-	withImages   *ImageQuery
 	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -79,28 +77,6 @@ func (cq *CosmeticsQuery) QueryCategory() *CategoryQuery {
 			sqlgraph.From(cosmetics.Table, cosmetics.FieldID, selector),
 			sqlgraph.To(category.Table, category.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, cosmetics.CategoryTable, cosmetics.CategoryColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryImages chains the current query on the "images" edge.
-func (cq *CosmeticsQuery) QueryImages() *ImageQuery {
-	query := (&ImageClient{config: cq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := cq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := cq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(cosmetics.Table, cosmetics.FieldID, selector),
-			sqlgraph.To(image.Table, image.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, cosmetics.ImagesTable, cosmetics.ImagesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 		return fromU, nil
@@ -301,7 +277,6 @@ func (cq *CosmeticsQuery) Clone() *CosmeticsQuery {
 		inters:       append([]Interceptor{}, cq.inters...),
 		predicates:   append([]predicate.Cosmetics{}, cq.predicates...),
 		withCategory: cq.withCategory.Clone(),
-		withImages:   cq.withImages.Clone(),
 		// clone intermediate query.
 		sql:  cq.sql.Clone(),
 		path: cq.path,
@@ -319,29 +294,18 @@ func (cq *CosmeticsQuery) WithCategory(opts ...func(*CategoryQuery)) *CosmeticsQ
 	return cq
 }
 
-// WithImages tells the query-builder to eager-load the nodes that are connected to
-// the "images" edge. The optional arguments are used to configure the query builder of the edge.
-func (cq *CosmeticsQuery) WithImages(opts ...func(*ImageQuery)) *CosmeticsQuery {
-	query := (&ImageClient{config: cq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	cq.withImages = query
-	return cq
-}
-
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		ImageID uuid.UUID `json:"image_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Cosmetics.Query().
-//		GroupBy(cosmetics.FieldTitle).
+//		GroupBy(cosmetics.FieldImageID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cq *CosmeticsQuery) GroupBy(field string, fields ...string) *CosmeticsGroupBy {
@@ -359,11 +323,11 @@ func (cq *CosmeticsQuery) GroupBy(field string, fields ...string) *CosmeticsGrou
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		ImageID uuid.UUID `json:"image_id,omitempty"`
 //	}
 //
 //	client.Cosmetics.Query().
-//		Select(cosmetics.FieldTitle).
+//		Select(cosmetics.FieldImageID).
 //		Scan(ctx, &v)
 func (cq *CosmeticsQuery) Select(fields ...string) *CosmeticsSelect {
 	cq.ctx.Fields = append(cq.ctx.Fields, fields...)
@@ -409,12 +373,11 @@ func (cq *CosmeticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 		nodes       = []*Cosmetics{}
 		withFKs     = cq.withFKs
 		_spec       = cq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			cq.withCategory != nil,
-			cq.withImages != nil,
 		}
 	)
-	if cq.withCategory != nil || cq.withImages != nil {
+	if cq.withCategory != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -441,12 +404,6 @@ func (cq *CosmeticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Co
 	if query := cq.withCategory; query != nil {
 		if err := cq.loadCategory(ctx, query, nodes, nil,
 			func(n *Cosmetics, e *Category) { n.Edges.Category = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := cq.withImages; query != nil {
-		if err := cq.loadImages(ctx, query, nodes, nil,
-			func(n *Cosmetics, e *Image) { n.Edges.Images = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -478,38 +435,6 @@ func (cq *CosmeticsQuery) loadCategory(ctx context.Context, query *CategoryQuery
 		nodes, ok := nodeids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "category_cosmetics" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
-func (cq *CosmeticsQuery) loadImages(ctx context.Context, query *ImageQuery, nodes []*Cosmetics, init func(*Cosmetics), assign func(*Cosmetics, *Image)) error {
-	ids := make([]uuid.UUID, 0, len(nodes))
-	nodeids := make(map[uuid.UUID][]*Cosmetics)
-	for i := range nodes {
-		if nodes[i].image_cosmetics == nil {
-			continue
-		}
-		fk := *nodes[i].image_cosmetics
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(image.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "image_cosmetics" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

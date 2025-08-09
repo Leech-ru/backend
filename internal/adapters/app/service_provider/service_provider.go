@@ -28,6 +28,7 @@ type ServiceProvider struct {
 	validator   *validator.Validator
 	formDecoder *form.Decoder
 
+	imageService     imageService
 	jwtService       jwtService
 	tokenService     tokenService
 	orderService     orderService

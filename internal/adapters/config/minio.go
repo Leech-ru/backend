@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 	"time"
 )
@@ -15,7 +16,8 @@ type MinIOConfig interface {
 }
 
 type minioConfig struct {
-	endpoint   string
+	host       string
+	port       int
 	accessKey  string
 	secretKey  string
 	bucketName string
@@ -25,7 +27,8 @@ type minioConfig struct {
 
 func NewMinIOConfig() (MinIOConfig, error) {
 	return &minioConfig{
-		endpoint:   viper.GetString("service.minio.endpoint"),
+		host:       viper.GetString("service.minio.host"),
+		port:       viper.GetInt("service.minio.port"),
 		accessKey:  viper.GetString("service.minio.access-key"),
 		secretKey:  viper.GetString("service.minio.secret-key"),
 		bucketName: viper.GetString("service.minio.bucket-name"),
@@ -35,7 +38,7 @@ func NewMinIOConfig() (MinIOConfig, error) {
 }
 
 func (cfg *minioConfig) Endpoint() string {
-	return cfg.endpoint
+	return fmt.Sprintf("%s:%d", cfg.host, cfg.port)
 }
 
 func (cfg *minioConfig) AccessKey() string {

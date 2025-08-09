@@ -11,7 +11,7 @@ var (
 	// CategoriesColumns holds the columns for the "categories" table.
 	CategoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
-		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
 	}
 	// CategoriesTable holds the schema information for the "categories" table.
 	CategoriesTable = &schema.Table{
@@ -22,15 +22,15 @@ var (
 	// CosmeticsColumns holds the columns for the "cosmetics" table.
 	CosmeticsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "image_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "title", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "application_method", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "application_method", Type: field.TypeString, Nullable: true},
 		{Name: "volume", Type: field.TypeInt, Nullable: true},
 		{Name: "ozon_link", Type: field.TypeString, Nullable: true},
 		{Name: "wildberries_link", Type: field.TypeString, Nullable: true},
 		{Name: "is_hidden", Type: field.TypeBool},
 		{Name: "category_cosmetics", Type: field.TypeUUID},
-		{Name: "image_cosmetics", Type: field.TypeUUID, Nullable: true},
 	}
 	// CosmeticsTable holds the schema information for the "cosmetics" table.
 	CosmeticsTable = &schema.Table{
@@ -40,14 +40,8 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "cosmetics_categories_cosmetics",
-				Columns:    []*schema.Column{CosmeticsColumns[8]},
-				RefColumns: []*schema.Column{CategoriesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "cosmetics_images_cosmetics",
 				Columns:    []*schema.Column{CosmeticsColumns[9]},
-				RefColumns: []*schema.Column{ImagesColumns[0]},
+				RefColumns: []*schema.Column{CategoriesColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
@@ -55,20 +49,9 @@ var (
 			{
 				Name:    "cosmetics_is_hidden",
 				Unique:  false,
-				Columns: []*schema.Column{CosmeticsColumns[7]},
+				Columns: []*schema.Column{CosmeticsColumns[8]},
 			},
 		},
-	}
-	// ImagesColumns holds the columns for the "images" table.
-	ImagesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUUID, Unique: true},
-		{Name: "name", Type: field.TypeString},
-	}
-	// ImagesTable holds the schema information for the "images" table.
-	ImagesTable = &schema.Table{
-		Name:       "images",
-		Columns:    ImagesColumns,
-		PrimaryKey: []*schema.Column{ImagesColumns[0]},
 	}
 	// PartnersColumns holds the columns for the "partners" table.
 	PartnersColumns = []*schema.Column{
@@ -142,7 +125,6 @@ var (
 	Tables = []*schema.Table{
 		CategoriesTable,
 		CosmeticsTable,
-		ImagesTable,
 		PartnersTable,
 		PartnerLinksTable,
 		RefreshTokensTable,
@@ -152,7 +134,6 @@ var (
 
 func init() {
 	CosmeticsTable.ForeignKeys[0].RefTable = CategoriesTable
-	CosmeticsTable.ForeignKeys[1].RefTable = ImagesTable
 	PartnerLinksTable.ForeignKeys[0].RefTable = PartnersTable
 	RefreshTokensTable.ForeignKeys[0].RefTable = UsersTable
 }

@@ -13,6 +13,8 @@ const (
 	Label = "cosmetics"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldImageID holds the string denoting the image_id field in the database.
+	FieldImageID = "image_id"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -29,8 +31,6 @@ const (
 	FieldIsHidden = "is_hidden"
 	// EdgeCategory holds the string denoting the category edge name in mutations.
 	EdgeCategory = "category"
-	// EdgeImages holds the string denoting the images edge name in mutations.
-	EdgeImages = "images"
 	// Table holds the table name of the cosmetics in the database.
 	Table = "cosmetics"
 	// CategoryTable is the table that holds the category relation/edge.
@@ -40,18 +40,12 @@ const (
 	CategoryInverseTable = "categories"
 	// CategoryColumn is the table column denoting the category relation/edge.
 	CategoryColumn = "category_cosmetics"
-	// ImagesTable is the table that holds the images relation/edge.
-	ImagesTable = "cosmetics"
-	// ImagesInverseTable is the table name for the Image entity.
-	// It exists in this package in order to avoid circular dependency with the "image" package.
-	ImagesInverseTable = "images"
-	// ImagesColumn is the table column denoting the images relation/edge.
-	ImagesColumn = "image_cosmetics"
 )
 
 // Columns holds all SQL columns for cosmetics fields.
 var Columns = []string{
 	FieldID,
+	FieldImageID,
 	FieldTitle,
 	FieldDescription,
 	FieldApplicationMethod,
@@ -65,7 +59,6 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"category_cosmetics",
-	"image_cosmetics",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -86,10 +79,6 @@ func ValidColumn(column string) bool {
 var (
 	// TitleValidator is a validator for the "title" field. It is called by the builders before save.
 	TitleValidator func(string) error
-	// DefaultDescription holds the default value on creation for the "description" field.
-	DefaultDescription string
-	// DefaultApplicationMethod holds the default value on creation for the "applicationMethod" field.
-	DefaultApplicationMethod string
 	// VolumeValidator is a validator for the "volume" field. It is called by the builders before save.
 	VolumeValidator func(int) error
 	// DefaultID holds the default value on creation for the "id" field.
@@ -102,6 +91,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByImageID orders the results by the image_id field.
+func ByImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldImageID, opts...).ToFunc()
 }
 
 // ByTitle orders the results by the title field.
@@ -145,24 +139,10 @@ func ByCategoryField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newCategoryStep(), sql.OrderByField(field, opts...))
 	}
 }
-
-// ByImagesField orders the results by images field.
-func ByImagesField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newImagesStep(), sql.OrderByField(field, opts...))
-	}
-}
 func newCategoryStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CategoryInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, CategoryTable, CategoryColumn),
-	)
-}
-func newImagesStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ImagesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, ImagesTable, ImagesColumn),
 	)
 }

@@ -5,7 +5,6 @@ package ent
 import (
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
-	"Leech-ru/pkg/ent/image"
 	"fmt"
 	"strings"
 
@@ -19,6 +18,8 @@ type Cosmetics struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// ImageID holds the value of the "image_id" field.
+	ImageID *uuid.UUID `json:"image_id,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Description holds the value of the "description" field.
@@ -37,7 +38,6 @@ type Cosmetics struct {
 	// The values are being populated by the CosmeticsQuery when eager-loading is set.
 	Edges              CosmeticsEdges `json:"edges"`
 	category_cosmetics *uuid.UUID
-	image_cosmetics    *uuid.UUID
 	selectValues       sql.SelectValues
 }
 
@@ -45,11 +45,9 @@ type Cosmetics struct {
 type CosmeticsEdges struct {
 	// Category holds the value of the category edge.
 	Category *Category `json:"category,omitempty"`
-	// Images holds the value of the images edge.
-	Images *Image `json:"images,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // CategoryOrErr returns the Category value or an error if the edge
@@ -63,22 +61,13 @@ func (e CosmeticsEdges) CategoryOrErr() (*Category, error) {
 	return nil, &NotLoadedError{edge: "category"}
 }
 
-// ImagesOrErr returns the Images value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e CosmeticsEdges) ImagesOrErr() (*Image, error) {
-	if e.Images != nil {
-		return e.Images, nil
-	} else if e.loadedTypes[1] {
-		return nil, &NotFoundError{label: image.Label}
-	}
-	return nil, &NotLoadedError{edge: "images"}
-}
-
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Cosmetics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case cosmetics.FieldImageID:
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		case cosmetics.FieldIsHidden:
 			values[i] = new(sql.NullBool)
 		case cosmetics.FieldVolume:
@@ -88,8 +77,6 @@ func (*Cosmetics) scanValues(columns []string) ([]any, error) {
 		case cosmetics.FieldID:
 			values[i] = new(uuid.UUID)
 		case cosmetics.ForeignKeys[0]: // category_cosmetics
-			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
-		case cosmetics.ForeignKeys[1]: // image_cosmetics
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
@@ -111,6 +98,13 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				c.ID = *value
+			}
+		case cosmetics.FieldImageID:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field image_id", values[i])
+			} else if value.Valid {
+				c.ImageID = new(uuid.UUID)
+				*c.ImageID = *value.S.(*uuid.UUID)
 			}
 		case cosmetics.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -166,13 +160,6 @@ func (c *Cosmetics) assignValues(columns []string, values []any) error {
 				c.category_cosmetics = new(uuid.UUID)
 				*c.category_cosmetics = *value.S.(*uuid.UUID)
 			}
-		case cosmetics.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullScanner); !ok {
-				return fmt.Errorf("unexpected type %T for field image_cosmetics", values[i])
-			} else if value.Valid {
-				c.image_cosmetics = new(uuid.UUID)
-				*c.image_cosmetics = *value.S.(*uuid.UUID)
-			}
 		default:
 			c.selectValues.Set(columns[i], values[i])
 		}
@@ -189,11 +176,6 @@ func (c *Cosmetics) Value(name string) (ent.Value, error) {
 // QueryCategory queries the "category" edge of the Cosmetics entity.
 func (c *Cosmetics) QueryCategory() *CategoryQuery {
 	return NewCosmeticsClient(c.config).QueryCategory(c)
-}
-
-// QueryImages queries the "images" edge of the Cosmetics entity.
-func (c *Cosmetics) QueryImages() *ImageQuery {
-	return NewCosmeticsClient(c.config).QueryImages(c)
 }
 
 // Update returns a builder for updating this Cosmetics.
@@ -219,6 +201,11 @@ func (c *Cosmetics) String() string {
 	var builder strings.Builder
 	builder.WriteString("Cosmetics(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
+	if v := c.ImageID; v != nil {
+		builder.WriteString("image_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(c.Title)
 	builder.WriteString(", ")

@@ -34,6 +34,7 @@ func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.
 
 	_, err = tx.Cosmetics.
 		UpdateOneID(entity.ID).
+		SetNillableImageID(entity.ImageID).
 		SetTitle(entity.Title).
 		SetCategoryID(entity.Edges.Category.ID).
 		SetNillableDescription(entity.Description).

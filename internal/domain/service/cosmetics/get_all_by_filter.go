@@ -37,6 +37,7 @@ func (s *cosmeticsService) GetAllByFilter(ctx context.Context, req *dto.GetAllBy
 				Wildberries: cosmetics.WildberriesLink,
 			},
 			IsHidden: cosmetics.IsHidden,
+			ImageID:  cosmetics.ImageID,
 		})
 	}
 	return &resp, nil

@@ -5,7 +5,6 @@ package ent
 import (
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
-	"Leech-ru/pkg/ent/image"
 	"Leech-ru/pkg/ent/predicate"
 	"context"
 	"errors"
@@ -27,6 +26,26 @@ type CosmeticsUpdate struct {
 // Where appends a list predicates to the CosmeticsUpdate builder.
 func (cu *CosmeticsUpdate) Where(ps ...predicate.Cosmetics) *CosmeticsUpdate {
 	cu.mutation.Where(ps...)
+	return cu
+}
+
+// SetImageID sets the "image_id" field.
+func (cu *CosmeticsUpdate) SetImageID(u uuid.UUID) *CosmeticsUpdate {
+	cu.mutation.SetImageID(u)
+	return cu
+}
+
+// SetNillableImageID sets the "image_id" field if the given value is not nil.
+func (cu *CosmeticsUpdate) SetNillableImageID(u *uuid.UUID) *CosmeticsUpdate {
+	if u != nil {
+		cu.SetImageID(*u)
+	}
+	return cu
+}
+
+// ClearImageID clears the value of the "image_id" field.
+func (cu *CosmeticsUpdate) ClearImageID() *CosmeticsUpdate {
+	cu.mutation.ClearImageID()
 	return cu
 }
 
@@ -176,25 +195,6 @@ func (cu *CosmeticsUpdate) SetCategory(c *Category) *CosmeticsUpdate {
 	return cu.SetCategoryID(c.ID)
 }
 
-// SetImagesID sets the "images" edge to the Image entity by ID.
-func (cu *CosmeticsUpdate) SetImagesID(id uuid.UUID) *CosmeticsUpdate {
-	cu.mutation.SetImagesID(id)
-	return cu
-}
-
-// SetNillableImagesID sets the "images" edge to the Image entity by ID if the given value is not nil.
-func (cu *CosmeticsUpdate) SetNillableImagesID(id *uuid.UUID) *CosmeticsUpdate {
-	if id != nil {
-		cu = cu.SetImagesID(*id)
-	}
-	return cu
-}
-
-// SetImages sets the "images" edge to the Image entity.
-func (cu *CosmeticsUpdate) SetImages(i *Image) *CosmeticsUpdate {
-	return cu.SetImagesID(i.ID)
-}
-
 // Mutation returns the CosmeticsMutation object of the builder.
 func (cu *CosmeticsUpdate) Mutation() *CosmeticsMutation {
 	return cu.mutation
@@ -203,12 +203,6 @@ func (cu *CosmeticsUpdate) Mutation() *CosmeticsMutation {
 // ClearCategory clears the "category" edge to the Category entity.
 func (cu *CosmeticsUpdate) ClearCategory() *CosmeticsUpdate {
 	cu.mutation.ClearCategory()
-	return cu
-}
-
-// ClearImages clears the "images" edge to the Image entity.
-func (cu *CosmeticsUpdate) ClearImages() *CosmeticsUpdate {
-	cu.mutation.ClearImages()
 	return cu
 }
 
@@ -268,6 +262,12 @@ func (cu *CosmeticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := cu.mutation.ImageID(); ok {
+		_spec.SetField(cosmetics.FieldImageID, field.TypeUUID, value)
+	}
+	if cu.mutation.ImageIDCleared() {
+		_spec.ClearField(cosmetics.FieldImageID, field.TypeUUID)
 	}
 	if value, ok := cu.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)
@@ -337,35 +337,6 @@ func (cu *CosmeticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if cu.mutation.ImagesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   cosmetics.ImagesTable,
-			Columns: []string{cosmetics.ImagesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := cu.mutation.ImagesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   cosmetics.ImagesTable,
-			Columns: []string{cosmetics.ImagesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{cosmetics.Label}
@@ -384,6 +355,26 @@ type CosmeticsUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CosmeticsMutation
+}
+
+// SetImageID sets the "image_id" field.
+func (cuo *CosmeticsUpdateOne) SetImageID(u uuid.UUID) *CosmeticsUpdateOne {
+	cuo.mutation.SetImageID(u)
+	return cuo
+}
+
+// SetNillableImageID sets the "image_id" field if the given value is not nil.
+func (cuo *CosmeticsUpdateOne) SetNillableImageID(u *uuid.UUID) *CosmeticsUpdateOne {
+	if u != nil {
+		cuo.SetImageID(*u)
+	}
+	return cuo
+}
+
+// ClearImageID clears the value of the "image_id" field.
+func (cuo *CosmeticsUpdateOne) ClearImageID() *CosmeticsUpdateOne {
+	cuo.mutation.ClearImageID()
+	return cuo
 }
 
 // SetTitle sets the "title" field.
@@ -532,25 +523,6 @@ func (cuo *CosmeticsUpdateOne) SetCategory(c *Category) *CosmeticsUpdateOne {
 	return cuo.SetCategoryID(c.ID)
 }
 
-// SetImagesID sets the "images" edge to the Image entity by ID.
-func (cuo *CosmeticsUpdateOne) SetImagesID(id uuid.UUID) *CosmeticsUpdateOne {
-	cuo.mutation.SetImagesID(id)
-	return cuo
-}
-
-// SetNillableImagesID sets the "images" edge to the Image entity by ID if the given value is not nil.
-func (cuo *CosmeticsUpdateOne) SetNillableImagesID(id *uuid.UUID) *CosmeticsUpdateOne {
-	if id != nil {
-		cuo = cuo.SetImagesID(*id)
-	}
-	return cuo
-}
-
-// SetImages sets the "images" edge to the Image entity.
-func (cuo *CosmeticsUpdateOne) SetImages(i *Image) *CosmeticsUpdateOne {
-	return cuo.SetImagesID(i.ID)
-}
-
 // Mutation returns the CosmeticsMutation object of the builder.
 func (cuo *CosmeticsUpdateOne) Mutation() *CosmeticsMutation {
 	return cuo.mutation
@@ -559,12 +531,6 @@ func (cuo *CosmeticsUpdateOne) Mutation() *CosmeticsMutation {
 // ClearCategory clears the "category" edge to the Category entity.
 func (cuo *CosmeticsUpdateOne) ClearCategory() *CosmeticsUpdateOne {
 	cuo.mutation.ClearCategory()
-	return cuo
-}
-
-// ClearImages clears the "images" edge to the Image entity.
-func (cuo *CosmeticsUpdateOne) ClearImages() *CosmeticsUpdateOne {
-	cuo.mutation.ClearImages()
 	return cuo
 }
 
@@ -655,6 +621,12 @@ func (cuo *CosmeticsUpdateOne) sqlSave(ctx context.Context) (_node *Cosmetics, e
 			}
 		}
 	}
+	if value, ok := cuo.mutation.ImageID(); ok {
+		_spec.SetField(cosmetics.FieldImageID, field.TypeUUID, value)
+	}
+	if cuo.mutation.ImageIDCleared() {
+		_spec.ClearField(cosmetics.FieldImageID, field.TypeUUID)
+	}
 	if value, ok := cuo.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)
 	}
@@ -716,35 +688,6 @@ func (cuo *CosmeticsUpdateOne) sqlSave(ctx context.Context) (_node *Cosmetics, e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(category.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if cuo.mutation.ImagesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   cosmetics.ImagesTable,
-			Columns: []string{cosmetics.ImagesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeUUID),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := cuo.mutation.ImagesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   cosmetics.ImagesTable,
-			Columns: []string{cosmetics.ImagesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

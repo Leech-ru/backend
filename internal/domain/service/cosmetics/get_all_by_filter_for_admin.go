@@ -36,6 +36,7 @@ func (s *cosmeticsService) GetAllByFilterForAdmin(ctx context.Context, req *dto.
 				Wildberries: cosmetics.WildberriesLink,
 			},
 			IsHidden: cosmetics.IsHidden,
+			ImageID:  cosmetics.ImageID,
 		})
 	}
 	return &resp, nil

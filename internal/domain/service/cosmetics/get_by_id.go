@@ -32,5 +32,6 @@ func (s *cosmeticsService) GetByID(ctx context.Context, req *dto.GetByIdCosmetic
 			Wildberries: cosmetics.WildberriesLink,
 		},
 		IsHidden: cosmetics.IsHidden,
+		ImageID:  cosmetics.ImageID,
 	}, nil
 }

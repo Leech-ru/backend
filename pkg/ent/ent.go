@@ -5,7 +5,6 @@ package ent
 import (
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
-	"Leech-ru/pkg/ent/image"
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/refreshtoken"
@@ -81,7 +80,6 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			category.Table:     category.ValidColumn,
 			cosmetics.Table:    cosmetics.ValidColumn,
-			image.Table:        image.ValidColumn,
 			partner.Table:      partner.ValidColumn,
 			partnerlink.Table:  partnerlink.ValidColumn,
 			refreshtoken.Table: refreshtoken.ValidColumn,
