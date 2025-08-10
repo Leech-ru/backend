@@ -11,6 +11,7 @@ import (
 )
 
 type imageService interface {
+	Create(ctx context.Context, req *dto.CreateImageRequest) (*dto.CreateImageResponse, error)
 	GetById(ctx context.Context, req *dto.GetByIdImageRequest) (*dto.GetByIdImageResponse, error)
 	Delete(ctx context.Context, req *dto.DeleteImageRequest) error
 }
@@ -39,5 +40,6 @@ func NewHandler(
 
 func (h *handler) Setup(router *echo.Group) {
 	router.GET("/image/:image_id", h.Download)
+	router.POST("/image", h.Upload, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 	router.DELETE("/image/:image_id", h.Delete, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 }
