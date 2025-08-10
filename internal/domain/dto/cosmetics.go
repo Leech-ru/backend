@@ -26,13 +26,14 @@ type Links struct {
 
 // CreateCosmeticsRequest represents a request to create a new cosmetic product.
 type CreateCosmeticsRequest struct {
-	CategoryID        uuid.UUID `json:"category_id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
-	Title             string    `json:"title" validate:"required,min=3,max=100" example:"Hair Shampoo"`
-	Description       *string   `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Suitable for daily use."`
-	ApplicationMethod *string   `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
-	Volume            *int      `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
-	Links             *Links    `json:"links,omitempty" validate:"omitempty"`
-	IsHidden          *bool     `json:"is_hidden" validate:"required" example:"false"`
+	CategoryID        uuid.UUID  `json:"category_id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	ImageID           *uuid.UUID `json:"image_id,omitempty" validate:"omitempty,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	Title             string     `json:"title" validate:"required,min=3,max=100" example:"Hair Shampoo"`
+	Description       *string    `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Suitable for daily use."`
+	ApplicationMethod *string    `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
+	Volume            *int       `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
+	Links             *Links     `json:"links,omitempty" validate:"omitempty"`
+	IsHidden          *bool      `json:"is_hidden" validate:"required" example:"false"`
 }
 
 // CreateCosmeticsResponse represents the response after creating a cosmetic product.
@@ -74,6 +75,7 @@ type GetAllByFilterForAdminCosmeticsResponse []*Cosmetics
 // UpdateCosmeticsRequest represents an update request for a cosmetic product.
 type UpdateCosmeticsRequest struct {
 	ID                uuid.UUID  `json:"id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000" swaggerignore:"true"`
+	ImageID           *uuid.UUID `json:"image_id,omitempty" validate:"omitempty,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
 	CategoryID        *uuid.UUID `json:"category_id,omitempty" validate:"omitempty,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
 	Title             *string    `json:"title,omitempty" validate:"omitempty,min=3,max=100" example:"New Hair Shampoo"`
 	Description       *string    `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Updated product description."`

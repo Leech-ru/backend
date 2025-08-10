@@ -20,6 +20,7 @@ type imageMinIORepo interface {
 	) error
 	Get(ctx context.Context, id uuid.UUID) (io.Reader, string, int64, time.Time, string, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+	Exists(ctx context.Context, id uuid.UUID) (bool, error)
 }
 type minioConfig interface {
 	BucketName() string

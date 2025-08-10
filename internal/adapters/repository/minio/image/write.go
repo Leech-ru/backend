@@ -10,7 +10,7 @@ import (
 )
 
 // Write saves an image with a given UUID
-func (s *imageRepo) Write(
+func (r *imageRepo) Write(
 	ctx context.Context,
 	id uuid.UUID,
 	file io.Reader,
@@ -24,7 +24,7 @@ func (s *imageRepo) Write(
 		"original-filename": strings.ToLower(originalFilename),
 	}
 
-	_, err := s.client.PutObject(ctx, s.bucketName, objectName, file, size, minio.PutObjectOptions{
+	_, err := r.client.PutObject(ctx, r.bucketName, objectName, file, size, minio.PutObjectOptions{
 		ContentType:  contentType,
 		UserMetadata: userMeta,
 	})

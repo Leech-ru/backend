@@ -3,7 +3,6 @@ package cosmetics
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
-	"encoding/json"
 	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -24,22 +23,8 @@ import (
 // @Failure      500      {object}  dto.HTTPStatus "Internal server error"
 // @Router       /api/v1/cosmetics [post]
 func (h *handler) Create(c echo.Context) error {
-	if err := c.Request().ParseMultipartForm(32 << 20); err != nil {
-		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
-	}
-	jsonStr := c.FormValue("payload")
-	if jsonStr == "" {
-		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
-			Code:    http.StatusBadRequest,
-			Message: "payload is required",
-		})
-	}
-
 	var req dto.CreateCosmeticsRequest
-	if err := json.Unmarshal([]byte(jsonStr), &req); err != nil {
+	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
@@ -53,15 +38,7 @@ func (h *handler) Create(c echo.Context) error {
 		})
 	}
 
-	fileHeader, err := c.FormFile("file")
-	if err != nil && !errors.Is(err, http.ErrMissingFile) {
-		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
-	}
-
-	resp, err := h.cosmeticsService.Create(c.Request().Context(), &req, fileHeader)
+	resp, err := h.cosmeticsService.Create(c.Request().Context(), &req)
 	switch {
 	case errors.Is(err, errorz.InvalidCosmeticsFormat):
 		return c.JSON(http.StatusConflict, dto.HTTPStatus{

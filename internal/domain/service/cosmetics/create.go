@@ -1,20 +1,16 @@
 package cosmetics
 
 import (
+	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
 	"Leech-ru/pkg/ent"
-	"bytes"
 	"context"
-	"fmt"
-	"github.com/google/uuid"
-	"io"
-	"mime/multipart"
-	"time"
 )
 
 // Create create cosmetics and returns it.
-func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsRequest, file *multipart.FileHeader) (*dto.CreateCosmeticsResponse, error) {
+func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsRequest) (*dto.CreateCosmeticsResponse, error) {
 	cosmetics := &ent.Cosmetics{
+		ImageID:           req.ImageID,
 		Title:             req.Title,
 		Description:       req.Description,
 		ApplicationMethod: req.ApplicationMethod,
@@ -29,35 +25,17 @@ func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsR
 		cosmetics.OzonLink = req.Links.Ozon
 		cosmetics.WildberriesLink = req.Links.Wildberries
 	}
-	var imageID *uuid.UUID
-	if file != nil {
-		src, err := file.Open()
-		if err != nil {
-			return nil, fmt.Errorf("failed to open image: %w", err)
-		}
-		defer src.Close()
 
-		buf, err := io.ReadAll(src)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read image: %w", err)
+	if req.ImageID != nil {
+		if cond, err := s.imageService.Exists(ctx, *req.ImageID); err != nil || !cond {
+			switch {
+			case !cond:
+				return nil, errorz.ImageNotFound
+			case err != nil:
+				return nil, err
+			}
 		}
-
-		imageDTO, err := s.imageService.Create(ctx, &dto.CreateImageRequest{
-			File: &dto.FilePackage{
-				Content:      bytes.NewReader(buf),
-				ContentType:  file.Header.Get("Content-Type"),
-				Size:         file.Size,
-				Filename:     file.Filename,
-				LastModified: time.Now(),
-			},
-		})
-		if err != nil {
-			return nil, fmt.Errorf("failed to create image: %w", err)
-		}
-		imageID = &imageDTO.ID
-		cosmetics.ImageID = imageID
 	}
-
 	cosmetics, err := s.cosmeticsRepo.Create(ctx, *cosmetics)
 	if err != nil {
 		return nil, err
@@ -78,6 +56,6 @@ func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsR
 			Wildberries: cosmetics.WildberriesLink,
 		},
 		IsHidden: cosmetics.IsHidden,
-		ImageID:  imageID,
+		ImageID:  cosmetics.ImageID,
 	}, nil
 }
