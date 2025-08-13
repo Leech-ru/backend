@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
 	"errors"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -42,5 +43,6 @@ func (h *handler) Download(c echo.Context) error {
 		})
 
 	}
+	fmt.Println(resp.File.ContentType, resp.File.Content)
 	return c.Stream(http.StatusOK, resp.File.ContentType, resp.File.Content)
 }

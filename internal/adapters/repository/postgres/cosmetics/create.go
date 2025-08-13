@@ -28,7 +28,7 @@ func (s *cosmeticsRepo) Create(ctx context.Context, entity ent.Cosmetics) (*ent.
 		tx.Cosmetics.
 			Create().
 			SetTitle(entity.Title).
-			SetNillableImageID(entity.ImageID).
+			SetImageID(entity.ImageID).
 			SetCategoryID(entity.Edges.Category.ID).
 			SetNillableDescription(entity.Description).
 			SetNillableApplicationMethod(entity.ApplicationMethod).

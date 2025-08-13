@@ -17,10 +17,8 @@ func (s *cosmeticsService) Delete(ctx context.Context, req *dto.DeleteCosmeticsR
 		return err
 	}
 
-	if cosmetics.ImageID != nil {
-		if err := s.imageService.Delete(ctx, &dto.DeleteImageRequest{ID: *cosmetics.ImageID}); err != nil {
-			return err
-		}
+	if err := s.imageService.Delete(ctx, &dto.DeleteImageRequest{ID: cosmetics.ImageID}); err != nil {
+		return err
 	}
 
 	if err := s.cosmeticsRepo.Delete(ctx, req.ID); err != nil {
