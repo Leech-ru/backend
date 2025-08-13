@@ -28,7 +28,12 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 				return nil, err
 			}
 		}
-		cosmeticToUpdate.ImageID = req.ImageID
+		if err := s.imageService.Delete(ctx, &dto.DeleteImageRequest{ID: cosmeticToUpdate.ImageID}); err != nil {
+			if err != nil {
+				return nil, err
+			}
+		}
+		cosmeticToUpdate.ImageID = *req.ImageID
 	}
 	if req.Title != nil {
 		cosmeticToUpdate.Title = *req.Title

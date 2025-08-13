@@ -27,14 +27,6 @@ func (cc *CosmeticsCreate) SetImageID(u uuid.UUID) *CosmeticsCreate {
 	return cc
 }
 
-// SetNillableImageID sets the "image_id" field if the given value is not nil.
-func (cc *CosmeticsCreate) SetNillableImageID(u *uuid.UUID) *CosmeticsCreate {
-	if u != nil {
-		cc.SetImageID(*u)
-	}
-	return cc
-}
-
 // SetTitle sets the "title" field.
 func (cc *CosmeticsCreate) SetTitle(s string) *CosmeticsCreate {
 	cc.mutation.SetTitle(s)
@@ -185,6 +177,9 @@ func (cc *CosmeticsCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (cc *CosmeticsCreate) check() error {
+	if _, ok := cc.mutation.ImageID(); !ok {
+		return &ValidationError{Name: "image_id", err: errors.New(`ent: missing required field "Cosmetics.image_id"`)}
+	}
 	if _, ok := cc.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Cosmetics.title"`)}
 	}
@@ -241,7 +236,7 @@ func (cc *CosmeticsCreate) createSpec() (*Cosmetics, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := cc.mutation.ImageID(); ok {
 		_spec.SetField(cosmetics.FieldImageID, field.TypeUUID, value)
-		_node.ImageID = &value
+		_node.ImageID = value
 	}
 	if value, ok := cc.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)

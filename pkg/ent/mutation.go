@@ -607,7 +607,7 @@ func (m *CosmeticsMutation) ImageID() (r uuid.UUID, exists bool) {
 // OldImageID returns the old "image_id" field's value of the Cosmetics entity.
 // If the Cosmetics object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CosmeticsMutation) OldImageID(ctx context.Context) (v *uuid.UUID, err error) {
+func (m *CosmeticsMutation) OldImageID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldImageID is only allowed on UpdateOne operations")
 	}
@@ -621,22 +621,9 @@ func (m *CosmeticsMutation) OldImageID(ctx context.Context) (v *uuid.UUID, err e
 	return oldValue.ImageID, nil
 }
 
-// ClearImageID clears the value of the "image_id" field.
-func (m *CosmeticsMutation) ClearImageID() {
-	m.image_id = nil
-	m.clearedFields[cosmetics.FieldImageID] = struct{}{}
-}
-
-// ImageIDCleared returns if the "image_id" field was cleared in this mutation.
-func (m *CosmeticsMutation) ImageIDCleared() bool {
-	_, ok := m.clearedFields[cosmetics.FieldImageID]
-	return ok
-}
-
 // ResetImageID resets all changes to the "image_id" field.
 func (m *CosmeticsMutation) ResetImageID() {
 	m.image_id = nil
-	delete(m.clearedFields, cosmetics.FieldImageID)
 }
 
 // SetTitle sets the "title" field.
@@ -1234,9 +1221,6 @@ func (m *CosmeticsMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *CosmeticsMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(cosmetics.FieldImageID) {
-		fields = append(fields, cosmetics.FieldImageID)
-	}
 	if m.FieldCleared(cosmetics.FieldDescription) {
 		fields = append(fields, cosmetics.FieldDescription)
 	}
@@ -1266,9 +1250,6 @@ func (m *CosmeticsMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *CosmeticsMutation) ClearField(name string) error {
 	switch name {
-	case cosmetics.FieldImageID:
-		m.ClearImageID()
-		return nil
 	case cosmetics.FieldDescription:
 		m.ClearDescription()
 		return nil

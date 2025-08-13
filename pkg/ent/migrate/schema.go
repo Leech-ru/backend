@@ -22,7 +22,7 @@ var (
 	// CosmeticsColumns holds the columns for the "cosmetics" table.
 	CosmeticsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
-		{Name: "image_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "image_id", Type: field.TypeUUID},
 		{Name: "title", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "application_method", Type: field.TypeString, Nullable: true},

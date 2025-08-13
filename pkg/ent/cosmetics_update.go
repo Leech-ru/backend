@@ -43,12 +43,6 @@ func (cu *CosmeticsUpdate) SetNillableImageID(u *uuid.UUID) *CosmeticsUpdate {
 	return cu
 }
 
-// ClearImageID clears the value of the "image_id" field.
-func (cu *CosmeticsUpdate) ClearImageID() *CosmeticsUpdate {
-	cu.mutation.ClearImageID()
-	return cu
-}
-
 // SetTitle sets the "title" field.
 func (cu *CosmeticsUpdate) SetTitle(s string) *CosmeticsUpdate {
 	cu.mutation.SetTitle(s)
@@ -266,9 +260,6 @@ func (cu *CosmeticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.ImageID(); ok {
 		_spec.SetField(cosmetics.FieldImageID, field.TypeUUID, value)
 	}
-	if cu.mutation.ImageIDCleared() {
-		_spec.ClearField(cosmetics.FieldImageID, field.TypeUUID)
-	}
 	if value, ok := cu.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)
 	}
@@ -368,12 +359,6 @@ func (cuo *CosmeticsUpdateOne) SetNillableImageID(u *uuid.UUID) *CosmeticsUpdate
 	if u != nil {
 		cuo.SetImageID(*u)
 	}
-	return cuo
-}
-
-// ClearImageID clears the value of the "image_id" field.
-func (cuo *CosmeticsUpdateOne) ClearImageID() *CosmeticsUpdateOne {
-	cuo.mutation.ClearImageID()
 	return cuo
 }
 
@@ -623,9 +608,6 @@ func (cuo *CosmeticsUpdateOne) sqlSave(ctx context.Context) (_node *Cosmetics, e
 	}
 	if value, ok := cuo.mutation.ImageID(); ok {
 		_spec.SetField(cosmetics.FieldImageID, field.TypeUUID, value)
-	}
-	if cuo.mutation.ImageIDCleared() {
-		_spec.ClearField(cosmetics.FieldImageID, field.TypeUUID)
 	}
 	if value, ok := cuo.mutation.Title(); ok {
 		_spec.SetField(cosmetics.FieldTitle, field.TypeString, value)

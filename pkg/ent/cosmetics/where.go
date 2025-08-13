@@ -135,16 +135,6 @@ func ImageIDLTE(v uuid.UUID) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldLTE(FieldImageID, v))
 }
 
-// ImageIDIsNil applies the IsNil predicate on the "image_id" field.
-func ImageIDIsNil() predicate.Cosmetics {
-	return predicate.Cosmetics(sql.FieldIsNull(FieldImageID))
-}
-
-// ImageIDNotNil applies the NotNil predicate on the "image_id" field.
-func ImageIDNotNil() predicate.Cosmetics {
-	return predicate.Cosmetics(sql.FieldNotNull(FieldImageID))
-}
-
 // TitleEQ applies the EQ predicate on the "title" field.
 func TitleEQ(v string) predicate.Cosmetics {
 	return predicate.Cosmetics(sql.FieldEQ(FieldTitle, v))

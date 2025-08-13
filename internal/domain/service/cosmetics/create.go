@@ -26,16 +26,15 @@ func (s *cosmeticsService) Create(ctx context.Context, req *dto.CreateCosmeticsR
 		cosmetics.WildberriesLink = req.Links.Wildberries
 	}
 
-	if req.ImageID != nil {
-		if cond, err := s.imageService.Exists(ctx, *req.ImageID); err != nil || !cond {
-			switch {
-			case !cond:
-				return nil, errorz.ImageNotFound
-			case err != nil:
-				return nil, err
-			}
+	if cond, err := s.imageService.Exists(ctx, req.ImageID); err != nil || !cond {
+		switch {
+		case !cond:
+			return nil, errorz.ImageNotFound
+		case err != nil:
+			return nil, err
 		}
 	}
+
 	cosmetics, err := s.cosmeticsRepo.Create(ctx, *cosmetics)
 	if err != nil {
 		return nil, err

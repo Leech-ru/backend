@@ -41,5 +41,4 @@ func NewHandler(
 func (h *handler) Setup(router *echo.Group) {
 	router.GET("/image/:image_id", h.Download)
 	router.POST("/image", h.Upload, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
-	router.DELETE("/image/:image_id", h.Delete, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 }
