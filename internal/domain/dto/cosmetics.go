@@ -7,15 +7,15 @@ import (
 // Cosmetics represents the cosmetic product structure.
 // @Description Contains product information such as category, title, description, and volume.
 type Cosmetics struct {
-	ID                uuid.UUID  `json:"id" example:"123e4567-e89b-12d3-a456-426614174000"`
-	ImageID           *uuid.UUID `json:"image_id" example:"123e4567-e89b-12d3-a456-426614174100"`
-	Category          Category   `json:"category"`
-	Title             string     `json:"title" example:"Hair Shampoo"`
-	Description       *string    `json:"description,omitempty" example:"Suitable for daily use."`
-	ApplicationMethod *string    `json:"application_method,omitempty" example:"Apply to wet hair, lather, rinse."`
-	Volume            *int       `json:"volume,omitempty" example:"250"`
-	Links             *Links     `json:"links"`
-	IsHidden          bool       `json:"is_hidden" example:"false"`
+	ID                uuid.UUID `json:"id" example:"123e4567-e89b-12d3-a456-426614174000"`
+	ImageID           uuid.UUID `json:"image_id" example:"123e4567-e89b-12d3-a456-426614174100"`
+	Category          Category  `json:"category"`
+	Title             string    `json:"title" example:"Hair Shampoo"`
+	Description       *string   `json:"description,omitempty" example:"Suitable for daily use."`
+	ApplicationMethod *string   `json:"application_method,omitempty" example:"Apply to wet hair, lather, rinse."`
+	Volume            *int      `json:"volume,omitempty" example:"250"`
+	Links             *Links    `json:"links"`
+	IsHidden          bool      `json:"is_hidden" example:"false"`
 }
 
 // Links contains links information.
@@ -26,14 +26,14 @@ type Links struct {
 
 // CreateCosmeticsRequest represents a request to create a new cosmetic product.
 type CreateCosmeticsRequest struct {
-	CategoryID        uuid.UUID  `json:"category_id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
-	ImageID           *uuid.UUID `json:"image_id,omitempty" validate:"omitempty,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
-	Title             string     `json:"title" validate:"required,min=3,max=100" example:"Hair Shampoo"`
-	Description       *string    `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Suitable for daily use."`
-	ApplicationMethod *string    `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
-	Volume            *int       `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
-	Links             *Links     `json:"links,omitempty" validate:"omitempty"`
-	IsHidden          *bool      `json:"is_hidden" validate:"required" example:"false"`
+	CategoryID        uuid.UUID `json:"category_id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	ImageID           uuid.UUID `json:"image_id" validate:"required,uuid" example:"123e4567-e89b-12d3-a456-426614174000"`
+	Title             string    `json:"title" validate:"required,min=3,max=100" example:"Hair Shampoo"`
+	Description       *string   `json:"description,omitempty" validate:"omitempty,min=3,max=3000" example:"Suitable for daily use."`
+	ApplicationMethod *string   `json:"application_method,omitempty" validate:"omitempty,min=3,max=500" example:"Apply to wet hair, lather, rinse."`
+	Volume            *int      `json:"volume,omitempty" validate:"omitempty,min=1,max=10000" example:"250"`
+	Links             *Links    `json:"links,omitempty" validate:"omitempty"`
+	IsHidden          *bool     `json:"is_hidden" validate:"required" example:"false"`
 }
 
 // CreateCosmeticsResponse represents the response after creating a cosmetic product.

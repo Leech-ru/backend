@@ -21,8 +21,7 @@ func (Cosmetics) Fields() []ent.Field {
 			Immutable().
 			Unique(),
 
-		field.UUID("image_id", uuid.UUID{}).
-			Optional().Nillable(),
+		field.UUID("image_id", uuid.UUID{}),
 
 		field.String("title").
 			NotEmpty(),
