@@ -18,10 +18,11 @@ func (s *imageService) GetById(ctx context.Context, req *dto.GetByIdImageRequest
 	if err != nil {
 		return nil, fmt.Errorf("failed to read image content: %w", err)
 	}
+
 	return &dto.GetByIdImageResponse{
 		ID: req.ID,
 		File: &dto.FilePackage{
-			Content:      reader,
+			Content:      bytes.NewReader(buf.Bytes()), // теперь это новый reader с началом потока
 			ContentType:  contentType,
 			Size:         size,
 			Filename:     originalFilename,
