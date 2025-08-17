@@ -12,6 +12,9 @@ type Category func(*sql.Selector)
 // Cosmetics is the predicate function for cosmetics builders.
 type Cosmetics func(*sql.Selector)
 
+// MainPage is the predicate function for mainpage builders.
+type MainPage func(*sql.Selector)
+
 // News is the predicate function for news builders.
 type News func(*sql.Selector)
 

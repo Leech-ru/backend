@@ -7,6 +7,7 @@ import (
 	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
+	"Leech-ru/pkg/ent/mainpage"
 	"Leech-ru/pkg/ent/news"
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
@@ -44,6 +45,32 @@ func init() {
 	cosmeticsDescID := cosmeticsFields[0].Descriptor()
 	// cosmetics.DefaultID holds the default value on creation for the id field.
 	cosmetics.DefaultID = cosmeticsDescID.Default.(func() uuid.UUID)
+	mainpageFields := schema.MainPage{}.Fields()
+	_ = mainpageFields
+	// mainpageDescTitle is the schema descriptor for title field.
+	mainpageDescTitle := mainpageFields[2].Descriptor()
+	// mainpage.TitleValidator is a validator for the "title" field. It is called by the builders before save.
+	mainpage.TitleValidator = mainpageDescTitle.Validators[0].(func(string) error)
+	// mainpageDescContent is the schema descriptor for content field.
+	mainpageDescContent := mainpageFields[3].Descriptor()
+	// mainpage.ContentValidator is a validator for the "content" field. It is called by the builders before save.
+	mainpage.ContentValidator = mainpageDescContent.Validators[0].(func(string) error)
+	// mainpageDescHref is the schema descriptor for Href field.
+	mainpageDescHref := mainpageFields[4].Descriptor()
+	// mainpage.HrefValidator is a validator for the "Href" field. It is called by the builders before save.
+	mainpage.HrefValidator = mainpageDescHref.Validators[0].(func(string) error)
+	// mainpageDescIsHidden is the schema descriptor for IsHidden field.
+	mainpageDescIsHidden := mainpageFields[5].Descriptor()
+	// mainpage.DefaultIsHidden holds the default value on creation for the IsHidden field.
+	mainpage.DefaultIsHidden = mainpageDescIsHidden.Default.(bool)
+	// mainpageDescFluid is the schema descriptor for fluid field.
+	mainpageDescFluid := mainpageFields[6].Descriptor()
+	// mainpage.DefaultFluid holds the default value on creation for the fluid field.
+	mainpage.DefaultFluid = mainpageDescFluid.Default.(bool)
+	// mainpageDescID is the schema descriptor for id field.
+	mainpageDescID := mainpageFields[0].Descriptor()
+	// mainpage.DefaultID holds the default value on creation for the id field.
+	mainpage.DefaultID = mainpageDescID.Default.(func() uuid.UUID)
 	newsFields := schema.News{}.Fields()
 	_ = newsFields
 	// newsDescTitle is the schema descriptor for title field.
