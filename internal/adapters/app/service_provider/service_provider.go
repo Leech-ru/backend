@@ -5,6 +5,7 @@ import (
 	"Leech-ru/internal/adapters/controller/api/validator"
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/logger"
+
 	"github.com/go-playground/form"
 	"github.com/minio/minio-go/v7"
 	"github.com/redis/go-redis/v9"
@@ -38,6 +39,7 @@ type ServiceProvider struct {
 	infoService      infoService
 	partnerService   partnerService
 	newsService      newsService
+	mainPageService  mainPageService
 }
 
 func New() *ServiceProvider {
