@@ -37,6 +37,7 @@ type ServiceProvider struct {
 	categoryService  categoryService
 	infoService      infoService
 	partnerService   partnerService
+	newsService      newsService
 }
 
 func New() *ServiceProvider {
