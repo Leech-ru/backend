@@ -21,7 +21,7 @@ func (s *mainPageService) Update(ctx context.Context, req *dto.UpdateMainPageReq
 		if cond, err := s.imageService.Exists(ctx, *req.ImageID); err != nil || !cond {
 			switch {
 			case !cond:
-				return nil, errorz.MainPageNotFound
+				return nil, errorz.ImageNotFound
 			default:
 				return nil, err
 			}
