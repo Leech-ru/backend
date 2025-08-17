@@ -7,7 +7,16 @@ import (
 
 // GetAll gets all main page contents with pagination
 func (s *mainPageService) GetAll(ctx context.Context, req *dto.GetAllMainPageRequest) (dto.GetAllMainPageResponse, error) {
-	mainPages, err := s.mainPageRepo.GetAll(ctx, req.Limit, req.Offset)
+	limit := 10
+	if req.Limit != nil {
+		limit = *req.Limit
+	}
+	offset := 0
+	if req.Offset != nil {
+		offset = *req.Offset
+	}
+
+	mainPages, err := s.mainPageRepo.GetAll(ctx, limit, offset)
 	if err != nil {
 		return nil, err
 	}
