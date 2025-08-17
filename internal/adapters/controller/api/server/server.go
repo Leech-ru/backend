@@ -9,6 +9,7 @@ import (
 	"Leech-ru/internal/adapters/controller/api/v1/cosmetics"
 	"Leech-ru/internal/adapters/controller/api/v1/image"
 	"Leech-ru/internal/adapters/controller/api/v1/info"
+	"Leech-ru/internal/adapters/controller/api/v1/main_page"
 	"Leech-ru/internal/adapters/controller/api/v1/news"
 	"Leech-ru/internal/adapters/controller/api/v1/order"
 	"Leech-ru/internal/adapters/controller/api/v1/partner"
@@ -105,4 +106,7 @@ func addRouters(app *app.App) {
 
 	newsHandler := news.NewHandler(serviceProvider.NewsService(), authMiddleware, roleMiddleware, serviceProvider.Validator(), serviceProvider.Decoder())
 	newsHandler.Setup(apiV1)
+
+	mainPageHandler := mainpage.NewHandler(serviceProvider.MainPageService(), authMiddleware, roleMiddleware, serviceProvider.Validator(), serviceProvider.Decoder())
+	mainPageHandler.Setup(apiV1)
 }
