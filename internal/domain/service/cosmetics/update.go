@@ -29,7 +29,9 @@ func (s *cosmeticsService) Update(ctx context.Context, req *dto.UpdateCosmeticsR
 			}
 		}
 		if err := s.imageService.Delete(ctx, &dto.DeleteImageRequest{ID: cosmeticToUpdate.ImageID}); err != nil {
-			if err != nil {
+			switch {
+			case errors.Is(err, errorz.ImageNotFound):
+			case err != nil:
 				return nil, err
 			}
 		}
