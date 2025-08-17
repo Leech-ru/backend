@@ -18,7 +18,7 @@ func (s *mainPageService) Create(ctx context.Context, req *dto.CreateMainPageReq
 		Fluid:    req.Fluid,
 	}
 
-	if cond, err := s.imageService.Exists(ctx, req.ImageID); err != nil {
+	if cond, err := s.imageService.Exists(ctx, req.ImageID); err != nil || !cond {
 		switch {
 		case !cond:
 			return nil, errorz.ImageNotFound
