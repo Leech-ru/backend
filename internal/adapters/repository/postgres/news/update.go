@@ -10,6 +10,7 @@ import (
 func (s *newsRepo) Update(ctx context.Context, entity ent.News) (*ent.News, error) {
 	updated, err := s.client.News.
 		UpdateOneID(entity.ID).
+		SetImageID(entity.ImageID).
 		SetTitle(entity.Title).
 		SetContent(entity.Content).
 		SetHref(entity.Href).

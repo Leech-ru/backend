@@ -10,6 +10,7 @@ import (
 func (s *newsRepo) Create(ctx context.Context, entity ent.News) (*ent.News, error) {
 	created, err := s.client.News.
 		Create().
+		SetImageID(entity.ImageID).
 		SetTitle(entity.Title).
 		SetContent(entity.Content).
 		SetHref(entity.Href).
