@@ -35,7 +35,7 @@ func (h *handler) Delete(c echo.Context) error {
 	var req dto.DeleteMainPageRequest
 	req.ID = pageID
 
-	if err = h.validator.ValidateData(req); err != nil {
+	if err := h.validator.ValidateData(req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),

@@ -38,14 +38,14 @@ func (h *handler) Update(c echo.Context) error {
 	var req dto.UpdateMainPageRequest
 	req.ID = pageID
 
-	if err = c.Bind(&req); err != nil {
+	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
 	}
 
-	if err = h.validator.ValidateData(req); err != nil {
+	if err := h.validator.ValidateData(req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
