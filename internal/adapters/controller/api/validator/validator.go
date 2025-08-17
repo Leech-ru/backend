@@ -31,6 +31,10 @@ func New() *Validator {
 	_ = newValidator.RegisterValidation("minleechsum", validateMinLeechSum)
 	_ = newValidator.RegisterValidation("maxleechsum", validateMaxLeechSum)
 
+	_ = newValidator.RegisterValidation("maxfilesize", validateMaxFileSize)
+
+	_ = newValidator.RegisterValidation("filetype", validateFileType)
+
 	_ = newValidator.RegisterValidation("role", validateRole)
 
 	_ = newValidator.RegisterValidation("category", validateCategory)

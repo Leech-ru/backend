@@ -1,4 +1,4 @@
-package category
+package news
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
@@ -7,15 +7,18 @@ import (
 )
 
 // Update updates an existing category
-func (s *categoryRepo) Update(ctx context.Context, entity ent.Category) (*ent.Category, error) {
-	updated, err := s.client.Category.
+func (s *newsRepo) Update(ctx context.Context, entity ent.News) (*ent.News, error) {
+	updated, err := s.client.News.
 		UpdateOneID(entity.ID).
-		SetName(entity.Name).
+		SetTitle(entity.Title).
+		SetContent(entity.Content).
+		SetHref(entity.Href).
+		SetIsHidden(entity.IsHidden).
 		Save(ctx)
 
 	switch {
 	case ent.IsNotFound(err):
-		return nil, errorz.CategoryNotFound
+		return nil, errorz.NewsNotFound
 	case ent.IsConstraintError(err):
 		return nil, errorz.InvalidCategoryFormat
 	case err != nil:

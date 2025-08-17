@@ -7,6 +7,7 @@ import (
 	"Leech-ru/internal/domain/types"
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
+	"Leech-ru/pkg/ent/news"
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/refreshtoken"
@@ -43,6 +44,24 @@ func init() {
 	cosmeticsDescID := cosmeticsFields[0].Descriptor()
 	// cosmetics.DefaultID holds the default value on creation for the id field.
 	cosmetics.DefaultID = cosmeticsDescID.Default.(func() uuid.UUID)
+	newsFields := schema.News{}.Fields()
+	_ = newsFields
+	// newsDescTitle is the schema descriptor for title field.
+	newsDescTitle := newsFields[2].Descriptor()
+	// news.TitleValidator is a validator for the "title" field. It is called by the builders before save.
+	news.TitleValidator = newsDescTitle.Validators[0].(func(string) error)
+	// newsDescContent is the schema descriptor for content field.
+	newsDescContent := newsFields[3].Descriptor()
+	// news.ContentValidator is a validator for the "content" field. It is called by the builders before save.
+	news.ContentValidator = newsDescContent.Validators[0].(func(string) error)
+	// newsDescHref is the schema descriptor for href field.
+	newsDescHref := newsFields[4].Descriptor()
+	// news.HrefValidator is a validator for the "href" field. It is called by the builders before save.
+	news.HrefValidator = newsDescHref.Validators[0].(func(string) error)
+	// newsDescID is the schema descriptor for id field.
+	newsDescID := newsFields[0].Descriptor()
+	// news.DefaultID holds the default value on creation for the id field.
+	news.DefaultID = newsDescID.Default.(func() uuid.UUID)
 	partnerFields := schema.Partner{}.Fields()
 	_ = partnerFields
 	// partnerDescName is the schema descriptor for name field.

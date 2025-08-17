@@ -36,6 +36,9 @@ import (
 // @tag.name        cosmetics
 // @tag.description Cosmetics view and management
 
+// @tag.name        image
+// @tag.description Image view and management
+
 // @tag.name        category
 // @tag.description Category view and management
 
