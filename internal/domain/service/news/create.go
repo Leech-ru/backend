@@ -13,7 +13,7 @@ func (s *newsService) Create(ctx context.Context, req *dto.CreateNewsRequest) (*
 		ImageID:  req.ImageID,
 		Title:    req.Title,
 		Content:  req.Content,
-		IsHidden: req.IsHidden,
+		IsHidden: *req.IsHidden,
 	}
 	if cond, err := s.imageService.Exists(ctx, req.ImageID); err != nil || !cond {
 		switch {

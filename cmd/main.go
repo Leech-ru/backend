@@ -51,6 +51,9 @@ import (
 // @tag.name        news
 // @tag.description News view and management
 
+// @tag.name        main
+// @tag.description information about main page
+
 func main() {
 	mainApp, err := app.New()
 	if err != nil {

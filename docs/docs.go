@@ -2622,39 +2622,46 @@ const docTemplate = `{
         "dto.CreateNewsRequest": {
             "type": "object",
             "required": [
-                "image_id"
+                "content",
+                "image_id",
+                "is_hidden",
+                "title"
             ],
             "properties": {
                 "content": {
-                    "type": "string"
-                },
-                "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 5000,
+                    "example": "This is the full news content..."
                 },
                 "image_id": {
                     "type": "string",
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Breaking News"
                 }
             }
         },
         "dto.CreateNewsResponse": {
             "type": "object",
             "required": [
+                "content",
                 "id",
-                "image_id"
+                "image_id",
+                "is_hidden",
+                "title"
             ],
             "properties": {
                 "content": {
-                    "type": "string"
-                },
-                "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 5000,
+                    "example": "This is the full news content..."
                 },
                 "id": {
                     "type": "string",
@@ -2665,10 +2672,13 @@ const docTemplate = `{
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Breaking News"
                 }
             }
         },
@@ -2901,15 +2911,17 @@ const docTemplate = `{
         "dto.GetByIdNewsResponse": {
             "type": "object",
             "required": [
+                "content",
                 "id",
-                "image_id"
+                "image_id",
+                "is_hidden",
+                "title"
             ],
             "properties": {
                 "content": {
-                    "type": "string"
-                },
-                "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 5000,
+                    "example": "This is the full news content..."
                 },
                 "id": {
                     "type": "string",
@@ -2920,10 +2932,13 @@ const docTemplate = `{
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Breaking News"
                 }
             }
         },
@@ -3160,24 +3175,35 @@ const docTemplate = `{
         },
         "dto.NewsListItem": {
             "type": "object",
+            "required": [
+                "content_preview",
+                "id",
+                "image_id",
+                "is_hidden",
+                "title"
+            ],
             "properties": {
                 "content_preview": {
-                    "type": "string"
-                },
-                "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "This is a short preview..."
                 },
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 },
                 "image_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Breaking News"
                 }
             }
         },
@@ -3710,15 +3736,13 @@ const docTemplate = `{
         "dto.UpdateNewsRequest": {
             "type": "object",
             "required": [
-                "id",
-                "image_id"
+                "id"
             ],
             "properties": {
                 "content": {
-                    "type": "string"
-                },
-                "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 5000,
+                    "example": "Updated full news content..."
                 },
                 "id": {
                     "type": "string",
@@ -3729,25 +3753,30 @@ const docTemplate = `{
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Updated News Title"
                 }
             }
         },
         "dto.UpdateNewsResponse": {
             "type": "object",
             "required": [
+                "content",
                 "id",
-                "image_id"
+                "image_id",
+                "is_hidden",
+                "title"
             ],
             "properties": {
                 "content": {
-                    "type": "string"
-                },
-                "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 5000,
+                    "example": "This is the full news content..."
                 },
                 "id": {
                     "type": "string",
@@ -3758,10 +3787,13 @@ const docTemplate = `{
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Breaking News"
                 }
             }
         },
@@ -3940,6 +3972,10 @@ const docTemplate = `{
         {
             "description": "News view and management",
             "name": "news"
+        },
+        {
+            "description": "information about main page",
+            "name": "main"
         }
     ]
 }`

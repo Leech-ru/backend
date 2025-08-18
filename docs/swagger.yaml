@@ -210,24 +210,30 @@ definitions:
   dto.CreateNewsRequest:
     properties:
       content:
-        type: string
-      href:
+        example: This is the full news content...
+        maxLength: 5000
         type: string
       image_id:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       is_hidden:
+        example: false
         type: boolean
       title:
+        example: Breaking News
+        maxLength: 255
         type: string
     required:
+    - content
     - image_id
+    - is_hidden
+    - title
     type: object
   dto.CreateNewsResponse:
     properties:
       content:
-        type: string
-      href:
+        example: This is the full news content...
+        maxLength: 5000
         type: string
       id:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
@@ -236,12 +242,18 @@ definitions:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       is_hidden:
+        example: false
         type: boolean
       title:
+        example: Breaking News
+        maxLength: 255
         type: string
     required:
+    - content
     - id
     - image_id
+    - is_hidden
+    - title
     type: object
   dto.CreateOrderRequest:
     properties:
@@ -409,8 +421,8 @@ definitions:
   dto.GetByIdNewsResponse:
     properties:
       content:
-        type: string
-      href:
+        example: This is the full news content...
+        maxLength: 5000
         type: string
       id:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
@@ -419,12 +431,18 @@ definitions:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       is_hidden:
+        example: false
         type: boolean
       title:
+        example: Breaking News
+        maxLength: 255
         type: string
     required:
+    - content
     - id
     - image_id
+    - is_hidden
+    - title
     type: object
   dto.GetByIdPartnerResponse:
     properties:
@@ -592,17 +610,28 @@ definitions:
   dto.NewsListItem:
     properties:
       content_preview:
-        type: string
-      href:
+        example: This is a short preview...
+        maxLength: 255
         type: string
       id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       image_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       is_hidden:
+        example: false
         type: boolean
       title:
+        example: Breaking News
+        maxLength: 255
         type: string
+    required:
+    - content_preview
+    - id
+    - image_id
+    - is_hidden
+    - title
     type: object
   dto.OrderDetails:
     properties:
@@ -989,8 +1018,8 @@ definitions:
   dto.UpdateNewsRequest:
     properties:
       content:
-        type: string
-      href:
+        example: Updated full news content...
+        maxLength: 5000
         type: string
       id:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
@@ -999,18 +1028,20 @@ definitions:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       is_hidden:
+        example: true
         type: boolean
       title:
+        example: Updated News Title
+        maxLength: 255
         type: string
     required:
     - id
-    - image_id
     type: object
   dto.UpdateNewsResponse:
     properties:
       content:
-        type: string
-      href:
+        example: This is the full news content...
+        maxLength: 5000
         type: string
       id:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
@@ -1019,12 +1050,18 @@ definitions:
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       is_hidden:
+        example: false
         type: boolean
       title:
+        example: Breaking News
+        maxLength: 255
         type: string
     required:
+    - content
     - id
     - image_id
+    - is_hidden
+    - title
     type: object
   dto.UpdatePartnerRequest:
     properties:
@@ -2693,3 +2730,5 @@ tags:
   name: partner
 - description: News view and management
   name: news
+- description: information about main page
+  name: main
