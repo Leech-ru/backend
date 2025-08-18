@@ -47,7 +47,7 @@ func NewHandler(
 func (h *handler) Setup(router *echo.Group) {
 	router.POST("/main", h.Create, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 	router.PATCH("/main/:id", h.Update, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
-	router.DELETE("/main/:id", h.Update, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	router.DELETE("/main/:id", h.Delete, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 	router.GET("/main", h.GetAll)
 	router.GET("/main/:id", h.GetById)
 }

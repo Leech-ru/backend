@@ -36,8 +36,8 @@ type GetByIdMainPageResponse MainPage
 
 // GetAllMainPageRequest represents a request to get all main page contents with pagination
 type GetAllMainPageRequest struct {
-	Limit  int `json:"limit" example:"10"`
-	Offset int `json:"offset" example:"0"`
+	Limit  *int `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100" example:"10"`
+	Offset *int `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0" example:"0"`
 }
 
 // GetAllMainPageResponse represents a main page contents
