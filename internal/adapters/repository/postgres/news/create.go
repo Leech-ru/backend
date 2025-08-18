@@ -13,7 +13,6 @@ func (s *newsRepo) Create(ctx context.Context, entity ent.News) (*ent.News, erro
 		SetImageID(entity.ImageID).
 		SetTitle(entity.Title).
 		SetContent(entity.Content).
-		SetHref(entity.Href).
 		SetIsHidden(entity.IsHidden).
 		Save(ctx)
 

@@ -81,10 +81,6 @@ func init() {
 	newsDescContent := newsFields[3].Descriptor()
 	// news.ContentValidator is a validator for the "content" field. It is called by the builders before save.
 	news.ContentValidator = newsDescContent.Validators[0].(func(string) error)
-	// newsDescHref is the schema descriptor for href field.
-	newsDescHref := newsFields[4].Descriptor()
-	// news.HrefValidator is a validator for the "href" field. It is called by the builders before save.
-	news.HrefValidator = newsDescHref.Validators[0].(func(string) error)
 	// newsDescID is the schema descriptor for id field.
 	newsDescID := newsFields[0].Descriptor()
 	// news.DefaultID holds the default value on creation for the id field.

@@ -70,20 +70,6 @@ func (nu *NewsUpdate) SetNillableContent(s *string) *NewsUpdate {
 	return nu
 }
 
-// SetHref sets the "href" field.
-func (nu *NewsUpdate) SetHref(s string) *NewsUpdate {
-	nu.mutation.SetHref(s)
-	return nu
-}
-
-// SetNillableHref sets the "href" field if the given value is not nil.
-func (nu *NewsUpdate) SetNillableHref(s *string) *NewsUpdate {
-	if s != nil {
-		nu.SetHref(*s)
-	}
-	return nu
-}
-
 // SetIsHidden sets the "is_hidden" field.
 func (nu *NewsUpdate) SetIsHidden(b bool) *NewsUpdate {
 	nu.mutation.SetIsHidden(b)
@@ -142,11 +128,6 @@ func (nu *NewsUpdate) check() error {
 			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "News.content": %w`, err)}
 		}
 	}
-	if v, ok := nu.mutation.Href(); ok {
-		if err := news.HrefValidator(v); err != nil {
-			return &ValidationError{Name: "href", err: fmt.Errorf(`ent: validator failed for field "News.href": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -170,9 +151,6 @@ func (nu *NewsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := nu.mutation.Content(); ok {
 		_spec.SetField(news.FieldContent, field.TypeString, value)
-	}
-	if value, ok := nu.mutation.Href(); ok {
-		_spec.SetField(news.FieldHref, field.TypeString, value)
 	}
 	if value, ok := nu.mutation.IsHidden(); ok {
 		_spec.SetField(news.FieldIsHidden, field.TypeBool, value)
@@ -235,20 +213,6 @@ func (nuo *NewsUpdateOne) SetContent(s string) *NewsUpdateOne {
 func (nuo *NewsUpdateOne) SetNillableContent(s *string) *NewsUpdateOne {
 	if s != nil {
 		nuo.SetContent(*s)
-	}
-	return nuo
-}
-
-// SetHref sets the "href" field.
-func (nuo *NewsUpdateOne) SetHref(s string) *NewsUpdateOne {
-	nuo.mutation.SetHref(s)
-	return nuo
-}
-
-// SetNillableHref sets the "href" field if the given value is not nil.
-func (nuo *NewsUpdateOne) SetNillableHref(s *string) *NewsUpdateOne {
-	if s != nil {
-		nuo.SetHref(*s)
 	}
 	return nuo
 }
@@ -324,11 +288,6 @@ func (nuo *NewsUpdateOne) check() error {
 			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "News.content": %w`, err)}
 		}
 	}
-	if v, ok := nuo.mutation.Href(); ok {
-		if err := news.HrefValidator(v); err != nil {
-			return &ValidationError{Name: "href", err: fmt.Errorf(`ent: validator failed for field "News.href": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -369,9 +328,6 @@ func (nuo *NewsUpdateOne) sqlSave(ctx context.Context) (_node *News, err error) 
 	}
 	if value, ok := nuo.mutation.Content(); ok {
 		_spec.SetField(news.FieldContent, field.TypeString, value)
-	}
-	if value, ok := nuo.mutation.Href(); ok {
-		_spec.SetField(news.FieldHref, field.TypeString, value)
 	}
 	if value, ok := nuo.mutation.IsHidden(); ok {
 		_spec.SetField(news.FieldIsHidden, field.TypeBool, value)

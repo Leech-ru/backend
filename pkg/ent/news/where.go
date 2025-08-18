@@ -69,11 +69,6 @@ func Content(v string) predicate.News {
 	return predicate.News(sql.FieldEQ(FieldContent, v))
 }
 
-// Href applies equality check predicate on the "href" field. It's identical to HrefEQ.
-func Href(v string) predicate.News {
-	return predicate.News(sql.FieldEQ(FieldHref, v))
-}
-
 // IsHidden applies equality check predicate on the "is_hidden" field. It's identical to IsHiddenEQ.
 func IsHidden(v bool) predicate.News {
 	return predicate.News(sql.FieldEQ(FieldIsHidden, v))
@@ -247,71 +242,6 @@ func ContentEqualFold(v string) predicate.News {
 // ContentContainsFold applies the ContainsFold predicate on the "content" field.
 func ContentContainsFold(v string) predicate.News {
 	return predicate.News(sql.FieldContainsFold(FieldContent, v))
-}
-
-// HrefEQ applies the EQ predicate on the "href" field.
-func HrefEQ(v string) predicate.News {
-	return predicate.News(sql.FieldEQ(FieldHref, v))
-}
-
-// HrefNEQ applies the NEQ predicate on the "href" field.
-func HrefNEQ(v string) predicate.News {
-	return predicate.News(sql.FieldNEQ(FieldHref, v))
-}
-
-// HrefIn applies the In predicate on the "href" field.
-func HrefIn(vs ...string) predicate.News {
-	return predicate.News(sql.FieldIn(FieldHref, vs...))
-}
-
-// HrefNotIn applies the NotIn predicate on the "href" field.
-func HrefNotIn(vs ...string) predicate.News {
-	return predicate.News(sql.FieldNotIn(FieldHref, vs...))
-}
-
-// HrefGT applies the GT predicate on the "href" field.
-func HrefGT(v string) predicate.News {
-	return predicate.News(sql.FieldGT(FieldHref, v))
-}
-
-// HrefGTE applies the GTE predicate on the "href" field.
-func HrefGTE(v string) predicate.News {
-	return predicate.News(sql.FieldGTE(FieldHref, v))
-}
-
-// HrefLT applies the LT predicate on the "href" field.
-func HrefLT(v string) predicate.News {
-	return predicate.News(sql.FieldLT(FieldHref, v))
-}
-
-// HrefLTE applies the LTE predicate on the "href" field.
-func HrefLTE(v string) predicate.News {
-	return predicate.News(sql.FieldLTE(FieldHref, v))
-}
-
-// HrefContains applies the Contains predicate on the "href" field.
-func HrefContains(v string) predicate.News {
-	return predicate.News(sql.FieldContains(FieldHref, v))
-}
-
-// HrefHasPrefix applies the HasPrefix predicate on the "href" field.
-func HrefHasPrefix(v string) predicate.News {
-	return predicate.News(sql.FieldHasPrefix(FieldHref, v))
-}
-
-// HrefHasSuffix applies the HasSuffix predicate on the "href" field.
-func HrefHasSuffix(v string) predicate.News {
-	return predicate.News(sql.FieldHasSuffix(FieldHref, v))
-}
-
-// HrefEqualFold applies the EqualFold predicate on the "href" field.
-func HrefEqualFold(v string) predicate.News {
-	return predicate.News(sql.FieldEqualFold(FieldHref, v))
-}
-
-// HrefContainsFold applies the ContainsFold predicate on the "href" field.
-func HrefContainsFold(v string) predicate.News {
-	return predicate.News(sql.FieldContainsFold(FieldHref, v))
 }
 
 // IsHiddenEQ applies the EQ predicate on the "is_hidden" field.

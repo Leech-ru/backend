@@ -1990,7 +1990,6 @@ type NewsMutation struct {
 	image_id      *uuid.UUID
 	title         *string
 	content       *string
-	href          *string
 	is_hidden     *bool
 	clearedFields map[string]struct{}
 	done          bool
@@ -2210,42 +2209,6 @@ func (m *NewsMutation) ResetContent() {
 	m.content = nil
 }
 
-// SetHref sets the "href" field.
-func (m *NewsMutation) SetHref(s string) {
-	m.href = &s
-}
-
-// Href returns the value of the "href" field in the mutation.
-func (m *NewsMutation) Href() (r string, exists bool) {
-	v := m.href
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldHref returns the old "href" field's value of the News entity.
-// If the News object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NewsMutation) OldHref(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldHref is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldHref requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldHref: %w", err)
-	}
-	return oldValue.Href, nil
-}
-
-// ResetHref resets all changes to the "href" field.
-func (m *NewsMutation) ResetHref() {
-	m.href = nil
-}
-
 // SetIsHidden sets the "is_hidden" field.
 func (m *NewsMutation) SetIsHidden(b bool) {
 	m.is_hidden = &b
@@ -2316,7 +2279,7 @@ func (m *NewsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *NewsMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 4)
 	if m.image_id != nil {
 		fields = append(fields, news.FieldImageID)
 	}
@@ -2325,9 +2288,6 @@ func (m *NewsMutation) Fields() []string {
 	}
 	if m.content != nil {
 		fields = append(fields, news.FieldContent)
-	}
-	if m.href != nil {
-		fields = append(fields, news.FieldHref)
 	}
 	if m.is_hidden != nil {
 		fields = append(fields, news.FieldIsHidden)
@@ -2346,8 +2306,6 @@ func (m *NewsMutation) Field(name string) (ent.Value, bool) {
 		return m.Title()
 	case news.FieldContent:
 		return m.Content()
-	case news.FieldHref:
-		return m.Href()
 	case news.FieldIsHidden:
 		return m.IsHidden()
 	}
@@ -2365,8 +2323,6 @@ func (m *NewsMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldTitle(ctx)
 	case news.FieldContent:
 		return m.OldContent(ctx)
-	case news.FieldHref:
-		return m.OldHref(ctx)
 	case news.FieldIsHidden:
 		return m.OldIsHidden(ctx)
 	}
@@ -2398,13 +2354,6 @@ func (m *NewsMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetContent(v)
-		return nil
-	case news.FieldHref:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetHref(v)
 		return nil
 	case news.FieldIsHidden:
 		v, ok := value.(bool)
@@ -2470,9 +2419,6 @@ func (m *NewsMutation) ResetField(name string) error {
 		return nil
 	case news.FieldContent:
 		m.ResetContent()
-		return nil
-	case news.FieldHref:
-		m.ResetHref()
 		return nil
 	case news.FieldIsHidden:
 		m.ResetIsHidden()

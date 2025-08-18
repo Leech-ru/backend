@@ -75,7 +75,6 @@ var (
 		{Name: "image_id", Type: field.TypeUUID},
 		{Name: "title", Type: field.TypeString},
 		{Name: "content", Type: field.TypeString},
-		{Name: "href", Type: field.TypeString},
 		{Name: "is_hidden", Type: field.TypeBool},
 	}
 	// NewsTable holds the schema information for the "news" table.

@@ -13,7 +13,6 @@ func (s *newsService) Create(ctx context.Context, req *dto.CreateNewsRequest) (*
 		ImageID:  req.ImageID,
 		Title:    req.Title,
 		Content:  req.Content,
-		Href:     req.Href,
 		IsHidden: req.IsHidden,
 	}
 	if cond, err := s.imageService.Exists(ctx, req.ImageID); err != nil || !cond {
@@ -35,7 +34,6 @@ func (s *newsService) Create(ctx context.Context, req *dto.CreateNewsRequest) (*
 		ImageID:  news.ImageID,
 		Title:    news.Title,
 		Content:  news.Content,
-		Href:     news.Href,
 		IsHidden: news.IsHidden,
 	}, nil
 }

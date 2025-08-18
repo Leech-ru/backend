@@ -37,7 +37,6 @@ func (s *newsService) GetAllByFilterForAdmins(ctx context.Context, req *dto.GetA
 			ImageID:        news.ImageID,
 			Title:          news.Title,
 			ContentPreview: contentPreview,
-			Href:           news.Href,
 			IsHidden:       news.IsHidden,
 		})
 	}

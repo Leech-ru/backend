@@ -22,7 +22,6 @@ func (s *newsService) GetByID(ctx context.Context, req *dto.GetByIdNewsRequest) 
 		ImageID:  news.ImageID,
 		Title:    news.Title,
 		Content:  news.Content,
-		Href:     news.Href,
 		IsHidden: news.IsHidden,
 	}, nil
 }

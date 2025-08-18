@@ -38,7 +38,6 @@ func (s *newsService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilte
 			ImageID:        news.ImageID,
 			Title:          news.Title,
 			ContentPreview: contentPreview,
-			Href:           news.Href,
 			IsHidden:       news.IsHidden,
 		})
 	}

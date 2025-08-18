@@ -23,8 +23,6 @@ type News struct {
 	Title string `json:"title,omitempty"`
 	// Content holds the value of the "content" field.
 	Content string `json:"content,omitempty"`
-	// Href holds the value of the "href" field.
-	Href string `json:"href,omitempty"`
 	// IsHidden holds the value of the "is_hidden" field.
 	IsHidden     bool `json:"is_hidden,omitempty"`
 	selectValues sql.SelectValues
@@ -37,7 +35,7 @@ func (*News) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case news.FieldIsHidden:
 			values[i] = new(sql.NullBool)
-		case news.FieldTitle, news.FieldContent, news.FieldHref:
+		case news.FieldTitle, news.FieldContent:
 			values[i] = new(sql.NullString)
 		case news.FieldID, news.FieldImageID:
 			values[i] = new(uuid.UUID)
@@ -79,12 +77,6 @@ func (n *News) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field content", values[i])
 			} else if value.Valid {
 				n.Content = value.String
-			}
-		case news.FieldHref:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field href", values[i])
-			} else if value.Valid {
-				n.Href = value.String
 			}
 		case news.FieldIsHidden:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -136,9 +128,6 @@ func (n *News) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("content=")
 	builder.WriteString(n.Content)
-	builder.WriteString(", ")
-	builder.WriteString("href=")
-	builder.WriteString(n.Href)
 	builder.WriteString(", ")
 	builder.WriteString("is_hidden=")
 	builder.WriteString(fmt.Sprintf("%v", n.IsHidden))

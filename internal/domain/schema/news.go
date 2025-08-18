@@ -27,9 +27,6 @@ func (News) Fields() []ent.Field {
 		field.String("content").
 			NotEmpty(),
 
-		field.String("href").
-			NotEmpty(),
-
 		field.Bool("is_hidden"),
 	}
 }

@@ -48,6 +48,9 @@ import (
 // @tag.name        partner
 // @tag.description Information about center's partners
 
+// @tag.name        news
+// @tag.description News view and management
+
 func main() {
 	mainApp, err := app.New()
 	if err != nil {

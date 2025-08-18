@@ -38,12 +38,6 @@ func (nc *NewsCreate) SetContent(s string) *NewsCreate {
 	return nc
 }
 
-// SetHref sets the "href" field.
-func (nc *NewsCreate) SetHref(s string) *NewsCreate {
-	nc.mutation.SetHref(s)
-	return nc
-}
-
 // SetIsHidden sets the "is_hidden" field.
 func (nc *NewsCreate) SetIsHidden(b bool) *NewsCreate {
 	nc.mutation.SetIsHidden(b)
@@ -126,14 +120,6 @@ func (nc *NewsCreate) check() error {
 			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "News.content": %w`, err)}
 		}
 	}
-	if _, ok := nc.mutation.Href(); !ok {
-		return &ValidationError{Name: "href", err: errors.New(`ent: missing required field "News.href"`)}
-	}
-	if v, ok := nc.mutation.Href(); ok {
-		if err := news.HrefValidator(v); err != nil {
-			return &ValidationError{Name: "href", err: fmt.Errorf(`ent: validator failed for field "News.href": %w`, err)}
-		}
-	}
 	if _, ok := nc.mutation.IsHidden(); !ok {
 		return &ValidationError{Name: "is_hidden", err: errors.New(`ent: missing required field "News.is_hidden"`)}
 	}
@@ -183,10 +169,6 @@ func (nc *NewsCreate) createSpec() (*News, *sqlgraph.CreateSpec) {
 	if value, ok := nc.mutation.Content(); ok {
 		_spec.SetField(news.FieldContent, field.TypeString, value)
 		_node.Content = value
-	}
-	if value, ok := nc.mutation.Href(); ok {
-		_spec.SetField(news.FieldHref, field.TypeString, value)
-		_node.Href = value
 	}
 	if value, ok := nc.mutation.IsHidden(); ok {
 		_spec.SetField(news.FieldIsHidden, field.TypeBool, value)

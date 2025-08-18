@@ -40,9 +40,6 @@ func (s *newsService) Update(ctx context.Context, req *dto.UpdateNewsRequest) (*
 	if req.Content != nil {
 		newsToUpdate.Title = *req.Title
 	}
-	if req.Href != nil {
-		newsToUpdate.Title = *req.Title
-	}
 	if req.IsHidden != nil {
 		newsToUpdate.IsHidden = *req.IsHidden
 	}
@@ -64,7 +61,6 @@ func (s *newsService) Update(ctx context.Context, req *dto.UpdateNewsRequest) (*
 		ImageID:  updatedNews.ImageID,
 		Title:    updatedNews.Title,
 		Content:  updatedNews.Content,
-		Href:     updatedNews.Href,
 		IsHidden: updatedNews.IsHidden,
 	}, nil
 }

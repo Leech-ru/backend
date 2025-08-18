@@ -18,8 +18,6 @@ const (
 	FieldTitle = "title"
 	// FieldContent holds the string denoting the content field in the database.
 	FieldContent = "content"
-	// FieldHref holds the string denoting the href field in the database.
-	FieldHref = "href"
 	// FieldIsHidden holds the string denoting the is_hidden field in the database.
 	FieldIsHidden = "is_hidden"
 	// Table holds the table name of the news in the database.
@@ -32,7 +30,6 @@ var Columns = []string{
 	FieldImageID,
 	FieldTitle,
 	FieldContent,
-	FieldHref,
 	FieldIsHidden,
 }
 
@@ -51,8 +48,6 @@ var (
 	TitleValidator func(string) error
 	// ContentValidator is a validator for the "content" field. It is called by the builders before save.
 	ContentValidator func(string) error
-	// HrefValidator is a validator for the "href" field. It is called by the builders before save.
-	HrefValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -78,11 +73,6 @@ func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 // ByContent orders the results by the content field.
 func ByContent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldContent, opts...).ToFunc()
-}
-
-// ByHref orders the results by the href field.
-func ByHref(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldHref, opts...).ToFunc()
 }
 
 // ByIsHidden orders the results by the is_hidden field.
