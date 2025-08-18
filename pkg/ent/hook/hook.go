@@ -32,6 +32,30 @@ func (f CosmeticsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CosmeticsMutation", m)
 }
 
+// The MainPageFunc type is an adapter to allow the use of ordinary
+// function as MainPage mutator.
+type MainPageFunc func(context.Context, *ent.MainPageMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MainPageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MainPageMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MainPageMutation", m)
+}
+
+// The NewsFunc type is an adapter to allow the use of ordinary
+// function as News mutator.
+type NewsFunc func(context.Context, *ent.NewsMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NewsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NewsMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NewsMutation", m)
+}
+
 // The PartnerFunc type is an adapter to allow the use of ordinary
 // function as Partner mutator.
 type PartnerFunc func(context.Context, *ent.PartnerMutation) (ent.Value, error)

@@ -6,13 +6,16 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 WORKDIR /opt
 
-COPY . .
+COPY go.mod go.sum ./
 
 RUN go mod download && go mod verify
 
+COPY . .
+
 RUN /go/bin/swag init -g cmd/main.go
 
-RUN go build -o bin/application ./cmd
+ENV GOCACHE=/root/.cache/go-build
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -o bin/application ./cmd/
 
 FROM alpine:3.19 AS runner
 

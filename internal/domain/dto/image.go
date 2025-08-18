@@ -8,15 +8,15 @@ type Image struct {
 }
 
 type CreateImageRequest struct {
-	File *FilePackage `json:"file"`
+	File *FilePackage `json:"file" validate:"required"`
 }
 type CreateImageResponse Image
 
 type GetByIdImageRequest struct {
-	ID uuid.UUID `json:"id"`
+	ID uuid.UUID `json:"id" validate:"required,uuid"`
 }
 type GetByIdImageResponse Image
 
 type DeleteImageRequest struct {
-	ID uuid.UUID `json:"id"`
+	ID uuid.UUID `json:"id" validate:"required,uuid"`
 }

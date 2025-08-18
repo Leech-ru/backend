@@ -8,7 +8,19 @@ import (
 	"net/http"
 )
 
-func (h *handler) Upload(c echo.Context) error {
+// UploadImage godoc
+// @Summary      Upload a new image
+// @Description  Uploads an image file and stores it in the system
+// @Tags         image
+// @Security     CookieAuth
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        file  formData  file  true  "Image file"
+// @Success      201   {object}  dto.CreateImageResponse
+// @Failure      400   {object}  dto.HTTPStatus  "Invalid request or file is missing"
+// @Failure      500   {object}  dto.HTTPStatus  "Internal server error"
+// @Router       /images [post]
+func (h *handler) UploadImage(c echo.Context) error {
 	file, err := c.FormFile("file")
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.HTTPStatus{

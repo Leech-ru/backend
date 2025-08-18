@@ -46,6 +46,9 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174100
+        type: string
       is_hidden:
         example: false
         type: boolean
@@ -97,6 +100,9 @@ definitions:
         maxLength: 3000
         minLength: 3
         type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
       is_hidden:
         example: false
         type: boolean
@@ -114,6 +120,7 @@ definitions:
         type: integer
     required:
     - category_id
+    - image_id
     - is_hidden
     - title
     type: object
@@ -132,6 +139,9 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174100
+        type: string
       is_hidden:
         example: false
         type: boolean
@@ -143,6 +153,107 @@ definitions:
       volume:
         example: 250
         type: integer
+    type: object
+  dto.CreateImageResponse:
+    properties:
+      file:
+        $ref: '#/definitions/dto.FilePackage'
+      id:
+        type: string
+    type: object
+  dto.CreateMainPageRequest:
+    properties:
+      content:
+        maxLength: 1000
+        minLength: 2
+        type: string
+      fluid:
+        type: boolean
+      href:
+        maxLength: 1000
+        minLength: 2
+        type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      is_hidden:
+        type: boolean
+      title:
+        maxLength: 100
+        minLength: 2
+        type: string
+    required:
+    - content
+    - href
+    - image_id
+    - title
+    type: object
+  dto.CreateMainPageResponse:
+    properties:
+      content:
+        type: string
+      fluid:
+        type: boolean
+      href:
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174100
+        type: string
+      is_hidden:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.CreateNewsRequest:
+    properties:
+      content:
+        example: This is the full news content...
+        maxLength: 5000
+        type: string
+      image_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_hidden:
+        example: false
+        type: boolean
+      title:
+        example: Breaking News
+        maxLength: 255
+        type: string
+    required:
+    - content
+    - image_id
+    - is_hidden
+    - title
+    type: object
+  dto.CreateNewsResponse:
+    properties:
+      content:
+        example: This is the full news content...
+        maxLength: 5000
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      image_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_hidden:
+        example: false
+        type: boolean
+      title:
+        example: Breaking News
+        maxLength: 255
+        type: string
+    required:
+    - content
+    - id
+    - image_id
+    - is_hidden
+    - title
     type: object
   dto.CreateOrderRequest:
     properties:
@@ -228,6 +339,22 @@ definitions:
     - fio
     - phone_number
     type: object
+  dto.FilePackage:
+    properties:
+      content_type:
+        type: string
+      filename:
+        maxLength: 250
+        type: string
+      last_modified:
+        type: string
+      size:
+        type: integer
+    required:
+    - content_type
+    - filename
+    - size
+    type: object
   dto.GetByIdCategoryResponse:
     properties:
       id:
@@ -257,6 +384,9 @@ definitions:
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
         type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174100
+        type: string
       is_hidden:
         example: false
         type: boolean
@@ -268,6 +398,51 @@ definitions:
       volume:
         example: 250
         type: integer
+    type: object
+  dto.GetByIdMainPageResponse:
+    properties:
+      content:
+        type: string
+      fluid:
+        type: boolean
+      href:
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174100
+        type: string
+      is_hidden:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.GetByIdNewsResponse:
+    properties:
+      content:
+        example: This is the full news content...
+        maxLength: 5000
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      image_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_hidden:
+        example: false
+        type: boolean
+      title:
+        example: Breaking News
+        maxLength: 255
+        type: string
+    required:
+    - content
+    - id
+    - image_id
+    - is_hidden
+    - title
     type: object
   dto.GetByIdPartnerResponse:
     properties:
@@ -412,6 +587,51 @@ definitions:
       surname:
         example: Ivanov
         type: string
+    type: object
+  dto.MainPage:
+    properties:
+      content:
+        type: string
+      fluid:
+        type: boolean
+      href:
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174100
+        type: string
+      is_hidden:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.NewsListItem:
+    properties:
+      content_preview:
+        example: This is a short preview...
+        maxLength: 255
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      image_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_hidden:
+        example: false
+        type: boolean
+      title:
+        example: Breaking News
+        maxLength: 255
+        type: string
+    required:
+    - content_preview
+    - id
+    - image_id
+    - is_hidden
+    - title
     type: object
   dto.OrderDetails:
     properties:
@@ -577,6 +797,9 @@ definitions:
         maxLength: 3000
         minLength: 3
         type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
       is_hidden:
         example: false
         type: boolean
@@ -607,6 +830,9 @@ definitions:
         type: string
       id:
         example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174100
         type: string
       is_hidden:
         example: false
@@ -748,6 +974,95 @@ definitions:
     - description
     - heading
     type: object
+  dto.UpdateMainPageRequest:
+    properties:
+      content:
+        maxLength: 1000
+        minLength: 2
+        type: string
+      fluid:
+        type: boolean
+      href:
+        maxLength: 1000
+        minLength: 2
+        type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      is_hidden:
+        type: boolean
+      title:
+        maxLength: 100
+        minLength: 2
+        type: string
+    type: object
+  dto.UpdateMainPageResponse:
+    properties:
+      content:
+        type: string
+      fluid:
+        type: boolean
+      href:
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      image_id:
+        example: 123e4567-e89b-12d3-a456-426614174100
+        type: string
+      is_hidden:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.UpdateNewsRequest:
+    properties:
+      content:
+        example: Updated full news content...
+        maxLength: 5000
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      image_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_hidden:
+        example: true
+        type: boolean
+      title:
+        example: Updated News Title
+        maxLength: 255
+        type: string
+    required:
+    - id
+    type: object
+  dto.UpdateNewsResponse:
+    properties:
+      content:
+        example: This is the full news content...
+        maxLength: 5000
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      image_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_hidden:
+        example: false
+        type: boolean
+      title:
+        example: Breaking News
+        maxLength: 255
+        type: string
+    required:
+    - content
+    - id
+    - image_id
+    - is_hidden
+    - title
+    type: object
   dto.UpdatePartnerRequest:
     properties:
       description:
@@ -851,6 +1166,56 @@ info:
   title: Leech API
   version: "1.0"
 paths:
+  /api/v1/admin/news:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of news with pagination, preview length option,
+        and hidden flag (for admins).
+      parameters:
+      - description: Max number of items
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - description: Number of characters for content preview
+        in: query
+        maximum: 500
+        minimum: 1
+        name: preview_length
+        type: integer
+      - description: Filter by hidden status (true/false)
+        in: query
+        name: is_hidden
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.NewsListItem'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Get news by filters (admin)
+      tags:
+      - news
   /api/v1/auth/refresh:
     post:
       consumes:
@@ -1546,6 +1911,365 @@ paths:
       summary: Update partner
       tags:
       - partner
+  /api/v1/main:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of main page contents with limit and offset
+      parameters:
+      - description: Max number of items
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.MainPage'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get all contents
+      tags:
+      - main
+    post:
+      consumes:
+      - application/json
+      description: Creates a new page content with provided details
+      parameters:
+      - description: Content data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateMainPageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateMainPageResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "409":
+          description: 'Conflict: invalid content format'
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Create a new main page content
+      tags:
+      - main
+  /api/v1/main/{id}:
+    delete:
+      description: Deletes the main page content with the given UUID.
+      parameters:
+      - description: Content ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Successfully deleted
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Content not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Delete content by ID
+      tags:
+      - main
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a main page content using its UUID.
+      parameters:
+      - description: Content ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetByIdMainPageResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Content not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get content by ID
+      tags:
+      - main
+    patch:
+      consumes:
+      - application/json
+      description: Updates main page content fields by given ID.
+      parameters:
+      - description: Content ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated content fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateMainPageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateMainPageResponse'
+        "400":
+          description: Validation or binding error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Content not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Update content
+      tags:
+      - main
+  /api/v1/news:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of news with pagination and content preview length
+        option.
+      parameters:
+      - description: Max number of items
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      - description: Number of characters for content preview
+        in: query
+        maximum: 500
+        minimum: 1
+        name: preview_length
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.NewsListItem'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get news by filters
+      tags:
+      - news
+    post:
+      consumes:
+      - application/json
+      description: Creates a news article with provided details.
+      parameters:
+      - description: News data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateNewsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateNewsResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "409":
+          description: 'Conflict: invalid news format'
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Create a news article
+      tags:
+      - news
+  /api/v1/news/{id}:
+    delete:
+      description: Deletes the news article with the given UUID.
+      parameters:
+      - description: News ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Successfully deleted
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: News not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Delete news by ID
+      tags:
+      - news
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a news article using its UUID.
+      parameters:
+      - description: News ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetByIdNewsResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: News not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Get news by ID
+      tags:
+      - news
+    patch:
+      consumes:
+      - application/json
+      description: Updates news article fields by given ID.
+      parameters:
+      - description: News ID (UUID)
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated news fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateNewsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateNewsResponse'
+        "400":
+          description: Validation or binding error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: News not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Update news
+      tags:
+      - news
   /api/v1/order:
     post:
       consumes:
@@ -1891,6 +2615,70 @@ paths:
       summary: Register new user
       tags:
       - user
+  /image/{image_id}:
+    get:
+      consumes:
+      - application/json
+      description: Returns the image file stream by its UUID identifier
+      parameters:
+      - description: Image UUID
+        in: path
+        name: image_id
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Image file stream
+          schema:
+            type: file
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "404":
+          description: Image not found
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      summary: Download image by ID
+      tags:
+      - image
+  /images:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Uploads an image file and stores it in the system
+      parameters:
+      - description: Image file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateImageResponse'
+        "400":
+          description: Invalid request or file is missing
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.HTTPStatus'
+      security:
+      - CookieAuth: []
+      summary: Upload a new image
+      tags:
+      - image
   /ping:
     get:
       consumes:
@@ -1932,9 +2720,15 @@ tags:
   name: auth
 - description: Cosmetics view and management
   name: cosmetics
+- description: Image view and management
+  name: image
 - description: Category view and management
   name: category
 - description: Information about the center
   name: info
 - description: Information about center's partners
   name: partner
+- description: News view and management
+  name: news
+- description: information about main page
+  name: main

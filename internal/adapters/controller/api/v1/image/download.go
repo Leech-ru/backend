@@ -9,7 +9,19 @@ import (
 	"net/http"
 )
 
-func (h *handler) Download(c echo.Context) error {
+// StreamImage godoc
+// @Summary      Download image by ID
+// @Description  Returns the image file stream by its UUID identifier
+// @Tags         image
+// @Accept       json
+// @Produce      octet-stream
+// @Param        image_id  path      string  true  "Image UUID"
+// @Success      200       {file}    binary  "Image file stream"
+// @Failure      400       {object}  dto.HTTPStatus  "Invalid request"
+// @Failure      404       {object}  dto.HTTPStatus  "Image not found"
+// @Failure      500       {object}  dto.HTTPStatus  "Internal server error"
+// @Router       /image/{image_id} [get]
+func (h *handler) StreamImage(c echo.Context) error {
 	id := c.Param("image_id")
 	imageID, err := uuid.Parse(id)
 	if err != nil {

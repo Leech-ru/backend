@@ -7,7 +7,7 @@ import (
 	"errors"
 )
 
-// Delete удаляет косметику и её изображение (если есть).
+// Delete removes cosmetics and its image (if any)
 func (s *cosmeticsService) Delete(ctx context.Context, req *dto.DeleteCosmeticsRequest) error {
 	cosmetics, err := s.cosmeticsRepo.GetById(ctx, req.ID)
 	switch {

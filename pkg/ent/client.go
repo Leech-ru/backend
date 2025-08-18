@@ -13,6 +13,8 @@ import (
 
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
+	"Leech-ru/pkg/ent/mainpage"
+	"Leech-ru/pkg/ent/news"
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
 	"Leech-ru/pkg/ent/refreshtoken"
@@ -34,6 +36,10 @@ type Client struct {
 	Category *CategoryClient
 	// Cosmetics is the client for interacting with the Cosmetics builders.
 	Cosmetics *CosmeticsClient
+	// MainPage is the client for interacting with the MainPage builders.
+	MainPage *MainPageClient
+	// News is the client for interacting with the News builders.
+	News *NewsClient
 	// Partner is the client for interacting with the Partner builders.
 	Partner *PartnerClient
 	// PartnerLink is the client for interacting with the PartnerLink builders.
@@ -55,6 +61,8 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Category = NewCategoryClient(c.config)
 	c.Cosmetics = NewCosmeticsClient(c.config)
+	c.MainPage = NewMainPageClient(c.config)
+	c.News = NewNewsClient(c.config)
 	c.Partner = NewPartnerClient(c.config)
 	c.PartnerLink = NewPartnerLinkClient(c.config)
 	c.RefreshToken = NewRefreshTokenClient(c.config)
@@ -153,6 +161,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:       cfg,
 		Category:     NewCategoryClient(cfg),
 		Cosmetics:    NewCosmeticsClient(cfg),
+		MainPage:     NewMainPageClient(cfg),
+		News:         NewNewsClient(cfg),
 		Partner:      NewPartnerClient(cfg),
 		PartnerLink:  NewPartnerLinkClient(cfg),
 		RefreshToken: NewRefreshTokenClient(cfg),
@@ -178,6 +188,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:       cfg,
 		Category:     NewCategoryClient(cfg),
 		Cosmetics:    NewCosmeticsClient(cfg),
+		MainPage:     NewMainPageClient(cfg),
+		News:         NewNewsClient(cfg),
 		Partner:      NewPartnerClient(cfg),
 		PartnerLink:  NewPartnerLinkClient(cfg),
 		RefreshToken: NewRefreshTokenClient(cfg),
@@ -211,7 +223,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Category, c.Cosmetics, c.Partner, c.PartnerLink, c.RefreshToken, c.User,
+		c.Category, c.Cosmetics, c.MainPage, c.News, c.Partner, c.PartnerLink,
+		c.RefreshToken, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -221,7 +234,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Category, c.Cosmetics, c.Partner, c.PartnerLink, c.RefreshToken, c.User,
+		c.Category, c.Cosmetics, c.MainPage, c.News, c.Partner, c.PartnerLink,
+		c.RefreshToken, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -234,6 +248,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Category.mutate(ctx, m)
 	case *CosmeticsMutation:
 		return c.Cosmetics.mutate(ctx, m)
+	case *MainPageMutation:
+		return c.MainPage.mutate(ctx, m)
+	case *NewsMutation:
+		return c.News.mutate(ctx, m)
 	case *PartnerMutation:
 		return c.Partner.mutate(ctx, m)
 	case *PartnerLinkMutation:
@@ -542,6 +560,272 @@ func (c *CosmeticsClient) mutate(ctx context.Context, m *CosmeticsMutation) (Val
 		return (&CosmeticsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Cosmetics mutation op: %q", m.Op())
+	}
+}
+
+// MainPageClient is a client for the MainPage schema.
+type MainPageClient struct {
+	config
+}
+
+// NewMainPageClient returns a client for the MainPage from the given config.
+func NewMainPageClient(c config) *MainPageClient {
+	return &MainPageClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `mainpage.Hooks(f(g(h())))`.
+func (c *MainPageClient) Use(hooks ...Hook) {
+	c.hooks.MainPage = append(c.hooks.MainPage, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `mainpage.Intercept(f(g(h())))`.
+func (c *MainPageClient) Intercept(interceptors ...Interceptor) {
+	c.inters.MainPage = append(c.inters.MainPage, interceptors...)
+}
+
+// Create returns a builder for creating a MainPage entity.
+func (c *MainPageClient) Create() *MainPageCreate {
+	mutation := newMainPageMutation(c.config, OpCreate)
+	return &MainPageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of MainPage entities.
+func (c *MainPageClient) CreateBulk(builders ...*MainPageCreate) *MainPageCreateBulk {
+	return &MainPageCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *MainPageClient) MapCreateBulk(slice any, setFunc func(*MainPageCreate, int)) *MainPageCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &MainPageCreateBulk{err: fmt.Errorf("calling to MainPageClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*MainPageCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &MainPageCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for MainPage.
+func (c *MainPageClient) Update() *MainPageUpdate {
+	mutation := newMainPageMutation(c.config, OpUpdate)
+	return &MainPageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *MainPageClient) UpdateOne(mp *MainPage) *MainPageUpdateOne {
+	mutation := newMainPageMutation(c.config, OpUpdateOne, withMainPage(mp))
+	return &MainPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *MainPageClient) UpdateOneID(id uuid.UUID) *MainPageUpdateOne {
+	mutation := newMainPageMutation(c.config, OpUpdateOne, withMainPageID(id))
+	return &MainPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for MainPage.
+func (c *MainPageClient) Delete() *MainPageDelete {
+	mutation := newMainPageMutation(c.config, OpDelete)
+	return &MainPageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *MainPageClient) DeleteOne(mp *MainPage) *MainPageDeleteOne {
+	return c.DeleteOneID(mp.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *MainPageClient) DeleteOneID(id uuid.UUID) *MainPageDeleteOne {
+	builder := c.Delete().Where(mainpage.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &MainPageDeleteOne{builder}
+}
+
+// Query returns a query builder for MainPage.
+func (c *MainPageClient) Query() *MainPageQuery {
+	return &MainPageQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeMainPage},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a MainPage entity by its id.
+func (c *MainPageClient) Get(ctx context.Context, id uuid.UUID) (*MainPage, error) {
+	return c.Query().Where(mainpage.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *MainPageClient) GetX(ctx context.Context, id uuid.UUID) *MainPage {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *MainPageClient) Hooks() []Hook {
+	return c.hooks.MainPage
+}
+
+// Interceptors returns the client interceptors.
+func (c *MainPageClient) Interceptors() []Interceptor {
+	return c.inters.MainPage
+}
+
+func (c *MainPageClient) mutate(ctx context.Context, m *MainPageMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&MainPageCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&MainPageUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&MainPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&MainPageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown MainPage mutation op: %q", m.Op())
+	}
+}
+
+// NewsClient is a client for the News schema.
+type NewsClient struct {
+	config
+}
+
+// NewNewsClient returns a client for the News from the given config.
+func NewNewsClient(c config) *NewsClient {
+	return &NewsClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `news.Hooks(f(g(h())))`.
+func (c *NewsClient) Use(hooks ...Hook) {
+	c.hooks.News = append(c.hooks.News, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `news.Intercept(f(g(h())))`.
+func (c *NewsClient) Intercept(interceptors ...Interceptor) {
+	c.inters.News = append(c.inters.News, interceptors...)
+}
+
+// Create returns a builder for creating a News entity.
+func (c *NewsClient) Create() *NewsCreate {
+	mutation := newNewsMutation(c.config, OpCreate)
+	return &NewsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of News entities.
+func (c *NewsClient) CreateBulk(builders ...*NewsCreate) *NewsCreateBulk {
+	return &NewsCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *NewsClient) MapCreateBulk(slice any, setFunc func(*NewsCreate, int)) *NewsCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &NewsCreateBulk{err: fmt.Errorf("calling to NewsClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*NewsCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &NewsCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for News.
+func (c *NewsClient) Update() *NewsUpdate {
+	mutation := newNewsMutation(c.config, OpUpdate)
+	return &NewsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NewsClient) UpdateOne(n *News) *NewsUpdateOne {
+	mutation := newNewsMutation(c.config, OpUpdateOne, withNews(n))
+	return &NewsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NewsClient) UpdateOneID(id uuid.UUID) *NewsUpdateOne {
+	mutation := newNewsMutation(c.config, OpUpdateOne, withNewsID(id))
+	return &NewsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for News.
+func (c *NewsClient) Delete() *NewsDelete {
+	mutation := newNewsMutation(c.config, OpDelete)
+	return &NewsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *NewsClient) DeleteOne(n *News) *NewsDeleteOne {
+	return c.DeleteOneID(n.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *NewsClient) DeleteOneID(id uuid.UUID) *NewsDeleteOne {
+	builder := c.Delete().Where(news.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NewsDeleteOne{builder}
+}
+
+// Query returns a query builder for News.
+func (c *NewsClient) Query() *NewsQuery {
+	return &NewsQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeNews},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a News entity by its id.
+func (c *NewsClient) Get(ctx context.Context, id uuid.UUID) (*News, error) {
+	return c.Query().Where(news.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NewsClient) GetX(ctx context.Context, id uuid.UUID) *News {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *NewsClient) Hooks() []Hook {
+	return c.hooks.News
+}
+
+// Interceptors returns the client interceptors.
+func (c *NewsClient) Interceptors() []Interceptor {
+	return c.inters.News
+}
+
+func (c *NewsClient) mutate(ctx context.Context, m *NewsMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&NewsCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&NewsUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&NewsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&NewsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown News mutation op: %q", m.Op())
 	}
 }
 
@@ -1144,9 +1428,11 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Category, Cosmetics, Partner, PartnerLink, RefreshToken, User []ent.Hook
+		Category, Cosmetics, MainPage, News, Partner, PartnerLink, RefreshToken,
+		User []ent.Hook
 	}
 	inters struct {
-		Category, Cosmetics, Partner, PartnerLink, RefreshToken, User []ent.Interceptor
+		Category, Cosmetics, MainPage, News, Partner, PartnerLink, RefreshToken,
+		User []ent.Interceptor
 	}
 )

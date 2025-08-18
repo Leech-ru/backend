@@ -36,6 +36,9 @@ import (
 // @tag.name        cosmetics
 // @tag.description Cosmetics view and management
 
+// @tag.name        image
+// @tag.description Image view and management
+
 // @tag.name        category
 // @tag.description Category view and management
 
@@ -44,6 +47,12 @@ import (
 
 // @tag.name        partner
 // @tag.description Information about center's partners
+
+// @tag.name        news
+// @tag.description News view and management
+
+// @tag.name        main
+// @tag.description information about main page
 
 func main() {
 	mainApp, err := app.New()

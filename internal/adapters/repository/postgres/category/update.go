@@ -16,6 +16,8 @@ func (s *categoryRepo) Update(ctx context.Context, entity ent.Category) (*ent.Ca
 	switch {
 	case ent.IsNotFound(err):
 		return nil, errorz.CategoryNotFound
+	case ent.IsConstraintError(err):
+		return nil, errorz.InvalidCategoryFormat
 	case err != nil:
 		return nil, err
 	}

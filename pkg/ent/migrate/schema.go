@@ -53,6 +53,36 @@ var (
 			},
 		},
 	}
+	// MainPagesColumns holds the columns for the "main_pages" table.
+	MainPagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "image_id", Type: field.TypeUUID},
+		{Name: "title", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
+		{Name: "href", Type: field.TypeString},
+		{Name: "is_hidden", Type: field.TypeBool, Default: false},
+		{Name: "fluid", Type: field.TypeBool, Default: false},
+	}
+	// MainPagesTable holds the schema information for the "main_pages" table.
+	MainPagesTable = &schema.Table{
+		Name:       "main_pages",
+		Columns:    MainPagesColumns,
+		PrimaryKey: []*schema.Column{MainPagesColumns[0]},
+	}
+	// NewsColumns holds the columns for the "news" table.
+	NewsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "image_id", Type: field.TypeUUID},
+		{Name: "title", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
+		{Name: "is_hidden", Type: field.TypeBool},
+	}
+	// NewsTable holds the schema information for the "news" table.
+	NewsTable = &schema.Table{
+		Name:       "news",
+		Columns:    NewsColumns,
+		PrimaryKey: []*schema.Column{NewsColumns[0]},
+	}
 	// PartnersColumns holds the columns for the "partners" table.
 	PartnersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -125,6 +155,8 @@ var (
 	Tables = []*schema.Table{
 		CategoriesTable,
 		CosmeticsTable,
+		MainPagesTable,
+		NewsTable,
 		PartnersTable,
 		PartnerLinksTable,
 		RefreshTokensTable,

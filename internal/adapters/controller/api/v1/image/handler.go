@@ -39,6 +39,6 @@ func NewHandler(
 }
 
 func (h *handler) Setup(router *echo.Group) {
-	router.GET("/image/:image_id", h.Download)
-	router.POST("/image", h.Upload, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
+	router.GET("/image/:image_id", h.StreamImage)
+	router.POST("/image", h.UploadImage, h.authMiddleware.RequireAuth, h.roleMiddleware.RequireRole(types.RoleModerator))
 }
