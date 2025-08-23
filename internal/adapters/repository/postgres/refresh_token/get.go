@@ -6,6 +6,8 @@ import (
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 	"context"
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -20,7 +22,7 @@ func (s *tokenRepo) GetByUserID(ctx context.Context, userID uuid.UUID) (*ent.Ref
 	case ent.IsNotFound(err):
 		return nil, errorz.TokenNotFound
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return token, nil

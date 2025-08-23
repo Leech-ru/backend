@@ -4,13 +4,14 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // Create creates a new partner in the database with optional links in a transaction.
 func (s *partnersRepo) Create(ctx context.Context, entity ent.Partner) (*ent.Partner, error) {
 	tx, err := s.client.Tx(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to begin tx: %w", err)
 	}
 	defer func() {
 		if r := recover(); r != nil {
@@ -30,7 +31,7 @@ func (s *partnersRepo) Create(ctx context.Context, entity ent.Partner) (*ent.Par
 		if ent.IsConstraintError(err) {
 			return nil, errorz.InvalidPartnerFormat
 		}
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	if len(entity.Edges.Links) > 0 {
@@ -45,12 +46,12 @@ func (s *partnersRepo) Create(ctx context.Context, entity ent.Partner) (*ent.Par
 
 		if err := tx.PartnerLink.CreateBulk(builders...).Exec(ctx); err != nil {
 			_ = tx.Rollback()
-			return nil, err
+			return nil, fmt.Errorf("failed to query db: %w", err)
 		}
 	}
 
 	if err := tx.Commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to commit tx: %w", err)
 	}
 
 	return created, nil

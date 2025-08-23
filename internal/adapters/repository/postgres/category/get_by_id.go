@@ -5,6 +5,8 @@ import (
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/ent/category"
 	"context"
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -19,7 +21,7 @@ func (s *categoryRepo) GetById(ctx context.Context, id uuid.UUID) (*ent.Category
 	case ent.IsNotFound(err):
 		return nil, errorz.CategoryNotFound
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return c, nil

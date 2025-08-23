@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // Create creates a new refresh token in the database
@@ -18,7 +19,7 @@ func (s *tokenRepo) Create(ctx context.Context, entity ent.RefreshToken) (*ent.R
 	case ent.IsConstraintError(err):
 		return nil, errorz.UserAlreadyHasToken
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return created, nil

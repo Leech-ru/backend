@@ -3,6 +3,7 @@ package category
 import (
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // GetAll retrieves all category with optional pagination and filter.
@@ -13,7 +14,7 @@ func (s *categoryRepo) GetAll(ctx context.Context, limit, offset int) ([]*ent.Ca
 		All(ctx)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return category, nil

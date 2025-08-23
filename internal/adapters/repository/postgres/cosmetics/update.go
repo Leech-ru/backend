@@ -5,13 +5,14 @@ import (
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/ent/cosmetics"
 	"context"
+	"fmt"
 )
 
 // Update updates an existing cosmetics and returns it with loaded relations
 func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.Cosmetics, error) {
 	tx, err := s.client.Tx(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to begin tx: %w", err)
 	}
 
 	_, err = tx.Cosmetics.Get(ctx, entity.ID)
@@ -20,7 +21,7 @@ func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.
 		if ent.IsNotFound(err) {
 			return nil, errorz.CosmeticsNotFound
 		}
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	_, err = tx.Category.Get(ctx, entity.Edges.Category.ID)
@@ -29,7 +30,7 @@ func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.
 		if ent.IsNotFound(err) {
 			return nil, errorz.CategoryNotFound
 		}
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	_, err = tx.Cosmetics.
@@ -47,7 +48,7 @@ func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.
 
 	if err != nil {
 		_ = tx.Rollback()
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	result, err := tx.Cosmetics.
@@ -58,11 +59,11 @@ func (s *cosmeticsRepo) Update(ctx context.Context, entity ent.Cosmetics) (*ent.
 
 	if err != nil {
 		_ = tx.Rollback()
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	if err := tx.Commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to commit tx: %w", err)
 	}
 
 	return result, nil

@@ -5,13 +5,14 @@ import (
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 	"context"
+	"fmt"
 )
 
 // Upsert update or create token by user
 func (s *tokenRepo) Upsert(ctx context.Context, entity ent.RefreshToken) (*ent.RefreshToken, error) {
 	tx, err := s.client.Tx(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to begin tx: %w", err)
 	}
 	defer func() {
 		if p := recover(); p != nil {
@@ -28,7 +29,7 @@ func (s *tokenRepo) Upsert(ctx context.Context, entity ent.RefreshToken) (*ent.R
 
 	if err != nil && !ent.IsNotFound(err) {
 		_ = tx.Rollback()
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	var result *ent.RefreshToken
@@ -48,11 +49,11 @@ func (s *tokenRepo) Upsert(ctx context.Context, entity ent.RefreshToken) (*ent.R
 
 	if err != nil {
 		_ = tx.Rollback()
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	if err := tx.Commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to commit tx: %w", err)
 	}
 
 	return result, nil

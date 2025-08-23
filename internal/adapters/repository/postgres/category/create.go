@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // Create creates a new category in the database
@@ -17,7 +18,7 @@ func (s *categoryRepo) Create(ctx context.Context, entity ent.Category) (*ent.Ca
 	case ent.IsConstraintError(err):
 		return nil, errorz.InvalidCategoryFormat
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 	return created, nil
 }

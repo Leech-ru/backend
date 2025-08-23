@@ -5,6 +5,8 @@ import (
 	"Leech-ru/pkg/ent/category"
 	"Leech-ru/pkg/ent/cosmetics"
 	"context"
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -31,7 +33,7 @@ func (s *cosmeticsRepo) GetAllByFilter(ctx context.Context, limit, offset int, c
 		All(ctx)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return cosmetics, nil

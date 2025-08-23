@@ -5,6 +5,7 @@ import (
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/ent/user"
 	"context"
+	"fmt"
 )
 
 // GetAllByFilter retrieves all users with optional pagination and filters.
@@ -36,7 +37,7 @@ func (s *userRepo) GetAllByFilter(
 		All(ctx)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return users, nil

@@ -6,6 +6,8 @@ import (
 	"Leech-ru/pkg/ent/refreshtoken"
 	"Leech-ru/pkg/ent/user"
 	"context"
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -20,7 +22,7 @@ func (s *tokenRepo) DeleteByUserID(ctx context.Context, userID uuid.UUID) error 
 	case ent.IsNotFound(err):
 		return errorz.TokenNotFound
 	case err != nil:
-		return err
+		return fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return nil

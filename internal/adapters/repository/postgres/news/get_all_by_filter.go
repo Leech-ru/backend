@@ -4,6 +4,7 @@ import (
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/ent/news"
 	"context"
+	"fmt"
 )
 
 // GetAllByFilter retrieves all category with optional pagination and filter.
@@ -20,7 +21,7 @@ func (s *newsRepo) GetAllByFilter(ctx context.Context, limit, offset int, isHidd
 		All(ctx)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return news, nil

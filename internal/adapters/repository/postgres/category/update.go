@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // Update updates an existing category
@@ -19,7 +20,7 @@ func (s *categoryRepo) Update(ctx context.Context, entity ent.Category) (*ent.Ca
 	case ent.IsConstraintError(err):
 		return nil, errorz.InvalidCategoryFormat
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return updated, nil

@@ -5,6 +5,8 @@ import (
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/ent/partner"
 	"context"
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -20,7 +22,7 @@ func (s *partnersRepo) GetById(ctx context.Context, id uuid.UUID) (*ent.Partner,
 	case ent.IsNotFound(err):
 		return nil, errorz.PartnerNotFound
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return p, nil

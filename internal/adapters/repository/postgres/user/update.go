@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // Update updates an existing user
@@ -23,7 +24,7 @@ func (s *userRepo) Update(ctx context.Context, userEntity ent.User) (*ent.User, 
 	case ent.IsConstraintError(err):
 		return nil, errorz.EmailAlreadyExist
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return updated, nil
