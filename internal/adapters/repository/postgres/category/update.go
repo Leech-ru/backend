@@ -12,6 +12,7 @@ func (s *categoryRepo) Update(ctx context.Context, entity ent.Category) (*ent.Ca
 	updated, err := s.client.Category.
 		UpdateOneID(entity.ID).
 		SetName(entity.Name).
+		SetImageID(entity.ImageID).
 		Save(ctx)
 
 	switch {

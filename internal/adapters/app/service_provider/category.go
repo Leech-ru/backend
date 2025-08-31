@@ -16,7 +16,7 @@ type categoryService interface {
 
 func (s *ServiceProvider) CategoryService() categoryService {
 	if s.categoryService == nil {
-		s.categoryService = category.NewCategoryService(s.DB())
+		s.categoryService = category.NewCategoryService(s.DB(), s.imageService)
 	}
 	return s.categoryService
 }

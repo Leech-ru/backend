@@ -29,6 +29,20 @@ func (cu *CategoryUpdate) Where(ps ...predicate.Category) *CategoryUpdate {
 	return cu
 }
 
+// SetImageID sets the "image_id" field.
+func (cu *CategoryUpdate) SetImageID(u uuid.UUID) *CategoryUpdate {
+	cu.mutation.SetImageID(u)
+	return cu
+}
+
+// SetNillableImageID sets the "image_id" field if the given value is not nil.
+func (cu *CategoryUpdate) SetNillableImageID(u *uuid.UUID) *CategoryUpdate {
+	if u != nil {
+		cu.SetImageID(*u)
+	}
+	return cu
+}
+
 // SetName sets the "name" field.
 func (cu *CategoryUpdate) SetName(s string) *CategoryUpdate {
 	cu.mutation.SetName(s)
@@ -133,6 +147,9 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := cu.mutation.ImageID(); ok {
+		_spec.SetField(category.FieldImageID, field.TypeUUID, value)
+	}
 	if value, ok := cu.mutation.Name(); ok {
 		_spec.SetField(category.FieldName, field.TypeString, value)
 	}
@@ -199,6 +216,20 @@ type CategoryUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CategoryMutation
+}
+
+// SetImageID sets the "image_id" field.
+func (cuo *CategoryUpdateOne) SetImageID(u uuid.UUID) *CategoryUpdateOne {
+	cuo.mutation.SetImageID(u)
+	return cuo
+}
+
+// SetNillableImageID sets the "image_id" field if the given value is not nil.
+func (cuo *CategoryUpdateOne) SetNillableImageID(u *uuid.UUID) *CategoryUpdateOne {
+	if u != nil {
+		cuo.SetImageID(*u)
+	}
+	return cuo
 }
 
 // SetName sets the "name" field.
@@ -334,6 +365,9 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := cuo.mutation.ImageID(); ok {
+		_spec.SetField(category.FieldImageID, field.TypeUUID, value)
 	}
 	if value, ok := cuo.mutation.Name(); ok {
 		_spec.SetField(category.FieldName, field.TypeString, value)

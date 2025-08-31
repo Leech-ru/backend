@@ -21,6 +21,8 @@ func (Category) Fields() []ent.Field {
 			Immutable().
 			Unique(),
 
+		field.UUID("image_id", uuid.UUID{}),
+
 		field.String("name").
 			NotEmpty(),
 	}

@@ -21,6 +21,12 @@ type CategoryCreate struct {
 	hooks    []Hook
 }
 
+// SetImageID sets the "image_id" field.
+func (cc *CategoryCreate) SetImageID(u uuid.UUID) *CategoryCreate {
+	cc.mutation.SetImageID(u)
+	return cc
+}
+
 // SetName sets the "name" field.
 func (cc *CategoryCreate) SetName(s string) *CategoryCreate {
 	cc.mutation.SetName(s)
@@ -99,6 +105,9 @@ func (cc *CategoryCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (cc *CategoryCreate) check() error {
+	if _, ok := cc.mutation.ImageID(); !ok {
+		return &ValidationError{Name: "image_id", err: errors.New(`ent: missing required field "Category.image_id"`)}
+	}
 	if _, ok := cc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Category.name"`)}
 	}
@@ -141,6 +150,10 @@ func (cc *CategoryCreate) createSpec() (*Category, *sqlgraph.CreateSpec) {
 	if id, ok := cc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
+	}
+	if value, ok := cc.mutation.ImageID(); ok {
+		_spec.SetField(category.FieldImageID, field.TypeUUID, value)
+		_node.ImageID = value
 	}
 	if value, ok := cc.mutation.Name(); ok {
 		_spec.SetField(category.FieldName, field.TypeString, value)

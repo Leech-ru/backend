@@ -17,7 +17,8 @@ func (s *categoryService) GetByID(ctx context.Context, req *dto.GetByIdCategoryR
 		return nil, err
 	}
 	return &dto.GetByIdCategoryResponse{
-		ID:   category.ID,
-		Name: category.Name,
+		ID:      category.ID,
+		ImageID: category.ImageID,
+		Name:    category.Name,
 	}, nil
 }

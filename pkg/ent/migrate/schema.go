@@ -11,6 +11,7 @@ var (
 	// CategoriesColumns holds the columns for the "categories" table.
 	CategoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "image_id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString},
 	}
 	// CategoriesTable holds the schema information for the "categories" table.

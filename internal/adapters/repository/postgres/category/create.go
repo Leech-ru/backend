@@ -12,6 +12,7 @@ func (s *categoryRepo) Create(ctx context.Context, entity ent.Category) (*ent.Ca
 	created, err := s.client.Category.
 		Create().
 		SetName(entity.Name).
+		SetImageID(entity.ImageID).
 		Save(ctx)
 
 	switch {
