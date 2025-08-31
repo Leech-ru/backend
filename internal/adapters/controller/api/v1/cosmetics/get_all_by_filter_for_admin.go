@@ -2,8 +2,9 @@ package cosmetics
 
 import (
 	"Leech-ru/internal/domain/dto"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // GetAllByFilterForAdmin returns a list of cosmetics based on filter parameters, but for admin.
@@ -11,6 +12,7 @@ import (
 // @Summary      Get cosmetics by filters
 // @Description  Retrieves a list of cosmetics filtered by category, volume, title, etc and hidden parameters.
 // @Tags         cosmetics
+// @Security     CookieAuth
 // @Accept       json
 // @Produce      json
 // @Param        limit        query     int     false  "Max number of items"          minimum(1) maximum(100)
