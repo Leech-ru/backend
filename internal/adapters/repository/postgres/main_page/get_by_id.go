@@ -5,6 +5,7 @@ import (
 	"Leech-ru/pkg/ent"
 	"Leech-ru/pkg/ent/mainpage"
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -20,7 +21,7 @@ func (s *mainPageRepo) GetById(ctx context.Context, id uuid.UUID) (*ent.MainPage
 	case ent.IsNotFound(err):
 		return nil, errorz.MainPageNotFound
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return c, nil

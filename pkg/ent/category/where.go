@@ -55,9 +55,54 @@ func IDLTE(id uuid.UUID) predicate.Category {
 	return predicate.Category(sql.FieldLTE(FieldID, id))
 }
 
+// ImageID applies equality check predicate on the "image_id" field. It's identical to ImageIDEQ.
+func ImageID(v uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldEQ(FieldImageID, v))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Category {
 	return predicate.Category(sql.FieldEQ(FieldName, v))
+}
+
+// ImageIDEQ applies the EQ predicate on the "image_id" field.
+func ImageIDEQ(v uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldEQ(FieldImageID, v))
+}
+
+// ImageIDNEQ applies the NEQ predicate on the "image_id" field.
+func ImageIDNEQ(v uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldNEQ(FieldImageID, v))
+}
+
+// ImageIDIn applies the In predicate on the "image_id" field.
+func ImageIDIn(vs ...uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldIn(FieldImageID, vs...))
+}
+
+// ImageIDNotIn applies the NotIn predicate on the "image_id" field.
+func ImageIDNotIn(vs ...uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldNotIn(FieldImageID, vs...))
+}
+
+// ImageIDGT applies the GT predicate on the "image_id" field.
+func ImageIDGT(v uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldGT(FieldImageID, v))
+}
+
+// ImageIDGTE applies the GTE predicate on the "image_id" field.
+func ImageIDGTE(v uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldGTE(FieldImageID, v))
+}
+
+// ImageIDLT applies the LT predicate on the "image_id" field.
+func ImageIDLT(v uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldLT(FieldImageID, v))
+}
+
+// ImageIDLTE applies the LTE predicate on the "image_id" field.
+func ImageIDLTE(v uuid.UUID) predicate.Category {
+	return predicate.Category(sql.FieldLTE(FieldImageID, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.

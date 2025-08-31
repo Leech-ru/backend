@@ -11,7 +11,17 @@ import (
 // Create category and returns it.
 func (s *categoryService) Create(ctx context.Context, req *dto.CreateCategoryRequest) (*dto.CreateCategoryResponse, error) {
 	category := &ent.Category{
-		Name: req.Name,
+		Name:    req.Name,
+		ImageID: req.ImageID,
+	}
+
+	if cond, err := s.imageService.Exists(ctx, req.ImageID); err != nil || !cond {
+		switch {
+		case !cond:
+			return nil, errorz.ImageNotFound
+		case err != nil:
+			return nil, err
+		}
 	}
 
 	category, err := s.categoryRepo.Create(ctx, *category)
@@ -22,7 +32,8 @@ func (s *categoryService) Create(ctx context.Context, req *dto.CreateCategoryReq
 		return nil, err
 	}
 	return &dto.CreateCategoryResponse{
-		ID:   category.ID,
-		Name: category.Name,
+		ID:      category.ID,
+		Name:    category.Name,
+		ImageID: category.ImageID,
 	}, nil
 }

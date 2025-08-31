@@ -24,7 +24,7 @@ func init() {
 	categoryFields := schema.Category{}.Fields()
 	_ = categoryFields
 	// categoryDescName is the schema descriptor for name field.
-	categoryDescName := categoryFields[1].Descriptor()
+	categoryDescName := categoryFields[2].Descriptor()
 	// category.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	category.NameValidator = categoryDescName.Validators[0].(func(string) error)
 	// categoryDescID is the schema descriptor for id field.

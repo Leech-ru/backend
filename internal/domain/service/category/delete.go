@@ -9,7 +9,19 @@ import (
 
 // Delete delete category by ID.
 func (s *categoryService) Delete(ctx context.Context, req *dto.DeleteCategoryRequest) error {
-	err := s.categoryRepo.Delete(ctx, req.ID)
+	category, err := s.categoryRepo.GetById(ctx, req.ID)
+	switch {
+	case errors.Is(err, errorz.CategoryNotFound):
+		return errorz.CategoryNotFound
+	case err != nil:
+		return err
+	}
+
+	if err := s.imageService.Delete(ctx, &dto.DeleteImageRequest{ID: category.ImageID}); err != nil {
+		return err
+	}
+
+	err = s.categoryRepo.Delete(ctx, req.ID)
 	switch {
 	case errors.Is(err, errorz.CategoryNotFound):
 		return errorz.CategoryNotFound

@@ -3,6 +3,7 @@ package partner
 import (
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // GetAll retrieves all partner with optional pagination.
@@ -15,7 +16,7 @@ func (s *partnersRepo) GetAll(ctx context.Context, limit, offset int) ([]*ent.Pa
 		All(ctx)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return partners, nil

@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // Create creates a new user in the database
@@ -21,7 +22,7 @@ func (s *userRepo) Create(ctx context.Context, entity ent.User) (*ent.User, erro
 	case ent.IsConstraintError(err):
 		return nil, errorz.EmailAlreadyExist
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 	return &ent.User{
 		ID:       created.ID,

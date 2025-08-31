@@ -17,6 +17,8 @@ type Category struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// ImageID holds the value of the "image_id" field.
+	ImageID uuid.UUID `json:"image_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -50,7 +52,7 @@ func (*Category) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case category.FieldName:
 			values[i] = new(sql.NullString)
-		case category.FieldID:
+		case category.FieldID, category.FieldImageID:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -72,6 +74,12 @@ func (c *Category) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				c.ID = *value
+			}
+		case category.FieldImageID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field image_id", values[i])
+			} else if value != nil {
+				c.ImageID = *value
 			}
 		case category.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -120,6 +128,9 @@ func (c *Category) String() string {
 	var builder strings.Builder
 	builder.WriteString("Category(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
+	builder.WriteString("image_id=")
+	builder.WriteString(fmt.Sprintf("%v", c.ImageID))
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(c.Name)
 	builder.WriteByte(')')

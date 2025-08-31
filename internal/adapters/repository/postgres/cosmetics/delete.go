@@ -4,6 +4,8 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -17,7 +19,7 @@ func (s *cosmeticsRepo) Delete(ctx context.Context, id uuid.UUID) error {
 	case ent.IsNotFound(err):
 		return errorz.CosmeticsNotFound
 	case err != nil:
-		return err
+		return fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return nil

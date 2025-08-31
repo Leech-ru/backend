@@ -2,6 +2,7 @@ package category
 
 import (
 	"Leech-ru/internal/adapters/repository/postgres/category"
+	"Leech-ru/internal/domain/dto"
 	"Leech-ru/pkg/ent"
 	"context"
 	"github.com/google/uuid"
@@ -15,12 +16,21 @@ type categoryRepo interface {
 	Update(ctx context.Context, entity ent.Category) (*ent.Category, error)
 }
 
-type categoryService struct {
-	categoryRepo categoryRepo
+type imageService interface {
+	Create(ctx context.Context, req *dto.CreateImageRequest) (*dto.CreateImageResponse, error)
+	GetById(ctx context.Context, req *dto.GetByIdImageRequest) (*dto.GetByIdImageResponse, error)
+	Delete(ctx context.Context, req *dto.DeleteImageRequest) error
+	Exists(ctx context.Context, id uuid.UUID) (bool, error)
 }
 
-func NewCategoryService(entClient *ent.Client) *categoryService {
+type categoryService struct {
+	categoryRepo categoryRepo
+	imageService imageService
+}
+
+func NewCategoryService(entClient *ent.Client, imageService imageService) *categoryService {
 	return &categoryService{
 		categoryRepo: category.NewCategoryRepo(entClient),
+		imageService: imageService,
 	}
 }

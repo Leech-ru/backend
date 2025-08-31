@@ -22,8 +22,9 @@ func (s *categoryService) GetAll(ctx context.Context, req *dto.GetAllCategoriesR
 	var resp dto.GetAllCategoriesResponse
 	for _, category := range allCategories {
 		resp = append(resp, &dto.Category{
-			ID:   category.ID,
-			Name: category.Name,
+			ID:      category.ID,
+			ImageID: category.ImageID,
+			Name:    category.Name,
 		})
 	}
 	return &resp, nil

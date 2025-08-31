@@ -13,6 +13,8 @@ const (
 	Label = "category"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldImageID holds the string denoting the image_id field in the database.
+	FieldImageID = "image_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// EdgeCosmetics holds the string denoting the cosmetics edge name in mutations.
@@ -31,6 +33,7 @@ const (
 // Columns holds all SQL columns for category fields.
 var Columns = []string{
 	FieldID,
+	FieldImageID,
 	FieldName,
 }
 
@@ -57,6 +60,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByImageID orders the results by the image_id field.
+func ByImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldImageID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.

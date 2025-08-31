@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // Create creates a new main page content in the database
@@ -22,7 +23,7 @@ func (s *mainPageRepo) Create(ctx context.Context, entity ent.MainPage) (*ent.Ma
 	case ent.IsConstraintError(err):
 		return nil, errorz.InvalidMainPageFormat
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 	return created, nil
 }

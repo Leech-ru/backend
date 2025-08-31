@@ -6,20 +6,21 @@ import (
 	"Leech-ru/pkg/ent/partner"
 	"Leech-ru/pkg/ent/partnerlink"
 	"context"
+	"fmt"
 )
 
 // Update updates an existing partner and returns the partner with loaded links.
 func (s *partnersRepo) Update(ctx context.Context, entity ent.Partner) (*ent.Partner, error) {
 	tx, err := s.client.Tx(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to begin tx: %w", err)
 	}
 
 	if _, err := tx.PartnerLink.Delete().
 		Where(partnerlink.HasPartnerWith(partner.IDEQ(entity.ID))).
 		Exec(ctx); err != nil {
 		_ = tx.Rollback()
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	for _, link := range entity.Edges.Links {
@@ -29,7 +30,7 @@ func (s *partnersRepo) Update(ctx context.Context, entity ent.Partner) (*ent.Par
 			SetPartnerID(entity.ID).
 			Save(ctx); err != nil {
 			_ = tx.Rollback()
-			return nil, err
+			return nil, fmt.Errorf("failed to query db: %w", err)
 		}
 	}
 
@@ -43,7 +44,7 @@ func (s *partnersRepo) Update(ctx context.Context, entity ent.Partner) (*ent.Par
 		if ent.IsNotFound(err) {
 			return nil, errorz.PartnerNotFound
 		}
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	updatedWithLinks, err := tx.Partner.Query().
@@ -52,11 +53,11 @@ func (s *partnersRepo) Update(ctx context.Context, entity ent.Partner) (*ent.Par
 		Only(ctx)
 	if err != nil {
 		_ = tx.Rollback()
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	if err := tx.Commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to commit tx: %w", err)
 	}
 
 	return updatedWithLinks, nil

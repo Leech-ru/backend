@@ -4,6 +4,7 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/pkg/ent"
 	"context"
+	"fmt"
 )
 
 // Update updates an existing main page
@@ -24,7 +25,7 @@ func (s *mainPageRepo) Update(ctx context.Context, entity ent.MainPage) (*ent.Ma
 	case ent.IsConstraintError(err):
 		return nil, errorz.InvalidMainPageFormat
 	case err != nil:
-		return nil, err
+		return nil, fmt.Errorf("failed to query db: %w", err)
 	}
 
 	return updated, nil

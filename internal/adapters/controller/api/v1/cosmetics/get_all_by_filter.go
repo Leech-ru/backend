@@ -2,8 +2,9 @@ package cosmetics
 
 import (
 	"Leech-ru/internal/domain/dto"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // GetAllByFilter returns a list of cosmetics based on filter parameters.
@@ -21,7 +22,7 @@ import (
 // @Success      200  {array}   dto.Cosmetics
 // @Failure      400  {object}  dto.HTTPStatus "Invalid query parameters"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
-// @Router       /api/v1/cosmetics [get]
+// @Router       /api/v1/cosmetics/search [get]
 func (h *handler) GetAllByFilter(c echo.Context) error {
 	var req dto.GetAllByFilterCosmeticsRequest
 
