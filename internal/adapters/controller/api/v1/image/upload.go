@@ -3,9 +3,10 @@ package image
 import (
 	"Leech-ru/internal/domain/dto"
 	"bytes"
-	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // UploadImage godoc
@@ -19,7 +20,7 @@ import (
 // @Success      201   {object}  dto.CreateImageResponse
 // @Failure      400   {object}  dto.HTTPStatus  "Invalid request or file is missing"
 // @Failure      500   {object}  dto.HTTPStatus  "Internal server error"
-// @Router       /images [post]
+// @Router       /api/v1/image [post]
 func (h *handler) UploadImage(c echo.Context) error {
 	file, err := c.FormFile("file")
 	if err != nil {
