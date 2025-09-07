@@ -16,11 +16,12 @@ import (
 	"Leech-ru/internal/adapters/controller/api/v1/ping"
 	"Leech-ru/internal/adapters/controller/api/v1/token"
 	"Leech-ru/internal/adapters/controller/api/v1/user"
+	"io"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"io"
-	"net/http"
 )
 
 func Setup(app *app.App) {
@@ -67,7 +68,7 @@ func addRouters(app *app.App) {
 	server := app.Server
 	serviceProvider := app.ServiceProvider
 
-	authMiddleware := auth.NewAuthMiddleware(serviceProvider.TokenService())
+	authMiddleware := auth.NewAuthMiddleware(serviceProvider.TokenService(), serviceProvider.CookieService())
 	roleMiddleware := role.NewRoleMiddleware(serviceProvider.UserService())
 
 	apiV1 := server.Group("/api/v1")
@@ -80,13 +81,13 @@ func addRouters(app *app.App) {
 	pingHandler := ping.NewHandler()
 	pingHandler.Setup(server.Group(""))
 
-	refreshTokenHandler := token.NewHandler(serviceProvider.TokenService(), serviceProvider.JWTConfig(), serviceProvider.ServerConfig(), serviceProvider.Validator(), serviceProvider.Decoder())
+	refreshTokenHandler := token.NewHandler(serviceProvider.TokenService(), serviceProvider.CookieService(), serviceProvider.JWTConfig(), serviceProvider.ServerConfig(), serviceProvider.Validator(), serviceProvider.Decoder())
 	refreshTokenHandler.Setup(apiV1)
 
 	orderHandler := order.NewHandler(serviceProvider.OrderService(serviceProvider.MailConfig()), serviceProvider.Validator())
 	orderHandler.Setup(apiV1)
 
-	userHandler := user.NewHandler(serviceProvider.UserService(), serviceProvider.JWTConfig(), serviceProvider.ServerConfig(), authMiddleware, roleMiddleware, serviceProvider.Validator(), serviceProvider.Decoder())
+	userHandler := user.NewHandler(serviceProvider.UserService(), serviceProvider.CookieService(), serviceProvider.JWTConfig(), serviceProvider.ServerConfig(), authMiddleware, roleMiddleware, serviceProvider.Validator(), serviceProvider.Decoder())
 	userHandler.Setup(apiV1)
 
 	cosmeticsHandler := cosmetics.NewHandler(serviceProvider.CosmeticsService(), authMiddleware, roleMiddleware, serviceProvider.Validator(), serviceProvider.Decoder())

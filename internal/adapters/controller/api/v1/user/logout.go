@@ -3,11 +3,11 @@ package user
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
-	"Leech-ru/internal/domain/utils/cookie"
 	"errors"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 // Logout User logout
@@ -47,8 +47,8 @@ func (h *handler) Logout(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-	cookie.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
-	cookie.ClearRefreshTokenCookie(c, h.serverConfig.DevMode())
+	h.cookieService.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
+	h.cookieService.ClearRefreshTokenCookie(c, h.serverConfig.DevMode())
 
 	return c.NoContent(http.StatusNoContent)
 }

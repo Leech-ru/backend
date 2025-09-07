@@ -3,10 +3,10 @@ package token
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
-	"Leech-ru/internal/domain/utils/cookie"
 	"errors"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // Refresh refreshes access and refresh tokens.
@@ -37,7 +37,7 @@ func (h *handler) Refresh(c echo.Context) error {
 		})
 	}
 
-	token, err := cookie.ReadRefreshTokenCookie(c.Request())
+	token, err := h.cookieService.ReadRefreshTokenCookie(c.Request())
 	switch {
 	case errors.Is(err, errorz.NoCookie):
 		return c.JSON(http.StatusUnauthorized, dto.HTTPStatus{
@@ -85,8 +85,8 @@ func (h *handler) Refresh(c echo.Context) error {
 		})
 	}
 
-	cookie.SetRefreshTokenCookie(c, refreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
-	cookie.SetAccessTokenCookie(c, accessToken, h.jwtConfig.AccessTokenExpires(), h.serverConfig.DevMode())
+	h.cookieService.SetRefreshTokenCookie(c, refreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
+	h.cookieService.SetAccessTokenCookie(c, accessToken, h.jwtConfig.AccessTokenExpires(), h.serverConfig.DevMode())
 
 	return c.NoContent(http.StatusNoContent)
 }

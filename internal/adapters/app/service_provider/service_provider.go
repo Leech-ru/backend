@@ -32,6 +32,7 @@ type ServiceProvider struct {
 	imageService     imageService
 	jwtService       jwtService
 	tokenService     tokenService
+	cookieService    cookieService
 	orderService     orderService
 	userService      userService
 	cosmeticsService cosmeticsService

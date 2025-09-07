@@ -3,10 +3,10 @@ package user
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
-	"Leech-ru/internal/domain/utils/cookie"
 	"errors"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // Login User login
@@ -17,7 +17,6 @@ import (
 // @Produce json
 // @Param request body dto.LoginUserRequest true "Login credentials"
 // @Success 200 {object} dto.LoginUserResponse
-// @Header 200 {string} Set-Cookie "user_auth_access_token=token; Path=/; HttpOnly; Secure; SameSite=Strict"
 // @Header 200 {string} Set-Cookie "user_auth_refresh_token=token; Path=/; HttpOnly; Secure; SameSite=Strict"
 // @Failure 400 {object} dto.HTTPStatus
 // @Failure 401 {object} dto.HTTPStatus
@@ -52,8 +51,8 @@ func (h *handler) Login(c echo.Context) error {
 
 	}
 
-	cookie.SetRefreshTokenCookie(c, resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
-	cookie.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
+	h.cookieService.SetRefreshTokenCookie(c, resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
+	h.cookieService.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
 
 	return c.JSON(http.StatusOK, resp)
 
