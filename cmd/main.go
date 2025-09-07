@@ -17,8 +17,8 @@ import (
 // @schemes         https
 
 // @securityDefinitions.apikey  CookieAuth
-// @in                          cookie
-// @name                        user_auth_access_token
+// @in                          header
+// @name                        Cookie
 // @description                 Authentication via HttpOnly cookies. System uses two cookies:\n- `user_auth_access_token` (short-lived)\n- `user_auth_refresh_token` (long-lived)\n\nAll protected endpoints require valid cookies to be automatically sent by browser.
 
 // @tag.name        ping
