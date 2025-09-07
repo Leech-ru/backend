@@ -2,15 +2,15 @@ package auth
 
 import (
 	"Leech-ru/internal/domain/common/errorz"
-	"Leech-ru/internal/domain/utils/cookie"
 	"errors"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 func (m *Middleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		token, err := cookie.ReadAccessTokenCookie(c.Request())
+		token, err := m.cookieService.ReadAccessTokenCookie(c.Request())
 		switch {
 		case errors.Is(err, errorz.NoCookie):
 			return echo.NewHTTPError(http.StatusUnauthorized, errorz.Unauthorized)

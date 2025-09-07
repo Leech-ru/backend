@@ -7,9 +7,10 @@ import (
 	"Leech-ru/internal/domain/dto"
 	"Leech-ru/internal/domain/types"
 	"context"
+	"time"
+
 	"github.com/go-playground/form"
 	"github.com/labstack/echo/v4"
-	"time"
 )
 
 type userService interface {
@@ -23,6 +24,15 @@ type userService interface {
 	Logout(ctx context.Context, req *dto.LogoutRequest) error
 }
 
+type cookieService interface {
+	// Access
+	ClearAccessTokenCookie(c echo.Context, devMode bool)
+
+	// Refresh
+	SetRefreshTokenCookie(c echo.Context, token string, ttl time.Duration, devMode bool)
+	ClearRefreshTokenCookie(c echo.Context, devMode bool)
+}
+
 type jwtConfig interface {
 	RefreshTokenExpires() time.Duration
 }
@@ -33,6 +43,7 @@ type serverConfig interface {
 
 type handler struct {
 	userService    userService
+	cookieService  cookieService
 	jwtConfig      jwtConfig
 	serverConfig   serverConfig
 	authMiddleware *auth.Middleware
@@ -43,6 +54,7 @@ type handler struct {
 
 func NewHandler(
 	userService userService,
+	cookieService cookieService,
 	jwtConfig jwtConfig,
 	serverConfig serverConfig,
 	authMiddleware *auth.Middleware,
@@ -53,6 +65,7 @@ func NewHandler(
 ) *handler {
 	return &handler{
 		userService:    userService,
+		cookieService:  cookieService,
 		jwtConfig:      jwtConfig,
 		serverConfig:   serverConfig,
 		authMiddleware: authMiddleware,

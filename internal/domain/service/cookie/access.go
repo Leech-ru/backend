@@ -3,19 +3,16 @@ package cookie
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"errors"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"time"
-)
 
-const (
-	accessCookieName = "user_auth_access_token"
+	"github.com/labstack/echo/v4"
 )
 
 // SetAccessTokenCookie creates and immediately sets Access-Token Cookie in response.
-func SetAccessTokenCookie(c echo.Context, token string, ttl time.Duration, devMode bool) {
+func (s *cookieService) SetAccessTokenCookie(c echo.Context, token string, ttl time.Duration, devMode bool) {
 	cookie := &http.Cookie{
-		Name:     accessCookieName,
+		Name:     s.accessCookieName,
 		Value:    token,
 		Path:     "/",
 		Expires:  time.Now().Add(ttl),
@@ -33,8 +30,8 @@ func SetAccessTokenCookie(c echo.Context, token string, ttl time.Duration, devMo
 }
 
 // ReadAccessTokenCookie reads Cook from a request.
-func ReadAccessTokenCookie(r *http.Request) (string, error) {
-	cookie, err := r.Cookie(accessCookieName)
+func (s *cookieService) ReadAccessTokenCookie(r *http.Request) (string, error) {
+	cookie, err := r.Cookie(s.accessCookieName)
 	switch {
 	case errors.Is(err, http.ErrNoCookie):
 		return "", errorz.NoCookie
@@ -45,9 +42,9 @@ func ReadAccessTokenCookie(r *http.Request) (string, error) {
 }
 
 // ClearAccessTokenCookie sets an empty access-token Cook with an expired validity period.
-func ClearAccessTokenCookie(c echo.Context, devMode bool) {
+func (s *cookieService) ClearAccessTokenCookie(c echo.Context, devMode bool) {
 	cookie := &http.Cookie{
-		Name:     accessCookieName,
+		Name:     s.accessCookieName,
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),

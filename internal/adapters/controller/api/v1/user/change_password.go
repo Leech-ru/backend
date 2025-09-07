@@ -3,11 +3,11 @@ package user
 import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
-	"Leech-ru/internal/domain/utils/cookie"
 	"errors"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 // ChangePassword Change user password
@@ -67,8 +67,8 @@ func (h *handler) ChangePassword(c echo.Context) error {
 
 	}
 
-	cookie.SetRefreshTokenCookie(c, resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
-	cookie.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
+	h.cookieService.SetRefreshTokenCookie(c, resp.RefreshToken, h.jwtConfig.RefreshTokenExpires(), h.serverConfig.DevMode())
+	h.cookieService.ClearAccessTokenCookie(c, h.serverConfig.DevMode())
 
 	return c.NoContent(http.StatusNoContent)
 
