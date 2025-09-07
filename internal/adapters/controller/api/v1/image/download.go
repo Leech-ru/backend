@@ -4,9 +4,10 @@ import (
 	"Leech-ru/internal/domain/common/errorz"
 	"Leech-ru/internal/domain/dto"
 	"errors"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 // StreamImage godoc
@@ -20,7 +21,7 @@ import (
 // @Failure      400       {object}  dto.HTTPStatus  "Invalid request"
 // @Failure      404       {object}  dto.HTTPStatus  "Image not found"
 // @Failure      500       {object}  dto.HTTPStatus  "Internal server error"
-// @Router       /image/{image_id} [get]
+// @Router       /api/v1/image/{image_id} [get]
 func (h *handler) StreamImage(c echo.Context) error {
 	id := c.Param("image_id")
 	imageID, err := uuid.Parse(id)
