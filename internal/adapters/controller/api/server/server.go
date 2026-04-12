@@ -9,7 +9,7 @@ import (
 	"Leech-ru/internal/adapters/controller/api/v1/cosmetics"
 	"Leech-ru/internal/adapters/controller/api/v1/image"
 	"Leech-ru/internal/adapters/controller/api/v1/info"
-	"Leech-ru/internal/adapters/controller/api/v1/main_page"
+	mainpage "Leech-ru/internal/adapters/controller/api/v1/main_page"
 	"Leech-ru/internal/adapters/controller/api/v1/news"
 	"Leech-ru/internal/adapters/controller/api/v1/order"
 	"Leech-ru/internal/adapters/controller/api/v1/partner"
@@ -31,7 +31,9 @@ func Setup(app *app.App) {
 
 	//app.Server.Use(middleware.Recover())
 
-	app.Server.Use(middleware.CORS())
+	app.Server.Use(middleware.CORSWithConfig(middleware.CORSConfig{AllowOriginFunc: func(origin string) (bool, error) {
+		return true, nil
+	}, AllowCredentials: true, AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete, http.MethodOptions}, AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization}}))
 
 	app.Server.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:      true,
