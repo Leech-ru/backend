@@ -42,8 +42,8 @@ func (s *Service) Create(ctx context.Context, req *dto.CreateOrderRequest) (*dto
 		SetAddress(req.CustomerInfo.Address).
 		SetComment(req.CustomerInfo.Comment).
 		SetLeechSize1(req.OrderDetails.LeechSize1).
-		SetLeechSize2(req.OrderDetails.LeechSize1).
-		SetLeechSize3(req.OrderDetails.LeechSize1).
+		SetLeechSize2(req.OrderDetails.LeechSize2).
+		SetLeechSize3(req.OrderDetails.LeechSize3).
 		SetTotalCount(leechSize1 + leechSize2 + leechSize3).
 		SetPackageType(int(*req.OrderDetails.PackageType)).
 		SetTotalPrice(totalPrice).
