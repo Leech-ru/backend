@@ -31,9 +31,12 @@ func Setup(app *app.App) {
 
 	//app.Server.Use(middleware.Recover())
 
-	app.Server.Use(middleware.CORSWithConfig(middleware.CORSConfig{AllowOriginFunc: func(origin string) (bool, error) {
-		return true, nil
-	}, AllowCredentials: true, AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete, http.MethodOptions}, AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization}}))
+	app.Server.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"https://t-leech.vercel.app"},
+		AllowCredentials: true,
+		AllowMethods:     []string{http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete, http.MethodOptions},
+		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
+	}))
 
 	app.Server.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:      true,
