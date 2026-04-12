@@ -23,6 +23,7 @@ func (s *cookieService) SetAccessTokenCookie(c echo.Context, token string, ttl t
 	if !devMode {
 		cookie.HttpOnly = true
 		cookie.Secure = true
+		cookie.SameSite = http.SameSiteNoneMode
 
 	}
 
@@ -55,6 +56,7 @@ func (s *cookieService) ClearAccessTokenCookie(c echo.Context, devMode bool) {
 	if !devMode {
 		cookie.HttpOnly = true
 		cookie.Secure = true
+		cookie.SameSite = http.SameSiteNoneMode
 
 	}
 
