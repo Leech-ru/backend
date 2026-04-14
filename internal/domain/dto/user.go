@@ -77,7 +77,7 @@ type UpdateEachUserRequest struct {
 	Password      *string     `json:"password,omitempty" validate:"omitempty,min=8,max=100" example:"SecurePass123!" format:"password"`
 	Name          *string     `json:"name,omitempty" validate:"omitempty,min=2,max=100" example:"Ivan"`
 	Surname       *string     `json:"surname,omitempty" validate:"omitempty,min=2,max=100" example:"Ivanov"`
-	Role          *types.Role `json:"role,omitempty" validate:"omitempty,role" swaggerignore:"true"`
+	Role          *types.Role `json:"role,omitempty" validate:"omitempty,role"`
 }
 
 type UpdateEachUserResponse User
