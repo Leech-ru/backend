@@ -1825,7 +1825,7 @@ const docTemplate = `{
                         "CookieAuth": []
                     }
                 ],
-                "description": "Retrieves a list of users filtered by role, name, surname, email, etc. Only for admins",
+                "description": "Retrieves a list of users filtered by role, one-line full name query, and email prefix. Only for admins",
                 "consumes": [
                     "application/json"
                 ],
@@ -1868,16 +1868,9 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"Iv\"",
-                        "description": "Filter by name prefix",
-                        "name": "name_prefix",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "example": "\"Ivan\"",
-                        "description": "Filter by surname prefix",
-                        "name": "surname_prefix",
+                        "example": "\"Иван Дима\"",
+                        "description": "One-line search by full name tokens (name/surname)",
+                        "name": "q",
                         "in": "query"
                     },
                     {

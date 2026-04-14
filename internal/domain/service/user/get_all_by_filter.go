@@ -16,7 +16,14 @@ func (s *userService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilte
 		offset = *req.Offset
 	}
 
-	users, err := s.userRepo.GetAllByFilter(ctx, limit, offset, req.Role, req.NamePrefix, req.SurnamePrefix, req.EmailPrefix)
+	users, err := s.userRepo.GetAllByFilter(
+		ctx,
+		limit,
+		offset,
+		req.Role,
+		req.Query,
+		req.EmailPrefix,
+	)
 	if err != nil {
 		return nil, err
 	}

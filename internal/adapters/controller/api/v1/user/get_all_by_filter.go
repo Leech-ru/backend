@@ -9,15 +9,14 @@ import (
 // GetAllByFilter returns a list of users based on filter parameters.
 //
 // @Summary     Get users by filters
-// @Description Retrieves a list of users filtered by role, name, surname, email, etc. Only for admins
+// @Description Retrieves a list of users filtered by role, one-line full name query, and email prefix. Only for admins
 // @Tags        user
 // @Accept      json
 // @Produce     json
 // @Param       limit          query     int     false  "Max number of users to return"   minimum(1) maximum(100)  example(10)
 // @Param       offset         query     int     false  "Pagination offset"               minimum(0)               example(0)
 // @Param       role           query     int     false  "Role enum (0–2)"                 Enums(0,1,2)             example(0)
-// @Param       name_prefix    query     string  false  "Filter by name prefix"                                   example("Iv")
-// @Param       surname_prefix query     string  false  "Filter by surname prefix"                                example("Ivan")
+// @Param       q              query     string  false  "One-line search by full name tokens (name/surname)"       example("Иван Дима")
 // @Param       email_prefix   query     string  false  "Filter by email prefix"                                  example("user@")
 // @Security CookieAuth
 // @Success     200  {array}   dto.User

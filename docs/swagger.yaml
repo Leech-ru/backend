@@ -2428,8 +2428,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Retrieves a list of users filtered by role, name, surname, email,
-        etc. Only for admins
+      description: Retrieves a list of users filtered by role, one-line full name
+        query, and email prefix. Only for admins
       parameters:
       - description: Max number of users to return
         example: 10
@@ -2453,15 +2453,10 @@ paths:
         in: query
         name: role
         type: integer
-      - description: Filter by name prefix
-        example: '"Iv"'
+      - description: One-line search by full name tokens (name/surname)
+        example: '"Иван Дима"'
         in: query
-        name: name_prefix
-        type: string
-      - description: Filter by surname prefix
-        example: '"Ivan"'
-        in: query
-        name: surname_prefix
+        name: q
         type: string
       - description: Filter by email prefix
         example: '"user@"'
