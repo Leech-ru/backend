@@ -15,36 +15,43 @@ func (s *userRepo) GetAllByFilter(
 	limit, offset int,
 	role *types.Role,
 	queryText, emailPrefix *string,
-) ([]*ent.User, error) {
+) ([]*ent.User, int, error) {
 
-	query := s.client.User.Query()
+	baseQuery := s.client.User.Query()
 
 	if role != nil {
-		query = query.Where(user.RoleEQ(*role))
+		baseQuery = baseQuery.Where(user.RoleEQ(*role))
 	}
 	if queryText != nil {
 		for _, token := range splitSearchTokens(*queryText) {
-			query = query.Where(
+			baseQuery = baseQuery.Where(
 				user.Or(
 					user.NameContainsFold(token),
 					user.SurnameContainsFold(token),
+					user.EmailContainsFold(token),
 				),
 			)
 		}
 	}
 	if emailPrefix != nil {
-		query = query.Where(user.EmailHasPrefix(*emailPrefix))
+		baseQuery = baseQuery.Where(user.EmailHasPrefix(*emailPrefix))
 	}
-	users, err := query.
+
+	totalItems, err := baseQuery.Clone().Count(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to count users in db: %w", err)
+	}
+
+	users, err := baseQuery.
 		Limit(limit).
 		Offset(offset).
 		All(ctx)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to query db: %w", err)
+		return nil, 0, fmt.Errorf("failed to query db: %w", err)
 	}
 
-	return users, nil
+	return users, totalItems, nil
 }
 
 func splitSearchTokens(searchText string) []string {

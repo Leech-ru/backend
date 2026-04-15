@@ -19,7 +19,7 @@ import (
 // @Param        category_id  query     string  false  "Category UUID"  Format(uuid)  example(123e4567-e89b-12d3-a456-426614174000)
 // @Param        titlePrefix  query     string  false  "Filter by title prefix"
 // @Param        volume       query     int     false  "Exact volume in ml"           minimum(1) maximum(10000)
-// @Success      200  {array}   dto.Cosmetics
+// @Success      200  {object}  dto.GetAllByFilterCosmeticsResponse
 // @Failure      400  {object}  dto.HTTPStatus "Invalid query parameters"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
 // @Router       /api/v1/cosmetics/search [get]

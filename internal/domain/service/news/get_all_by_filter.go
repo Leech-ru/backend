@@ -8,7 +8,7 @@ import (
 // GetAllByFilter realizes a search for news with filtering parameters.
 func (s *newsService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilterNewsRequest) (*dto.GetAllByFilterNewsResponse, error) {
 	limit := 10
-	if req.Limit != nil {
+	if req.Limit != nil && *req.Limit > 0 {
 		limit = *req.Limit
 	}
 	offset := 0
@@ -16,7 +16,7 @@ func (s *newsService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilte
 		offset = *req.Offset
 	}
 	isHidden := false
-	allNews, err := s.newsRepo.GetAllByFilter(ctx, limit, offset, &isHidden)
+	allNews, totalItems, err := s.newsRepo.GetAllByFilter(ctx, limit, offset, &isHidden)
 	if err != nil {
 		return nil, err
 	}
@@ -26,14 +26,14 @@ func (s *newsService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilte
 		previewLen = *req.PreviewLength
 	}
 
-	var resp dto.GetAllByFilterNewsResponse
+	respItems := make([]*dto.NewsListItem, 0, len(allNews))
 	for _, news := range allNews {
 		contentPreview := news.Content
 		if len(contentPreview) > previewLen {
 			contentPreview = contentPreview[:previewLen]
 		}
 
-		resp = append(resp, &dto.NewsListItem{
+		respItems = append(respItems, &dto.NewsListItem{
 			ID:             news.ID,
 			ImageID:        news.ImageID,
 			Title:          news.Title,
@@ -41,5 +41,23 @@ func (s *newsService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilte
 			IsHidden:       news.IsHidden,
 		})
 	}
+
+	totalPages := 0
+	if totalItems > 0 {
+		totalPages = (totalItems + limit - 1) / limit
+	}
+	currentPage := (offset / limit) + 1
+
+	resp := dto.GetAllByFilterNewsResponse{
+		Items: respItems,
+		Pagination: dto.PaginationInfo{
+			TotalItems:  totalItems,
+			TotalPages:  totalPages,
+			CurrentPage: currentPage,
+			HasNext:     currentPage < totalPages,
+			HasPrevious: currentPage > 1,
+		},
+	}
+
 	return &resp, nil
 }

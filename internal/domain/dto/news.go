@@ -37,7 +37,10 @@ type GetAllByFilterNewsRequest struct {
 	Offset        *int `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0" example:"0"`
 	PreviewLength *int `json:"preview_length,omitempty" form:"preview_length" validate:"omitempty,min=10,max=500" example:"100"`
 }
-type GetAllByFilterNewsResponse []*NewsListItem
+type GetAllByFilterNewsResponse struct {
+	Items      []*NewsListItem `json:"items"`
+	Pagination PaginationInfo `json:"pagination"`
+}
 
 type GetAllByFilterForAdminsNewsRequest struct {
 	Limit         *int  `json:"limit,omitempty" form:"limit" validate:"omitempty,min=0" example:"10"`
@@ -45,7 +48,10 @@ type GetAllByFilterForAdminsNewsRequest struct {
 	PreviewLength *int  `json:"preview_length,omitempty" form:"preview_length" validate:"omitempty,min=10,max=500" example:"100"`
 	IsHidden      *bool `json:"is_hidden,omitempty" form:"is_hidden" validate:"omitempty" example:"true"`
 }
-type GetAllByFilterForAdminsNewsResponse []*NewsListItem
+type GetAllByFilterForAdminsNewsResponse struct {
+	Items      []*NewsListItem `json:"items"`
+	Pagination PaginationInfo `json:"pagination"`
+}
 
 type UpdateNewsRequest struct {
 	ID       uuid.UUID  `json:"id" validate:"required,uuid" example:"3fa85f64-5717-4562-b3fc-2c963f66afa6"`

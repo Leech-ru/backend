@@ -11,7 +11,7 @@ import (
 type newsRepo interface {
 	Create(context.Context, ent.News) (*ent.News, error)
 	GetById(ctx context.Context, id uuid.UUID) (*ent.News, error)
-	GetAllByFilter(ctx context.Context, limit, offset int, isHidden *bool) ([]*ent.News, error)
+	GetAllByFilter(ctx context.Context, limit, offset int, isHidden *bool) ([]*ent.News, int, error)
 	Update(ctx context.Context, entity ent.News) (*ent.News, error)
 	Delete(ctx context.Context, id uuid.UUID) error
 }

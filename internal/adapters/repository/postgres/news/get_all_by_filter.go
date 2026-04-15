@@ -8,21 +8,26 @@ import (
 )
 
 // GetAllByFilter retrieves all category with optional pagination and filter.
-func (s *newsRepo) GetAllByFilter(ctx context.Context, limit, offset int, isHidden *bool) ([]*ent.News, error) {
-	query := s.client.News.Query()
+func (s *newsRepo) GetAllByFilter(ctx context.Context, limit, offset int, isHidden *bool) ([]*ent.News, int, error) {
+	baseQuery := s.client.News.Query()
 
 	if isHidden != nil {
-		query = query.Where(news.IsHiddenEQ(*isHidden))
+		baseQuery = baseQuery.Where(news.IsHiddenEQ(*isHidden))
 	}
 
-	news, err := query.
+	totalItems, err := baseQuery.Clone().Count(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to count news in db: %w", err)
+	}
+
+	news, err := baseQuery.
 		Limit(limit).
 		Offset(offset).
 		All(ctx)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to query db: %w", err)
+		return nil, 0, fmt.Errorf("failed to query db: %w", err)
 	}
 
-	return news, nil
+	return news, totalItems, nil
 }

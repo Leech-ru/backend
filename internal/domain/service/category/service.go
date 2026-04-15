@@ -11,7 +11,7 @@ import (
 type categoryRepo interface {
 	Create(ctx context.Context, entity ent.Category) (*ent.Category, error)
 	GetById(ctx context.Context, id uuid.UUID) (*ent.Category, error)
-	GetAll(ctx context.Context, limit, offset int) ([]*ent.Category, error)
+	GetAll(ctx context.Context, limit, offset int) ([]*ent.Category, int, error)
 	Delete(ctx context.Context, id uuid.UUID) error
 	Update(ctx context.Context, entity ent.Category) (*ent.Category, error)
 }

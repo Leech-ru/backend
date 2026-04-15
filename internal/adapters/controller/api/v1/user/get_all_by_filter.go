@@ -16,10 +16,10 @@ import (
 // @Param       limit          query     int     false  "Max number of users to return"   minimum(1) maximum(100)  example(10)
 // @Param       offset         query     int     false  "Pagination offset"               minimum(0)               example(0)
 // @Param       role           query     int     false  "Role enum (0–2)"                 Enums(0,1,2)             example(0)
-// @Param       q              query     string  false  "One-line search by full name tokens (name/surname)"       example("Иван Дима")
+// @Param       q              query     string  false  "One-line search by full name and email tokens (name/surname/email)"       example("Иван Дима")
 // @Param       email_prefix   query     string  false  "Filter by email prefix"                                  example("user@")
 // @Security CookieAuth
-// @Success     200  {array}   dto.User
+// @Success     200  {object}  dto.GetAllByFilterUsersResponse
 // @Failure     400  {object}  dto.HTTPStatus "Invalid query parameters"
 // @Failure     500  {object}  dto.HTTPStatus "Internal server error"
 // @Router      /api/v1/user/all [get]

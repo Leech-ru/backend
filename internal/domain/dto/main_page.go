@@ -41,7 +41,10 @@ type GetAllMainPageRequest struct {
 }
 
 // GetAllMainPageResponse represents a main page contents
-type GetAllMainPageResponse []*MainPage
+type GetAllMainPageResponse struct {
+	Items      []*MainPage     `json:"items"`
+	Pagination PaginationInfo `json:"pagination"`
+}
 
 // UpdateMainPageRequest represents a request to update main page content data
 type UpdateMainPageRequest struct {

@@ -43,7 +43,10 @@ type GetAllPartnerRequest struct {
 }
 
 // GetAllPartnerResponse represents the response to a get-all request.
-type GetAllPartnerResponse []*Partner
+type GetAllPartnerResponse struct {
+	Items      []*Partner      `json:"items"`
+	Pagination PaginationInfo `json:"pagination"`
+}
 
 // UpdatePartnerRequest represents a request to update a partner.
 type UpdatePartnerRequest struct {

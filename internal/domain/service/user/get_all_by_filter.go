@@ -16,7 +16,7 @@ func (s *userService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilte
 		offset = *req.Offset
 	}
 
-	users, err := s.userRepo.GetAllByFilter(
+	users, totalItems, err := s.userRepo.GetAllByFilter(
 		ctx,
 		limit,
 		offset,
@@ -28,15 +28,32 @@ func (s *userService) GetAllByFilter(ctx context.Context, req *dto.GetAllByFilte
 		return nil, err
 	}
 
-	var resp dto.GetAllByFilterUsersResponse
+	respItems := make([]*dto.User, 0, len(users))
 	for _, user := range users {
-		resp = append(resp, &dto.User{
+		respItems = append(respItems, &dto.User{
 			ID:      user.ID,
 			Email:   user.Email,
 			Name:    user.Name,
 			Surname: user.Surname,
 			Role:    user.Role,
 		})
+	}
+
+	totalPages := 0
+	if totalItems > 0 {
+		totalPages = (totalItems + limit - 1) / limit
+	}
+	currentPage := (offset / limit) + 1
+
+	resp := dto.GetAllByFilterUsersResponse{
+		Items: respItems,
+		Pagination: dto.PaginationInfo{
+			TotalItems:  totalItems,
+			TotalPages:  totalPages,
+			CurrentPage: currentPage,
+			HasNext:     currentPage < totalPages,
+			HasPrevious: currentPage > 1,
+		},
 	}
 
 	return &resp, nil

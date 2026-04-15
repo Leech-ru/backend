@@ -15,7 +15,7 @@ import (
 // @Produce      json
 // @Param        limit        query     int     false  "Max number of items"          minimum(1) maximum(100)
 // @Param        offset       query     int     false  "Offset for pagination"        minimum(0)
-// @Success      200  {array}   dto.Partner
+// @Success      200  {object}  dto.GetAllPartnerResponse
 // @Failure      400  {object}  dto.HTTPStatus "Invalid query parameters"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
 // @Router       /api/v1/info/partner [get]

@@ -7,15 +7,22 @@ import (
 )
 
 // GetAll retrieves all main pages with optional pagination and filter.
-func (s *mainPageRepo) GetAll(ctx context.Context, limit, offset int) ([]*ent.MainPage, error) {
-	pages, err := s.client.MainPage.Query().
+func (s *mainPageRepo) GetAll(ctx context.Context, limit, offset int) ([]*ent.MainPage, int, error) {
+	baseQuery := s.client.MainPage.Query()
+
+	totalItems, err := baseQuery.Clone().Count(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to count main pages in db: %w", err)
+	}
+
+	pages, err := baseQuery.
 		Limit(limit).
 		Offset(offset).
 		All(ctx)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to query db: %w", err)
+		return nil, 0, fmt.Errorf("failed to query db: %w", err)
 	}
 
-	return pages, nil
+	return pages, totalItems, nil
 }

@@ -71,10 +71,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.NewsListItem"
-                            }
+                            "$ref": "#/definitions/dto.GetAllByFilterForAdminsNewsResponse"
                         }
                     },
                     "400": {
@@ -176,10 +173,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.Category"
-                            }
+                            "$ref": "#/definitions/dto.GetAllCategoriesResponse"
                         }
                     },
                     "400": {
@@ -412,81 +406,6 @@ const docTemplate = `{
             }
         },
         "/api/v1/cosmetics": {
-            "get": {
-                "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cosmetics"
-                ],
-                "summary": "Get cosmetics by filters",
-                "parameters": [
-                    {
-                        "maximum": 100,
-                        "minimum": 1,
-                        "type": "integer",
-                        "description": "Max number of items",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 0,
-                        "type": "integer",
-                        "description": "Offset for pagination",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "123e4567-e89b-12d3-a456-426614174000",
-                        "description": "Category UUID",
-                        "name": "category_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter by title prefix",
-                        "name": "titlePrefix",
-                        "in": "query"
-                    },
-                    {
-                        "maximum": 10000,
-                        "minimum": 1,
-                        "type": "integer",
-                        "description": "Exact volume in ml",
-                        "name": "volume",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.Cosmetics"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid query parameters",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {
@@ -545,6 +464,11 @@ const docTemplate = `{
         },
         "/api/v1/cosmetics/admin": {
             "get": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
                 "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc and hidden parameters.",
                 "consumes": [
                     "application/json"
@@ -599,10 +523,81 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.Cosmetics"
-                            }
+                            "$ref": "#/definitions/dto.GetAllByFilterCosmeticsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/cosmetics/search": {
+            "get": {
+                "description": "Retrieves a list of cosmetics filtered by category, volume, title, etc.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cosmetics"
+                ],
+                "summary": "Get cosmetics by filters",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Max number of items",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000",
+                        "description": "Category UUID",
+                        "name": "category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by title prefix",
+                        "name": "titlePrefix",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 10000,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Exact volume in ml",
+                        "name": "volume",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetAllByFilterCosmeticsResponse"
                         }
                     },
                     "400": {
@@ -779,6 +774,105 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/image": {
+            "post": {
+                "security": [
+                    {
+                        "CookieAuth": []
+                    }
+                ],
+                "description": "Uploads an image file and stores it in the system",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "image"
+                ],
+                "summary": "Upload a new image",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Image file",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateImageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or file is missing",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/image/{image_id}": {
+            "get": {
+                "description": "Returns the image file stream by its UUID identifier",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "image"
+                ],
+                "summary": "Download image by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Image UUID",
+                        "name": "image_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image file stream",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "404": {
+                        "description": "Image not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPStatus"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/info/corporation": {
             "get": {
                 "description": "Returns the current public corporation information: heading, description, fluid status, schedule, and links.",
@@ -903,10 +997,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.Partner"
-                            }
+                            "$ref": "#/definitions/dto.GetAllPartnerResponse"
                         }
                     },
                     "400": {
@@ -1172,10 +1263,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.MainPage"
-                            }
+                            "$ref": "#/definitions/dto.GetAllMainPageResponse"
                         }
                     },
                     "400": {
@@ -1449,10 +1537,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.NewsListItem"
-                            }
+                            "$ref": "#/definitions/dto.GetAllByFilterNewsResponse"
                         }
                     },
                     "400": {
@@ -1869,7 +1954,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "example": "\"Иван Дима\"",
-                        "description": "One-line search by full name tokens (name/surname)",
+                        "description": "One-line search by full name and email tokens (name/surname/email)",
                         "name": "q",
                         "in": "query"
                     },
@@ -1885,10 +1970,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.User"
-                            }
+                            "$ref": "#/definitions/dto.GetAllByFilterUsersResponse"
                         }
                     },
                     "400": {
@@ -2202,105 +2284,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/image/{image_id}": {
-            "get": {
-                "description": "Returns the image file stream by its UUID identifier",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/octet-stream"
-                ],
-                "tags": [
-                    "image"
-                ],
-                "summary": "Download image by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Image UUID",
-                        "name": "image_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Image file stream",
-                        "schema": {
-                            "type": "file"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    },
-                    "404": {
-                        "description": "Image not found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/images": {
-            "post": {
-                "security": [
-                    {
-                        "CookieAuth": []
-                    }
-                ],
-                "description": "Uploads an image file and stores it in the system",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "image"
-                ],
-                "summary": "Upload a new image",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "Image file",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateImageResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request or file is missing",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPStatus"
-                        }
-                    }
-                }
-            }
-        },
         "/ping": {
             "get": {
                 "description": "Checking the server performance.",
@@ -2336,12 +2319,17 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "id",
+                "image_id",
                 "name"
             ],
             "properties": {
                 "id": {
                     "type": "string",
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "image_id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "name": {
                     "type": "string",
@@ -2417,9 +2405,14 @@ const docTemplate = `{
         "dto.CreateCategoryRequest": {
             "type": "object",
             "required": [
+                "image_id",
                 "name"
             ],
             "properties": {
+                "image_id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174100"
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 150,
@@ -2432,12 +2425,17 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "id",
+                "image_id",
                 "name"
             ],
             "properties": {
                 "id": {
                     "type": "string",
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "image_id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "name": {
                     "type": "string",
@@ -2552,49 +2550,72 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "content",
+                "fluid",
                 "href",
                 "image_id",
+                "is_hidden",
                 "title"
             ],
             "properties": {
                 "content": {
                     "type": "string",
                     "maxLength": 1000,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Main banner description text goes here..."
                 },
                 "fluid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "href": {
                     "type": "string",
-                    "maxLength": 1000,
-                    "minLength": 2
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "example": "https://example.com/page"
                 },
                 "image_id": {
                     "type": "string",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Main banner title"
                 }
             }
         },
         "dto.CreateMainPageResponse": {
             "type": "object",
+            "required": [
+                "content",
+                "fluid",
+                "href",
+                "id",
+                "image_id",
+                "is_hidden",
+                "title"
+            ],
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 1000,
+                    "minLength": 2,
+                    "example": "Main banner description text goes here..."
                 },
                 "fluid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "example": "https://example.com/page"
                 },
                 "id": {
                     "type": "string",
@@ -2605,10 +2626,14 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Main banner title"
                 }
             }
         },
@@ -2814,16 +2839,119 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.GetAllByFilterCosmeticsResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Cosmetics"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationInfo"
+                }
+            }
+        },
+        "dto.GetAllByFilterForAdminsNewsResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NewsListItem"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationInfo"
+                }
+            }
+        },
+        "dto.GetAllByFilterNewsResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NewsListItem"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationInfo"
+                }
+            }
+        },
+        "dto.GetAllByFilterUsersResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.User"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationInfo"
+                }
+            }
+        },
+        "dto.GetAllCategoriesResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Category"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationInfo"
+                }
+            }
+        },
+        "dto.GetAllMainPageResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.MainPage"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationInfo"
+                }
+            }
+        },
+        "dto.GetAllPartnerResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Partner"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationInfo"
+                }
+            }
+        },
         "dto.GetByIdCategoryResponse": {
             "type": "object",
             "required": [
                 "id",
+                "image_id",
                 "name"
             ],
             "properties": {
                 "id": {
                     "type": "string",
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "image_id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "name": {
                     "type": "string",
@@ -2875,15 +3003,31 @@ const docTemplate = `{
         },
         "dto.GetByIdMainPageResponse": {
             "type": "object",
+            "required": [
+                "content",
+                "fluid",
+                "href",
+                "id",
+                "image_id",
+                "is_hidden",
+                "title"
+            ],
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 1000,
+                    "minLength": 2,
+                    "example": "Main banner description text goes here..."
                 },
                 "fluid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "example": "https://example.com/page"
                 },
                 "id": {
                     "type": "string",
@@ -2894,10 +3038,14 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Main banner title"
                 }
             }
         },
@@ -3140,15 +3288,31 @@ const docTemplate = `{
         },
         "dto.MainPage": {
             "type": "object",
+            "required": [
+                "content",
+                "fluid",
+                "href",
+                "id",
+                "image_id",
+                "is_hidden",
+                "title"
+            ],
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 1000,
+                    "minLength": 2,
+                    "example": "Main banner description text goes here..."
                 },
                 "fluid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "example": "https://example.com/page"
                 },
                 "id": {
                     "type": "string",
@@ -3159,10 +3323,14 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Main banner title"
                 }
             }
         },
@@ -3231,6 +3399,31 @@ const docTemplate = `{
                         }
                     ],
                     "example": 1
+                }
+            }
+        },
+        "dto.PaginationInfo": {
+            "type": "object",
+            "properties": {
+                "current_page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "has_next": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "has_previous": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "total_items": {
+                    "type": "integer",
+                    "example": 1250
+                },
+                "total_pages": {
+                    "type": "integer",
+                    "example": 13
                 }
             }
         },
@@ -3382,6 +3575,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 },
+                "image_id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174100"
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 150,
@@ -3394,12 +3591,17 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "id",
+                "image_id",
                 "name"
             ],
             "properties": {
                 "id": {
                     "type": "string",
                     "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "image_id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "name": {
                     "type": "string",
@@ -3561,6 +3763,9 @@ const docTemplate = `{
                     "minLength": 8,
                     "example": "SecurePass123!"
                 },
+                "role": {
+                    "$ref": "#/definitions/types.Role"
+                },
                 "surname": {
                     "type": "string",
                     "maxLength": 100,
@@ -3674,41 +3879,62 @@ const docTemplate = `{
                 "content": {
                     "type": "string",
                     "maxLength": 1000,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Updated main banner description text..."
                 },
                 "fluid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "href": {
                     "type": "string",
-                    "maxLength": 1000,
-                    "minLength": 2
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "example": "https://example.com/updated"
                 },
                 "image_id": {
                     "type": "string",
-                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                    "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "title": {
                     "type": "string",
                     "maxLength": 100,
-                    "minLength": 2
+                    "minLength": 2,
+                    "example": "Updated main banner title"
                 }
             }
         },
         "dto.UpdateMainPageResponse": {
             "type": "object",
+            "required": [
+                "content",
+                "fluid",
+                "href",
+                "id",
+                "image_id",
+                "is_hidden",
+                "title"
+            ],
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 1000,
+                    "minLength": 2,
+                    "example": "Main banner description text goes here..."
                 },
                 "fluid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "href": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "example": "https://example.com/page"
                 },
                 "id": {
                     "type": "string",
@@ -3719,10 +3945,14 @@ const docTemplate = `{
                     "example": "123e4567-e89b-12d3-a456-426614174100"
                 },
                 "is_hidden": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": false
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Main banner title"
                 }
             }
         },
@@ -3874,6 +4104,11 @@ const docTemplate = `{
             "x-enum-comments": {
                 "PackagePeat": "Торф"
             },
+            "x-enum-descriptions": [
+                "",
+                "",
+                "Торф"
+            ],
             "x-enum-varnames": [
                 "PackageWater",
                 "PackageGel",

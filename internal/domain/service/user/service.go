@@ -17,7 +17,7 @@ type userRepo interface {
 		limit, offset int,
 		role *types.Role,
 		query, emailPrefix *string,
-	) ([]*ent.User, error)
+	) ([]*ent.User, int, error)
 	Update(ctx context.Context, userEntity ent.User) (*ent.User, error)
 	Delete(ctx context.Context, id uuid.UUID) error
 }

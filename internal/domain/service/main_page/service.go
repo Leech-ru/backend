@@ -14,7 +14,7 @@ type mainPageRepo interface {
 	Create(context.Context, ent.MainPage) (*ent.MainPage, error)
 	Update(ctx context.Context, entity ent.MainPage) (*ent.MainPage, error)
 	Delete(ctx context.Context, id uuid.UUID) error
-	GetAll(ctx context.Context, limit, offset int) ([]*ent.MainPage, error)
+	GetAll(ctx context.Context, limit, offset int) ([]*ent.MainPage, int, error)
 }
 
 type imageService interface {

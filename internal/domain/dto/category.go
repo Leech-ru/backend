@@ -28,7 +28,10 @@ type GetAllCategoriesRequest struct {
 	Offset *int `json:"offset,omitempty" form:"offset" validate:"omitempty,min=0" example:"0"`
 }
 
-type GetAllCategoriesResponse []*Category
+type GetAllCategoriesResponse struct {
+	Items      []*Category     `json:"items"`
+	Pagination PaginationInfo  `json:"pagination"`
+}
 
 type UpdateCategoryRequest struct {
 	ID      uuid.UUID  `json:"id" validate:"required,uuid" example:"3fa85f64-5717-4562-b3fc-2c963f66afa6"`

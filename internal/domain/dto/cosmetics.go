@@ -58,7 +58,10 @@ type GetAllByFilterCosmeticsRequest struct {
 }
 
 // GetAllByFilterCosmeticsResponse is the list of cosmetics returned by filters.
-type GetAllByFilterCosmeticsResponse []*Cosmetics
+type GetAllByFilterCosmeticsResponse struct {
+	Items      []*Cosmetics    `json:"items"`
+	Pagination PaginationInfo `json:"pagination"`
+}
 
 type GetAllByFilterForAdminCosmeticsRequest struct {
 	Limit       *int       `json:"limit,omitempty" form:"limit" validate:"omitempty,min=1,max=100" example:"10"`
@@ -70,7 +73,10 @@ type GetAllByFilterForAdminCosmeticsRequest struct {
 }
 
 // GetAllByFilterCosmeticsResponse is the list of cosmetics returned by filters.
-type GetAllByFilterForAdminCosmeticsResponse []*Cosmetics
+type GetAllByFilterForAdminCosmeticsResponse struct {
+	Items      []*Cosmetics    `json:"items"`
+	Pagination PaginationInfo `json:"pagination"`
+}
 
 // UpdateCosmeticsRequest represents an update request for a cosmetic product.
 type UpdateCosmeticsRequest struct {

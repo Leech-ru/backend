@@ -18,7 +18,7 @@ import (
 // @Param        offset          query     int   false  "Offset for pagination"                minimum(0)
 // @Param        preview_length  query     int   false  "Number of characters for content preview" minimum(1) maximum(500)
 // @Param        is_hidden       query     bool  false  "Filter by hidden status (true/false)"
-// @Success      200  {array}   dto.NewsListItem
+// @Success      200  {object}  dto.GetAllByFilterForAdminsNewsResponse
 // @Failure      400  {object}  dto.HTTPStatus "Invalid query parameters"
 // @Failure      500  {object}  dto.HTTPStatus "Internal server error"
 // @Router       /api/v1/admin/news [get]

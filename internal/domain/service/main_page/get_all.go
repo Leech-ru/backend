@@ -8,7 +8,7 @@ import (
 // GetAll gets all main page contents with pagination
 func (s *mainPageService) GetAll(ctx context.Context, req *dto.GetAllMainPageRequest) (dto.GetAllMainPageResponse, error) {
 	limit := 10
-	if req.Limit != nil {
+	if req.Limit != nil && *req.Limit > 0 {
 		limit = *req.Limit
 	}
 	offset := 0
@@ -16,14 +16,14 @@ func (s *mainPageService) GetAll(ctx context.Context, req *dto.GetAllMainPageReq
 		offset = *req.Offset
 	}
 
-	mainPages, err := s.mainPageRepo.GetAll(ctx, limit, offset)
+	mainPages, totalItems, err := s.mainPageRepo.GetAll(ctx, limit, offset)
 	if err != nil {
-		return nil, err
+		return dto.GetAllMainPageResponse{}, err
 	}
 
-	resp := make([]*dto.MainPage, len(mainPages))
+	respItems := make([]*dto.MainPage, len(mainPages))
 	for i, page := range mainPages {
-		resp[i] = &dto.MainPage{
+		respItems[i] = &dto.MainPage{
 			ID:       page.ID,
 			ImageID:  page.ImageID,
 			Title:    page.Title,
@@ -32,6 +32,23 @@ func (s *mainPageService) GetAll(ctx context.Context, req *dto.GetAllMainPageReq
 			IsHidden: page.IsHidden,
 			Fluid:    page.Fluid,
 		}
+	}
+
+	totalPages := 0
+	if totalItems > 0 {
+		totalPages = (totalItems + limit - 1) / limit
+	}
+	currentPage := (offset / limit) + 1
+
+	resp := dto.GetAllMainPageResponse{
+		Items: respItems,
+		Pagination: dto.PaginationInfo{
+			TotalItems:  totalItems,
+			TotalPages:  totalPages,
+			CurrentPage: currentPage,
+			HasNext:     currentPage < totalPages,
+			HasPrevious: currentPage > 1,
+		},
 	}
 
 	return resp, nil

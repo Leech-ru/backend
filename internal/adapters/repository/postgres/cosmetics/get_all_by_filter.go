@@ -11,30 +11,35 @@ import (
 )
 
 // GetAllByFilter retrieves all cosmetics with optional pagination and filter.
-func (s *cosmeticsRepo) GetAllByFilter(ctx context.Context, limit, offset int, categoryID *uuid.UUID, titlePrefix *string, volume *int, isHidden *bool) ([]*ent.Cosmetics, error) {
-	query := s.client.Cosmetics.Query().WithCategory()
+func (s *cosmeticsRepo) GetAllByFilter(ctx context.Context, limit, offset int, categoryID *uuid.UUID, titlePrefix *string, volume *int, isHidden *bool) ([]*ent.Cosmetics, int, error) {
+	baseQuery := s.client.Cosmetics.Query().WithCategory()
 
 	if categoryID != nil {
-		query = query.Where(cosmetics.HasCategoryWith(category.IDEQ(*categoryID)))
+		baseQuery = baseQuery.Where(cosmetics.HasCategoryWith(category.IDEQ(*categoryID)))
 	}
 	if titlePrefix != nil {
-		query = query.Where(cosmetics.TitleHasPrefix(*titlePrefix))
+		baseQuery = baseQuery.Where(cosmetics.TitleHasPrefix(*titlePrefix))
 	}
 	if volume != nil {
-		query = query.Where(cosmetics.VolumeEQ(*volume))
+		baseQuery = baseQuery.Where(cosmetics.VolumeEQ(*volume))
 	}
 	if isHidden != nil {
-		query = query.Where(cosmetics.IsHiddenEQ(*isHidden))
+		baseQuery = baseQuery.Where(cosmetics.IsHiddenEQ(*isHidden))
 	}
 
-	cosmetics, err := query.
+	totalItems, err := baseQuery.Clone().Count(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to count cosmetics in db: %w", err)
+	}
+
+	cosmetics, err := baseQuery.
 		Limit(limit).
 		Offset(offset).
 		All(ctx)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to query db: %w", err)
+		return nil, 0, fmt.Errorf("failed to query db: %w", err)
 	}
 
-	return cosmetics, nil
+	return cosmetics, totalItems, nil
 }
